@@ -1,0 +1,20 @@
+{
+  "presets": [
+    "react",
+    ["env", { 
+      "targets": {
+        "browsers": ["last 2 versions", "safari >= 7"],
+      },
+      "modules": false,
+      "debug": false,
+    }],
+    "babel-preset-stage-2",
+  ],
+  "plugins": [
+    "react-hot-loader/babel",
+    "babel-plugin-transform-decorators-legacy",
+    "babel-plugin-transform-regenerator",
+    "babel-plugin-transform-runtime",
+    "babel-plugin-transform-es2015-modules-commonjs",
+  ],
+}
