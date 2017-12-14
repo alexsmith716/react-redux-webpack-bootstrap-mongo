@@ -102,7 +102,7 @@ const renderFullPage2 = (html, initialState) => {
         ${head.script.toString()}
       </head>
       <body>
-        <div id="root">${html}</div>
+        <div id="app">${html}</div>
         <script>
           window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
         </script>
