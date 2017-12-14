@@ -24,7 +24,7 @@ module.exports = {
   output: {
     path: __dirname,
     filename: '[name].js',
-    publicPath: 'http://0.0.0.0:3000/',
+    publicPath: 'http://127.0.0.1:3000/',
   },
 
   resolve: {
