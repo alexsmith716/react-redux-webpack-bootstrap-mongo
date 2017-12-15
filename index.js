@@ -12,10 +12,16 @@ if (process.env.NODE_ENV === 'production') {
         generateScopedName: '[name]__[local]__[hash:base64:5]',
         extensions: ['.css', '.scss'],
       }],
-    ]
+      ['babel-plugin-webpack-loaders', {
+        config: './webpack.config.babel.js',
+        verbose: true,
+      }],
+    ],
   });
   
   require('babel-polyfill');
+  require('es6-promise').polyfill();
+  require('isomorphic-fetch');
   require('./server/server');
 
 }

@@ -13,18 +13,26 @@ module.exports = {
     app: [
       'eventsource-polyfill',
       'webpack-hot-middleware/client?reload=true',
-      //'webpack/hot/only-dev-server',
+      'webpack/hot/only-dev-server',
       'react-hot-loader/patch',
       'babel-polyfill',
       path.join(__dirname, './client/index.js')
     ],
-    // vendor: ['react', 'redux', 'react-dom']
+    vendor: [
+      'react',
+      'react-dom',
+      'react-redux',
+      'react-router',
+      'react-router-dom',
+      'redux',
+      'redux-thunk',
+    ],
   },
 
   output: {
     path: __dirname,
     filename: '[name].js',
-    publicPath: 'http://127.0.0.1:3000/',
+    publicPath: 'http://localhost:3000/',
   },
 
   resolve: {
@@ -133,7 +141,19 @@ module.exports = {
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.IgnorePlugin(/\/iconv-loader$/),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: Infinity,
+      filename: 'vendor.js',
+    }),
+
+    new webpack.DefinePlugin({
+      'process.env': {
+        CLIENT: JSON.stringify(true),
+        NODE_ENV: JSON.stringify('development'),
+      }
+    }),
+    
   ]
 };
