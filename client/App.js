@@ -17,9 +17,8 @@ import { renderRoutes } from 'react-router-config';
 // Import the client routes from config file
 import routes from './routes';
 
-// Base stylesheets
-import './global.css';
-import './main.css';
+//import './global.css';
+//import './main.css';
 
 const AppRouter = () => (
   <Router>

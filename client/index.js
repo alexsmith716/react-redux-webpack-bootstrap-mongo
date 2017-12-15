@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
 import { configureStore } from './store';
+import IntlWrapper from './components/Intl/IntlWrapper';
 import App from './App';
 
 // app mount point in index.html
@@ -19,7 +20,9 @@ const mount = Component => {
   render(
     <AppContainer>
       <Provider store={store}>
-        <Component />
+        <IntlWrapper>
+          <Component />
+        </IntlWrapper>
       </Provider>
     </AppContainer>,
     mountApp
@@ -30,5 +33,11 @@ const mount = Component => {
 mount(App);
 
 if (module.hot) {
-  module.hot.accept('./App', () => { mount(App); });
+
+  module.hot.accept('./App', () => {
+
+    mount(App);
+    
+  });
+
 }
