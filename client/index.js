@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { render } from 'react-dom';
+//import { render } from 'react-dom';
+import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
@@ -17,7 +18,7 @@ const store = configureStore(window.__INITIAL_STATE__);
 
 // hot-module replacement
 const mount = Component => {
-  render(
+  ReactDOM.hydrate(
     <AppContainer>
       <Provider store={store}>
         <IntlWrapper>
