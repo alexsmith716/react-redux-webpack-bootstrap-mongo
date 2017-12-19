@@ -46,7 +46,10 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
+
+import { matchPath } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
+
 import Helmet from 'react-helmet';
 
 import { configureStore } from '../client/store';
@@ -108,14 +111,7 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-//        ${head.base.toString()}
-//        ${head.title.toString()}
-//        ${head.meta.toString()}
-//        ${head.link.toString()}
-//        ${head.script.toString()}
-
-
-const renderFullPage0 = () => {
+const renderFullPage = () => {
   return `
     <!doctype html>
     <html lang="en">
@@ -134,32 +130,6 @@ const renderFullPage0 = () => {
   `;
 };
 
-const renderFullPage = (html, initialState) => {
-  const head = Helmet.rewind();
-
-  return `
-    <!doctype html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="data:image/x-icon;" type="image/x-icon" rel="shortcut icon">
-        <intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS"></intercept-url>
-     </head>
-      <body>
-        <div id="app">${html}</div>
-        <script>
-          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
-        </script>
-        <script src='${'/vendor.js'}'></script>
-        <script src='${'/app.js'}'></script>
-      </body>
-    </html>
-  `;
-  
-};
-
 // #########################################################################
 
 app.use((req, res, next) => {
@@ -172,72 +142,71 @@ app.use((req, res, next) => {
     messages: localizationData[locale].messages
   };
 
-  const store = configureStore({ intl: intl });
+  // const matchedRoute = matchRoutes(routes, req.url);
 
-  const branch = matchRoutes(routes, req.url);
+  // since basically everything is an object ...
+  // ... and (knowing how) a method can be created to act upon an object in who knows how many different ways
+  // have a method that iterates over an array and returns an element (object) that contains the objects of the object
+  // while the "reduce" method iterates over the array,
+  // apply "matchPath" method to test if "req.url" matches current array element "route.path"
+  // reduce method: iterate through each element (object) "routes" array (object)
+  // reduce method: transform "routes" array by reducing it to accumulator "reducedRoutes"
+  // apply the reduce method to the "routes" array
+  // for each current array "route" element, apply "matchPath"
+  // "matchPath" evaluates a match using params "req.url", "route.path", "route"
+  // if returned (match && match.isExact)
+  // push objects "route", "match" and "promise" into empty array "reducedRoutes"
 
-  const promises = branch.map(({ route }) => {
-    const fetchData = route.component.fetchData;
-    return fetchData instanceof Function ? fetchData(store) : Promise.resolve(null);
-  });
+  const matchedRoute = routes.reduce((matchedRoute, route, index) => {
+
+    //console.log('>>>> server > routes.reduce: ', index, ' :ROUTE: ', route, ' :MATCHEDROUTE: ', matchedRoute);
+
+    const matchedPath = matchPath(req.url, route.path, route);
+
+    if (matchedPath.isExact) {
+
+      // console.log('>>>> server > routes.reduce > matchedPath: ', matchedPath)
+      // console.log('>>>> server > routes.reduce > matchedPath.isExact: ', matchedPath.isExact)
+      // console.log('>>>> server > routes.reduce > matchedPath > route.component.fetchData: ', route.component.fetchData)
+
+      matchedRoute.push({
+        route,
+        matchedPath,
+      })
+
+    }
+
+    return matchedRoute;
+
+  }, []);
 
   //---------------------------------------------------------
 
-  const context = {};
-
-  const componentHtml = renderToString(
-    <Provider store={store}>
-      <IntlWrapper locale={locale}>
-        <StaticRouter location={req.url} context={context}>
-          <App />
-        </StaticRouter>
-      </IntlWrapper>
-    </Provider>
-  );
-
-  if (context.url) {
-    res.redirect(302, context.url);
-  } else if (context.status === 404) {
-    res.status(404);
-  } else {
-    const preloadedState = store.getState();
-    const html = renderFullPage(componentHtml, preloadedState);
-    res.set('content-type', 'text/html');
-    res.send(html);
-  }
 
 });
 
 
 // #########################################################################
+
+// //const server = https.createServer(options, app).listen(app.get('port'), '', () => {
+const server = http.createServer(app).listen( app.get('port'), '127.0.0.1', () => {
+  console.log('Express server connected > port: ', app.get('port'));
+  console.log('Express server connected > address(): ', server.address());
+});
+
+server.on('error', (err) => {
+  console.log('Express server error: ', err);
+});
 
 /*
-if (app.get('env') === 'development') {
-  app.use((req, res, next) => {
-    console.log('############# APP UNCAUGHT ERR HANDLER DEVELOPMENT #############');
-    console.log('############################# DEV ERR: ', err);
-    console.log('############################# DEV ERR.code: ', err.code);
-    console.log('############################# DEV ERR.status: ', err.status);
-    console.log('############################# DEV ERR.name: ', err.name);
-    console.log('############################# DEV REQ.HEADERS.referer: ', req.headers['referer']);
-    next();
-  });
-};
-*/
-
-// #########################################################################
-
-// //const server = https.createServer(options, app).listen(app.get('port'), '127.0.0.1', function () {
-// const server = http.createServer(app).listen(app.get('port'), 'localhost', function () {
-//   console.log('Express server listening on port: ', server.address().port);
-//   console.log('Express server listening on hostname: ', server.address().address);
-// });
-
-app.listen(process.env.PORT, error => {
- if (!error) {
-   console.log(`>>>>>>>> Server is running on port ${process.env.PORT} <<<<<<<<<<<`);
- }
+app.listen(process.env.PORT, (error) => {
+  if (error) {
+    console.log(`>>>>>>>> Server is running on port ${process.env.PORT} <<<<<<<<<<<`);
+  } else {
+    console.log('>>>>>>>> Server Error <<<<<<<<<<<');
+  }
 });
+*/
 
 export default app;
 
