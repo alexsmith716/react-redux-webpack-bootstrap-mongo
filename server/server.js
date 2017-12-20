@@ -111,6 +111,7 @@ app.use((req, res, next) => {
 // #########################################################################
 
 app.use((req, res, next) => {
+// app.get('*', (req, res) => {
 
   const locale = req.locale.trim();
 
@@ -166,7 +167,9 @@ app.use((req, res, next) => {
 
   }, []);
 
+
   // -------------------------------------------------------------------------
+
 
   // const promises = matchedRoute.map(({ route }) => {
   //   const fetchData = route.component.fetchData;
@@ -180,14 +183,50 @@ app.use((req, res, next) => {
 
   // -------------------------------------------------------------------------
 
+
   Promise.all(promises).then((data) => {
 
+    let status = 200;
     // const preloadedState = store.getState();
     const context = {};
 
+    const appHtml = renderToString(
 
-  });
+      //<Provider store={ store } key="provider">
+      <Provider key="provider">
+        <StaticRouter context={ context } location={ request.url }>
+          <App />
+          // {renderRoutes(routes)}
+        </StaticRouter>
+      </Provider>
 
+    );
+
+    if (matches.length === 0) {
+      status = 404;
+    };
+
+    if (context.url) {
+
+      res.redirect(context.url);
+        
+    } else {
+
+      const helmet = Helmet.renderStatic();
+
+      //let html = index(helmet, appHtml, preloadedState);
+      let html = renderFullPage(helmet, appHtml);
+
+      res.set('Content-Type', 'text/html');
+
+      res.status(status);
+      
+      res.send(html);
+
+    };
+
+  })
+  .catch((error) => next(error));
 
 });
 
