@@ -5,7 +5,6 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import path from 'path';
-// import https from 'https';
 import http from 'http';
 import fs from 'fs';
 import favicon from 'serve-favicon';
@@ -21,11 +20,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = new express();
-app.set('port', process.env.PORT || 3000);
+
 app.use(morgan('dev'));
 
-console.log('>>>>>> server > process.env.MONGO_URL: ', process.env.MONGO_URL);
-console.log('>>>>>> server > process.env.NODE_ENV: ', process.env.NODE_ENV);
 
 // const options = {
 //   key: fs.readFileSync(__dirname + '../ssl/thisAppPEM.pem'),
@@ -123,15 +120,8 @@ app.use((req, res, next) => {
     messages: localizationData[locale].messages
   };
 
-  // const matchedRoute = matchRoutes(routes, req.url);
-
   // `pathname`: The path section of the URL, that comes after the host and before the query, 
   // including the initial slash if present.
-
-  // const promises = matchedRoute.map(({ route }) => {
-  //   const fetchData = route.component.fetchData;
-  //   return fetchData instanceof Function ? fetchData(store) : Promise.resolve(null);
-  // });
 
   // since basically everything is an object ...
   // ... and (knowing how) a method can be created to act upon an object in who knows how many different ways
@@ -146,6 +136,8 @@ app.use((req, res, next) => {
   // if returned (match && match.isExact)
   // push objects "route", "match" and "promise" into empty array "reducedRoutes"
 
+  // const matchedRoute = matchRoutes(routes, req.url);
+
   const matchedRoute = routes.reduce((accumulatedRoute, route, index) => {
 
     //console.log('>>>> server > routes.reduce: ', index, ' :ROUTE: ', route, ' :MATCHEDROUTE: ', matchedRoute);
@@ -158,12 +150,14 @@ app.use((req, res, next) => {
       // console.log('>>>> server > routes.reduce > matchedPath.isExact: ', matchedPath.isExact)
       // console.log('>>>> server > routes.reduce > matchedPath > route.component.fetchData: ', route.component.fetchData)
 
-      const promises = route.component.fetchData ? route.component.fetchData({ store, params: matchedPath.params }) : Promise.resolve(null)
+      // const promise = route.component.fetchData ? route.component.fetchData({ store, params: matchedPath.params }) : Promise.resolve(null)
+
+      const promise = Promise.resolve(null)
 
       accumulatedRoute.push({
         route,
         matchedPath,
-        promise: promises,
+        promise: promise,
       })
 
     }
@@ -172,7 +166,27 @@ app.use((req, res, next) => {
 
   }, []);
 
-  //---------------------------------------------------------
+  // -------------------------------------------------------------------------
+
+  // const promises = matchedRoute.map(({ route }) => {
+  //   const fetchData = route.component.fetchData;
+  //   return fetchData instanceof Function ? fetchData(store) : Promise.resolve(null);
+  // });
+
+  const promises = matchedRoute.map((match) =>  {
+    return match.promise
+  });
+
+
+  // -------------------------------------------------------------------------
+
+  Promise.all(promises).then((data) => {
+
+    // const preloadedState = store.getState();
+    const context = {};
+
+
+  });
 
 
 });
@@ -180,14 +194,65 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
+
+const normalizePort = (val)  => {
+
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+};
+
+const port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
 // //const server = https.createServer(options, app).listen(app.get('port'), '', () => {
 const server = http.createServer(app).listen( app.get('port'), '127.0.0.1', () => {
   console.log('Express server connected > port: ', app.get('port'));
   console.log('Express server connected > address(): ', server.address());
 });
 
-server.on('error', (err) => {
-  console.log('Express server error: ', err);
+server.on('error', (error) => {
+  
+  if (error.syscall !== 'listen') {
+    console.log('Express server error: ', error);
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  switch (error.code) {
+    case 'EACCES':
+      console.error('Express server error: ' + bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error('Express server error: ' + bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      console.log('Express server error: ', error);
+  }
+});
+
+server.on('listening', () => {
+
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  console.log('Express server Listening on: ', bind);
+
 });
 
 /*
