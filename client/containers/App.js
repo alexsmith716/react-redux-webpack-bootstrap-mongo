@@ -4,13 +4,13 @@ import { Route, Switch } from 'react-router-dom';
 
 import { renderRoutes } from 'react-router-config';
 import routes from '../routes';
-import Layout from './Layout';
+import Main from './Main';
 import PageNotFound from './PageNotFound';
 
 
 const App = (props) => (
 
-  <Layout>
+  <Main>
 
     <Switch>
 
@@ -24,7 +24,7 @@ const App = (props) => (
 
     </Switch>
 
-  </Layout>
+  </Main>
 
 );
 
