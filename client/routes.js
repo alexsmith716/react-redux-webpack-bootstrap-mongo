@@ -1,36 +1,20 @@
 
-import App from './containers/App/App';
-import HomePage from './containers/HomePage/HomePage';
-import ErrorPage from './containers/ErrorPage/ErrorPage';
-import NotFoundPage from './containers/NotFoundPage/NotFoundPage';
+import React from 'react'
+
+import Home from './containers/Home';
+import About from './containers/About';
 
 
 const routes = [
-  {
-    component: App,
-    routes: [
-      {
-        path: '/',
-        exact: true,
-        component: HomePage,
-      },
-      {
-        path: '/error',
-        exact: true,
-        component: ErrorPage,
-      },
-      {
-        path: '*',
-        component: NotFoundPage
-      },
-
-    ],
-  },
+    {
+      path: '/',
+      component: Home,
+      exact: true
+    },
+    {
+      path: '/about',
+      component: About
+    },
 ];
 
-
 export default routes;
-
-
-//  https://github.com/reactjs/react-router/issues/2182
-//  https://github.com/gaearon/react-hot-loader/issues/288
