@@ -20,7 +20,7 @@ const App = (props) => (
 
       )) }
 
-      <Route component={ NotFound } />
+      <Route component={ PageNotFound } />
 
     </Switch>
 
