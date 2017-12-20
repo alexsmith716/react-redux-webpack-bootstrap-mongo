@@ -62,6 +62,8 @@ import App from '../client/containers/App/App';
 import routes from '../client/routes';
 import apiRouter from './routes';
 
+import renderFullPage from './render/renderFullPage';
+
 // #########################################################################
 
 mongoose.Promise = global.Promise;
@@ -111,27 +113,6 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-const renderFullPage = () => {
-  return `
-    <!doctype html>
-    <html lang="en">
-      <head>
-        <link rel="icon" href="/dist/favicon.ico" type="image/ico" />
-        <title>Tester !!!!</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-      </head>
-      <body>
-        <div id="app">Apppppppppp !!!</div>
-        <div><p>Apppppppppppppp !!!</p></div>
-      </body>
-    </html>
-  `;
-};
-
-// #########################################################################
-
 app.use((req, res, next) => {
 
   const locale = req.locale.trim();
@@ -143,6 +124,14 @@ app.use((req, res, next) => {
   };
 
   // const matchedRoute = matchRoutes(routes, req.url);
+
+  // `pathname`: The path section of the URL, that comes after the host and before the query, 
+  // including the initial slash if present.
+
+  // const promises = matchedRoute.map(({ route }) => {
+  //   const fetchData = route.component.fetchData;
+  //   return fetchData instanceof Function ? fetchData(store) : Promise.resolve(null);
+  // });
 
   // since basically everything is an object ...
   // ... and (knowing how) a method can be created to act upon an object in who knows how many different ways
@@ -157,26 +146,29 @@ app.use((req, res, next) => {
   // if returned (match && match.isExact)
   // push objects "route", "match" and "promise" into empty array "reducedRoutes"
 
-  const matchedRoute = routes.reduce((matchedRoute, route, index) => {
+  const matchedRoute = routes.reduce((accumulatedRoute, route, index) => {
 
     //console.log('>>>> server > routes.reduce: ', index, ' :ROUTE: ', route, ' :MATCHEDROUTE: ', matchedRoute);
 
     const matchedPath = matchPath(req.url, route.path, route);
 
-    if (matchedPath.isExact) {
+    if (matchedPath && matchedPath.isExact) {
 
       // console.log('>>>> server > routes.reduce > matchedPath: ', matchedPath)
       // console.log('>>>> server > routes.reduce > matchedPath.isExact: ', matchedPath.isExact)
       // console.log('>>>> server > routes.reduce > matchedPath > route.component.fetchData: ', route.component.fetchData)
 
-      matchedRoute.push({
+      const promises = route.component.fetchData ? route.component.fetchData({ store, params: matchedPath.params }) : Promise.resolve(null)
+
+      accumulatedRoute.push({
         route,
         matchedPath,
+        promise: promises,
       })
 
     }
 
-    return matchedRoute;
+    return accumulatedRoute;
 
   }, []);
 
