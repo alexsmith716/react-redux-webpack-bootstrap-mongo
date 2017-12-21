@@ -21,11 +21,11 @@ const indexX = (helmet = {}, appHtml = '') => (
 );
 
 const index = () => (
-
   `<!doctype html>
   <html lang="en">
     <head>
-      <link rel="icon" href="/dist/favicon.ico" type="image/ico" />
+      <link href="data:image/x-icon;" type="image/x-icon" rel="shortcut icon">
+      <intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS"></intercept-url>
       <title>Tester !!!!</title>
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta charset="utf-8">
@@ -36,7 +36,6 @@ const index = () => (
       <div><p>Apppppppppppppp2 !!!</p></div>
     </body>
   </html>`
-
 );
 
 export default index;

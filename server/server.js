@@ -1,6 +1,5 @@
 import express from 'express';
 import compression from 'compression';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
@@ -23,7 +22,6 @@ const app = new express();
 
 app.use(morgan('dev'));
 
-
 // const options = {
 //   key: fs.readFileSync(__dirname + '../ssl/thisAppPEM.pem'),
 //   cert: fs.readFileSync(__dirname + '../ssl/thisAppCRT.crt')
@@ -31,13 +29,7 @@ app.use(morgan('dev'));
 
 // #########################################################################
 
-if (process.env.NODE_ENV === 'development') {
-  const compiler = webpack(config);
-  app.use(webpackDevMiddleware(compiler, { noInfo: false, publicPath: config.output.publicPath }));
-  app.use(webpackHotMiddleware(compiler));
-}
-
-// #########################################################################
+import Helmet from 'react-helmet';
 
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -47,40 +39,24 @@ import { StaticRouter } from 'react-router';
 import { matchPath } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 
-import Helmet from 'react-helmet';
-
-import { configureStore } from '../client/store';
-
-import IntlWrapper from '../client/components/Intl/IntlWrapper';
-import { enabledLanguages, localizationData } from '../i18n/setup';
-
-import App from '../client/containers/App/App';
-
+import App from '../client/containers/App';
 import routes from '../client/routes';
-import apiRouter from './routes';
-
 import renderFullPage from './render/renderFullPage';
+
+
+//import { configureStore } from '../client/store';
+//import IntlWrapper from '../client/components/Intl/IntlWrapper';
+//import { enabledLanguages, localizationData } from '../i18n/setup';
+//import apiRouter from './routes';
 
 // #########################################################################
 
-mongoose.Promise = global.Promise;
-const mongooseOptions = {
-  useMongoClient: true,
-  autoReconnect: true,
-  keepAlive: 1,
-  connectTimeoutMS: 300000
-};
-mongoose.connect(process.env.MONGO_URL, mongooseOptions, error => {
-  if (error) {
-    console.error('Please make sure Mongodb is installed and running!');
-    throw error;
-  }
-});
+import './db/mongo';
 
 // #########################################################################
 
 app.use(cors());
-app.use(locale(enabledLanguages, 'en'));
+// app.use(locale(enabledLanguages, 'en'));
 // https://github.com/glenjamin/webpack-hot-middleware/issues/10
 // app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
@@ -113,13 +89,12 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
 // app.get('*', (req, res) => {
 
-  const locale = req.locale.trim();
-
-  const intl = {
-    locale: locale,
-    enabledLanguages: enabledLanguages,
-    messages: localizationData[locale].messages
-  };
+  //const locale = req.locale.trim();
+  //const intl = {
+  //  locale: locale,
+  //  enabledLanguages: enabledLanguages,
+  //  messages: localizationData[locale].messages
+  //};
 
   // `pathname`: The path section of the URL, that comes after the host and before the query, 
   // including the initial slash if present.
@@ -147,9 +122,9 @@ app.use((req, res, next) => {
 
     if (matchedPath && matchedPath.isExact) {
 
-      // console.log('>>>> server > routes.reduce > matchedPath: ', matchedPath)
-      // console.log('>>>> server > routes.reduce > matchedPath.isExact: ', matchedPath.isExact)
-      // console.log('>>>> server > routes.reduce > matchedPath > route.component.fetchData: ', route.component.fetchData)
+      console.log('>>>> server > routes.reduce > matchedPath: ', matchedPath);
+      console.log('>>>> server > routes.reduce > matchedPath.isExact: ', matchedPath.isExact);
+      // console.log('>>>> server > routes.reduce > matchedPath > route.component.fetchData: ', route.component.fetchData);
 
       // const promise = route.component.fetchData ? route.component.fetchData({ store, params: matchedPath.params }) : Promise.resolve(null)
 
@@ -192,17 +167,15 @@ app.use((req, res, next) => {
 
     const appHtml = renderToString(
 
-      //<Provider store={ store } key="provider">
       <Provider key="provider">
-        <StaticRouter context={ context } location={ request.url }>
+        <StaticRouter context={ context } location={ req.url }>
           <App />
-          // {renderRoutes(routes)}
         </StaticRouter>
       </Provider>
 
     );
 
-    if (matches.length === 0) {
+    if (matchedRoute.length === 0) {
       status = 404;
     };
 
@@ -256,14 +229,14 @@ app.set('port', port);
 
 // //const server = https.createServer(options, app).listen(app.get('port'), '', () => {
 const server = http.createServer(app).listen( app.get('port'), '127.0.0.1', () => {
-  console.log('Express server connected > port: ', app.get('port'));
-  console.log('Express server connected > address(): ', server.address());
+  console.log('>>>>>> Express server connected > port: ', app.get('port'));
+  console.log('>>>>>> Express server connected > address(): ', server.address());
 });
 
 server.on('error', (error) => {
   
   if (error.syscall !== 'listen') {
-    console.log('Express server error: ', error);
+    console.log('>>>>>> Express server error: ', error);
   }
 
   var bind = typeof port === 'string'
@@ -272,15 +245,15 @@ server.on('error', (error) => {
 
   switch (error.code) {
     case 'EACCES':
-      console.error('Express server error: ' + bind + ' requires elevated privileges');
+      console.error('>>>>>> Express server error: ' + bind + ' requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error('Express server error: ' + bind + ' is already in use');
+      console.error('>>>>>> Express server error: ' + bind + ' is already in use');
       process.exit(1);
       break;
     default:
-      console.log('Express server error: ', error);
+      console.log('>>>>>> Express server error: ', error);
   }
 });
 
@@ -290,7 +263,7 @@ server.on('listening', () => {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  console.log('Express server Listening on: ', bind);
+  console.log('>>>>>> Express server Listening on: ', bind);
 
 });
 
@@ -305,9 +278,5 @@ app.listen(process.env.PORT, (error) => {
 */
 
 export default app;
-
-
-
-
 
 
