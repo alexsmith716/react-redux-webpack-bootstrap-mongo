@@ -49,6 +49,7 @@ import { StaticRouter } from 'react-router';
 import { matchPath } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 
+import { rootReducer } from './client/store';
 import App from '../client/containers/App';
 import routes from '../client/routes';
 import renderFullPage from './render/renderFullPage';
@@ -93,6 +94,14 @@ app.use((req, res, next) => {
   console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
   next();
 });
+
+// #########################################################################
+
+// Store (new store for each request)
+const store = createStore(
+    rootReducer,
+    applyMiddleware(thunk)
+);
 
 // #########################################################################
 
@@ -241,8 +250,7 @@ app.set('port', port);
 
 // //const server = https.createServer(options, app).listen(app.get('port'), '', () => {
 const server = http.createServer(app).listen( app.get('port'), '127.0.0.1', () => {
-  console.log('>>>>>> Express server connected > port: ', app.get('port'));
-  console.log('>>>>>> Express server connected > address(): ', server.address());
+  console.log('>>>>>> Express server connected: ', server.address());
 });
 
 server.on('error', (error) => {
@@ -265,7 +273,7 @@ server.on('error', (error) => {
       process.exit(1);
       break;
     default:
-      console.log('>>>>>> Express server error: ', error);
+      console.log('>>>>>> Express server error.code: ', error.code);
   }
 });
 
