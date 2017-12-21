@@ -18,18 +18,15 @@ const mountApp = document.getElementById('app');
 //const store = configureStore(window.__INITIAL_STATE__);
 
 
-
 const Component = () => (
 
   <Provider key="provider">
     <Router>
       <App />
-      // {renderRoutes(routes)}
     </Router>
   </Provider>
 
 );
-
 
 window.onload = () => {
 
@@ -56,17 +53,11 @@ const mount = Component => {
   );
 };
 
-
 mount(App);
-
 if (module.hot) {
-
-  module.hot.accept('./App', () => {
-
+  module.hot.accept('./containers/App', () => {
     mount(App);
-    
   });
-
 };
 */
 
