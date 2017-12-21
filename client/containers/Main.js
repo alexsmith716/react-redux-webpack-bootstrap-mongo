@@ -19,7 +19,7 @@ const Main = (props) => (
     <section>
 
       { props.children }
-      
+
     </section>
 
   </div>

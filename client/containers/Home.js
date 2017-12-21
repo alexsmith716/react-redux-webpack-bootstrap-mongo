@@ -1,6 +1,6 @@
 
-import React from 'react'
-import { Helmet } from 'react-helmet'
+import React from 'react';
+import { Helmet } from 'react-helmet';
 
 
 const Home = () => (
@@ -19,7 +19,7 @@ const Home = () => (
 
   </div>
 
-)
+);
 
 
-export default Home
+export default Home;
