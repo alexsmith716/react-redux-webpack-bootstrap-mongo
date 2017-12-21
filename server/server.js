@@ -27,7 +27,17 @@ app.use(morgan('dev'));
 //   cert: fs.readFileSync(__dirname + '../ssl/thisAppCRT.crt')
 // };
 
+
 // #########################################################################
+
+if (process.env.NODE_ENV === 'development') {
+  const compiler = webpack(config);
+  app.use(webpackDevMiddleware(compiler, { noInfo: false, publicPath: config.output.publicPath }));
+  app.use(webpackHotMiddleware(compiler));
+}
+
+// #########################################################################
+
 
 import Helmet from 'react-helmet';
 
@@ -62,7 +72,7 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 
-app.use('/public', express.static(path.join(__dirname, './public')));
+app.use('/public', express.static(path.join(__dirname, '../public')));
 //app.use('/static', express.static(path.resolve(__dirname, '../dist/client')));
 app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico')),);
 //app.use('/api', pageData);
@@ -70,7 +80,7 @@ app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico'))
 // #########################################################################
 
 app.use((req, res, next) => {
-  console.log('>>>>>>>>>>> GOING THROUGH APP NOW >>>>>>>>>>>>');
+  console.log('>>>>>>>>>>>>>>>>>>>>>> GOING THROUGH APP NOW >>>>>>>>>>>>>>>>>>');
   console.log('REQ.method +++++: ', req.method);
   console.log('REQ.url ++++++++: ', req.url);
   console.log('REQ.headers ++++: ', req.headers);
@@ -80,7 +90,7 @@ app.use((req, res, next) => {
   } else {
     console.log('REQ.user +++++: NO USER');
   };
-  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
   next();
 });
 
@@ -189,6 +199,8 @@ app.use((req, res, next) => {
 
       //let html = index(helmet, appHtml, preloadedState);
       let html = renderFullPage(helmet, appHtml);
+
+      console.log('>>>> server > Promise.all(promises) > html: ', html);
 
       res.set('Content-Type', 'text/html');
 

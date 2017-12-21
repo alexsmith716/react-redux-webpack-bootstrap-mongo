@@ -22,9 +22,9 @@ module.exports = {
   },
 
   output: {
-    path: path.join(__dirname, '/dist/client/'),
+    path: path.join(__dirname, './public/static/dist/client'),
     filename: '[name].js',
-    publicPath: '/',
+    publicPath: '/public/static/dist/client/',
   },
 
   resolve: {

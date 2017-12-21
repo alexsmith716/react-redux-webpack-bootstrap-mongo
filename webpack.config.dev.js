@@ -7,7 +7,7 @@ console.log('>>>>> webpack.config.dev.js > process.env.NODE_ENV <<<<<: ', proces
 
 module.exports = {
   
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'eval-source-map',
 
   entry: {
     app: [
@@ -16,6 +16,8 @@ module.exports = {
       'webpack/hot/only-dev-server',
       'react-hot-loader/patch',
       'babel-polyfill',
+      'isomorphic-fetch',
+      path.join(__dirname, './client/assets/scss/global.scss'),
       path.join(__dirname, './client/index.js')
     ],
     vendor: [
@@ -31,8 +33,9 @@ module.exports = {
 
   output: {
     path: __dirname,
-    filename: '[name].js',
-    publicPath: 'http://localhost:3000/',
+    filename: 'app.js',
+    publicPath: '/',
+    //publicPath: 'http://localhost:3000/',
   },
 
   resolve: {

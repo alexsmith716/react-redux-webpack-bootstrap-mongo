@@ -1,41 +1,38 @@
 
-const indexX = (helmet = {}, appHtml = '') => (
-`<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    ${ helmet.title.toString() }
-    
-    <link rel="stylesheet" href="${process.env.NODE_ENV === 'production' ? '/static/styles.css': '/styles.css'}">
-    <style> section { border-bottom: 1px solid #ccc; border-top: 1px solid #ccc; margin: 15px 0px }</style>
-</head>
-<body>
-    <main id="app">${ appHtml }</main>
-    
-    <script src='${process.env.NODE_ENV === 'production' ? '/static/vendor.js' : '/vendor.js'}'></script>
-    <script src='${process.env.NODE_ENV === 'production' ? '/static/app.js': '/app.js'}'></script>
-
-</body>
-</html>`
-);
-
-const index = () => (
-  `<!doctype html>
-  <html lang="en">
+const index = (helmet = {}, appHtml = '') => (
+  `<!DOCTYPE html>
+  <html lang="en-US">
     <head>
-      <link href="data:image/x-icon;" type="image/x-icon" rel="shortcut icon">
-      <intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS"></intercept-url>
-      <title>Tester !!!!</title>
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- <link href="data:image/x-icon;" type="image/x-icon" rel="shortcut icon"> -->
+      <!-- <intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS"></intercept-url> -->
+      <meta name="description" content="react-redux-webpack-bootstrap-mongo">
+
+      ${ helmet.title.toString() }
+
+      <link rel="stylesheet" href="${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/styles.css': '/app.css'}">
+
     </head>
+
     <body>
-      <div id="app">Apppppppppp1 !!!</div>
-      <div><p>Apppppppppppppp2 !!!</p></div>
+
+      <main id="app">${ appHtml }</main>
+
+      <script src='${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/vendor.js' : '/vendor.js'}'></script>
+
+      <script src='${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/app.js': '/app.js'}'></script>
+
     </body>
+
   </html>`
 );
 
 export default index;
+
+/*
+<script>
+  window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
+</script>
+*/
