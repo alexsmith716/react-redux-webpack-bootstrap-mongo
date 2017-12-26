@@ -4,18 +4,18 @@ import { Helmet } from 'react-helmet';
 
 
 
-const About = () => (
+const Contact = () => (
 
   <div>
 
     <Helmet>
 
-      <title>About Us</title>
+      <title>Contact Us</title>
 
     </Helmet>
 
 
-    <h1>About</h1>
+    <h1>Contact Us</h1>
 
     <p>ThisGreatApp! can be contacted by calling 1-800-555-1234.\n\nDolorem necessitatibus aliquam libero magni. Quod quaerat expedita at esse. Omnis tempora optio laborum laudantium culpa pariatur eveniet consequatur.</p>
 
@@ -23,4 +23,4 @@ const About = () => (
 
 );
 
-export default About;
+export default Contact;

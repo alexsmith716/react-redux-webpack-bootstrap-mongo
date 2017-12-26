@@ -4,15 +4,15 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import { renderRoutes } from 'react-router-config';
-import routes from '../routes';
-import Main from './Main';
-import PageNotFound from './PageNotFound';
+//import { renderRoutes } from 'react-router-config';
+import routes from './routes';
+import App from './containers/App/App';
+import PageNotFound from './containers/PageNotFound/PageNotFound';
 
 
-const App = (props) => (
+const AppRouter = (props) => (
 
-  <Main>
+  <App>
 
     <Switch>
 
@@ -26,9 +26,9 @@ const App = (props) => (
 
     </Switch>
 
-  </Main>
+  </App>
 
 );
 
 
-export default App;
+export default AppRouter;
