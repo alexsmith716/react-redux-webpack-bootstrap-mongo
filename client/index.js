@@ -7,57 +7,25 @@ import { AppContainer } from 'react-hot-loader';
 
 //import { renderRoutes } from 'react-router-config';
 
-//import { configureStore } from './store';
-//import IntlWrapper from './components/Intl/IntlWrapper';
-import App from './containers/App';
+//import { store } from './store';
 
-// app mount point in index.html
+import AppRouter from './AppRouter';
+
 const mountApp = document.getElementById('app');
 
-// initialize store
-//const store = configureStore(window.__INITIAL_STATE__);
+// <Provider store={ store } key="provider">
 
-
-const Component = () => (
-
+const Client = () => (
   <Provider key="provider">
     <Router>
-      <App />
+      <AppRouter />
     </Router>
   </Provider>
-
 );
 
 window.onload = () => {
-
   ReactDOM.hydrate(
-    <Component />,
+    <Client />,
     mountApp
   )
-
 };
-
-
-/*
-// hot-module replacement
-const mount = Component => {
-  ReactDOM.hydrate(
-    <AppContainer>
-      <Provider store={store}>
-        <IntlWrapper>
-          <Component />
-        </IntlWrapper>
-      </Provider>
-    </AppContainer>,
-    mountApp
-  );
-};
-
-mount(App);
-if (module.hot) {
-  module.hot.accept('./containers/App', () => {
-    mount(App);
-  });
-};
-*/
-
