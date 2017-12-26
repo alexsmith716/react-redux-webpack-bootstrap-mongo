@@ -1,0 +1,6 @@
+
+export const SPINNER_ON = 'SPINNER_ON';
+export const SPINNER_OFF = 'SPINNER_OFF';
+export const REGISTERED = 'REGISTERED';
+export const LOGGED_IN = 'LOGGED_IN';
+export const LOGGED_OUT = 'LOGGED_OUT';

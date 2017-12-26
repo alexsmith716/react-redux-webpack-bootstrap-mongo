@@ -39,26 +39,20 @@ if (process.env.NODE_ENV === 'development') {
 // #########################################################################
 
 
-import Helmet from 'react-helmet';
-
 import React from 'react';
 import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
-
 import { matchPath } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
+import Helmet from 'react-helmet';
 
-import { rootReducer } from './client/store';
-import App from '../client/containers/App';
+import AppRouter from '../client/AppRouter';
+
+// ROUTES
 import routes from '../client/routes';
-import renderFullPage from './render/renderFullPage';
+import apiRouter from './apiRoutes';
 
-
-//import { configureStore } from '../client/store';
-//import IntlWrapper from '../client/components/Intl/IntlWrapper';
-//import { enabledLanguages, localizationData } from '../i18n/setup';
-//import apiRouter from './routes';
 
 // #########################################################################
 
@@ -67,8 +61,6 @@ import './db/mongo';
 // #########################################################################
 
 app.use(cors());
-// app.use(locale(enabledLanguages, 'en'));
-// https://github.com/glenjamin/webpack-hot-middleware/issues/10
 // app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
@@ -76,7 +68,6 @@ app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use('/public', express.static(path.join(__dirname, '../public')));
 //app.use('/static', express.static(path.resolve(__dirname, '../dist/client')));
 app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico')),);
-//app.use('/api', pageData);
 
 // #########################################################################
 
@@ -95,25 +86,21 @@ app.use((req, res, next) => {
   next();
 });
 
-// #########################################################################
+app.use('/api', apiRouter);
 
-// Store (new store for each request)
-const store = createStore(
-    rootReducer,
-    applyMiddleware(thunk)
-);
 
 // #########################################################################
 
+// store config here
+
+// #########################################################################
+
+
+// all routes going though middleware 
 app.use((req, res, next) => {
 // app.get('*', (req, res) => {
 
   //const locale = req.locale.trim();
-  //const intl = {
-  //  locale: locale,
-  //  enabledLanguages: enabledLanguages,
-  //  messages: localizationData[locale].messages
-  //};
 
   // `pathname`: The path section of the URL, that comes after the host and before the query, 
   // including the initial slash if present.
@@ -143,11 +130,15 @@ app.use((req, res, next) => {
 
       console.log('>>>> server > routes.reduce > matchedPath: ', matchedPath);
       console.log('>>>> server > routes.reduce > matchedPath.isExact: ', matchedPath.isExact);
-      // console.log('>>>> server > routes.reduce > matchedPath > route.component.fetchData: ', route.component.fetchData);
+
+      // test if incoming route is a HTTP API/Ajax request
+      // if an API request, dispatch request event promise from route.component.fetchData()
+      // if an API request, push that promise into accumulatedRoute
+      // if not an API request, push a null promise
 
       // const promise = route.component.fetchData ? route.component.fetchData({ store, params: matchedPath.params }) : Promise.resolve(null)
 
-      const promise = Promise.resolve(null)
+      const promise = Promise.resolve(null);
 
       accumulatedRoute.push({
         route,
@@ -177,8 +168,11 @@ app.use((req, res, next) => {
 
   // -------------------------------------------------------------------------
 
-
-  Promise.all(promises).then((data) => {
+  // resolve matchedRoute's promise(s) asynchronously
+  // 
+  // Promise.all(matches.map(match => match.promise))
+  Promise.all(promises)
+  .then((data) => {
 
     let status = 200;
     // const preloadedState = store.getState();
@@ -188,7 +182,7 @@ app.use((req, res, next) => {
 
       <Provider key="provider">
         <StaticRouter context={ context } location={ req.url }>
-          <App />
+          <AppRouter />
         </StaticRouter>
       </Provider>
 
