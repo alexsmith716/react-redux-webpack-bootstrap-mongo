@@ -49,9 +49,10 @@ import Helmet from 'react-helmet';
 
 import AppRouter from '../client/AppRouter';
 
-// ROUTES
 import routes from '../client/routes';
 import apiRouter from './apiRoutes';
+
+import renderFullPage from './render/renderFullPage';
 
 
 // #########################################################################
@@ -175,8 +176,10 @@ app.use((req, res, next) => {
   .then((data) => {
 
     let status = 200;
-    // const preloadedState = store.getState();
+
     const context = {};
+
+    // <Provider store={ store } key="provider">
 
     const appHtml = renderToString(
 
@@ -200,7 +203,7 @@ app.use((req, res, next) => {
 
       const helmet = Helmet.renderStatic();
 
-      //let html = index(helmet, appHtml, preloadedState);
+      //let html = renderFullPage(helmet, appHtml, preloadedState);
       let html = renderFullPage(helmet, appHtml);
 
       console.log('>>>> server > Promise.all(promises) > html: ', html);

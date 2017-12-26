@@ -1,12 +1,11 @@
 
 import React from 'react'
 
-import Home from './containers/Home';
-import About from './containers/About';
-import Contact from './containers/Contact';
-import About from './containers/About';
-import Register from './containers/Register';
-import Login from './containers/Login';
+import Home from './containers/Home/Home';
+import About from './containers/About/About';
+import Contact from './containers/Contact/Contact';
+//import Register from './containers/Register/Register';
+//import Login from './containers/Login/Login';
 
 const routes = [
   {

@@ -5,8 +5,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
-//import { renderRoutes } from 'react-router-config';
-
 //import { store } from './store';
 
 import AppRouter from './AppRouter';

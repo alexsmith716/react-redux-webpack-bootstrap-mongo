@@ -4,17 +4,21 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 
-const Main = (props) => (
+const App = (props) => (
 
   <div>
+
 
     <div>
 
       <Link to="/">Home</Link>
       &nbsp;
-      <Link to="/about">About</Link>
+      <Link to="/about">About Us</Link>
+      &nbsp;
+      <Link to="/contact">Contact Us</Link>
 
     </div>
+
 
     <section>
 
@@ -22,9 +26,14 @@ const Main = (props) => (
 
     </section>
 
+
+    //<footer>
+    //</footer>
+
+
   </div>
 
 );
 
 
-export default Main;
+export default App;
