@@ -1,6 +1,6 @@
 
 
-import { SPINNER_ON, SPINNER_OFF, REGISTERED, LOGGED_IN, LOGGED_OUT } from 'constants/actionTypes';
+import { SPINNER_ON, SPINNER_OFF, REGISTERED, LOGGED_IN, LOGGED_OUT } from '../constants/actionTypes';
 
 
 export function spinnerOn() {
