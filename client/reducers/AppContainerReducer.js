@@ -5,7 +5,7 @@ import {
   REGISTERED,
   LOGGED_IN,
   LOGGED_OUT,
-} from './types/actionTypes';
+} from '../constants/actionTypes';
 
 const initialState = {
   spinner: false,
@@ -13,7 +13,7 @@ const initialState = {
   loggedIn: false,
 };
 
-const AppReducer = (state = initialState, action) => {
+const AppContainerReducer = (state = initialState, action) => {
   switch (action.type) {
     case SPINNER_ON:
       return {
@@ -50,4 +50,4 @@ export const isSpinnerOn = state => !!state.app.spinner;
 export const isRegistered = state => !!state.app.registered;
 export const isLoggedIn = state => !!state.app.loggedIn;
 
-export default AppReducer;
+export default AppContainerReducer;

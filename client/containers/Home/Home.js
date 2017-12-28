@@ -5,10 +5,10 @@ import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 
-//import {  } from '../../constants/statusTypes';
-//import {  } from '../../actions/HomeActions';
-//import {  } from '../../reducers/ErrorReducer';
-//import {  } from '../../reducers/AppContainerReducer';
+import { OK, NO_CONTENT, UNAUTHORIZED, FORBIDDEN } from '../../constants/statusCodes';
+import { getSOME_HOME_ACTION} from '../../actions/HomeActions';
+//import { isError, isException } from '../../reducers/ErrorReducer';
+//import { isRegistered } from '../../reducers/AppContainerReducer';
 
 // import apiHandler from '../../services/apiHandler';
 
@@ -22,6 +22,9 @@ class Home extends Component {
     }
   }
 
+  componentDidMount() {
+    this.props.dispatch(someAction());
+  }
 
   render() {
 
@@ -46,6 +49,17 @@ class Home extends Component {
 
 };
 
+const mapStateToProps = (state) => {
+  return {
+    ...state.dashboard,
+    ...state.user,
+    termsAccepted: areTermsAccepted(state),
+    isRegistered: isRegistered(state),
+    isError: isError(state),
+    isException: isException(state),
+    error: state.error,
+  };
+};
 
-export default Home;
+export default connect(mapStateToProps)(Home);
 
