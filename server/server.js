@@ -15,6 +15,7 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import dotenv from 'dotenv';
 
 // #########################################################################
+// http://http://127.0.0.1:3000/api/foober
 
 dotenv.config();
 
@@ -92,7 +93,7 @@ app.use('/api', apiRouter);
 
 // #########################################################################
 
-// store config here
+import { configureStore } from '../client/store';
 
 // #########################################################################
 
@@ -100,6 +101,8 @@ app.use('/api', apiRouter);
 // all routes going though middleware 
 app.use((req, res, next) => {
 // app.get('*', (req, res) => {
+
+  const store = configureStore({ intl: intl });
 
   //const locale = req.locale.trim();
 

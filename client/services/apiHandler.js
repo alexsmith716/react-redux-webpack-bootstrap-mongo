@@ -11,9 +11,43 @@ const apiPrefix = 'http://localhost:3000';
 promises.polyfill();
 
 
+// http://127.0.0.1:3000/api/logincredentials
 
-export default function apiHandler () {
+export const API_ROOT = '/api/';
 
-  // will be handling api requests from client 
+export const API_URL
 
-};
+
+export default function apiHandler (endpoint, method = 'get', body) {
+
+  console.log('>>>>>>>>>>> Client > apiHandler > apiHandler() <<<<<<<<<<<<');
+
+  const url = `${API_URL}/${endpoint}`;
+
+  // default headers
+  const headers = {
+    'content-type': 'application/json'
+  };
+
+  return fetch(url, {
+    credentials: 'same-origin',
+    headers,
+    method,
+    body: JSON.stringify(body),
+  })
+    .then(response => response.json().then(json => ({ json, response })))
+
+    .then(({ json, response }) => {
+      if (!response.ok) {
+        return Promise.reject(json);
+      }
+
+      return json;
+    })
+
+    .then(
+      response => response,
+      error => error
+    );
+
+}

@@ -4,3 +4,14 @@ export const SPINNER_OFF = 'SPINNER_OFF';
 export const REGISTERED = 'REGISTERED';
 export const LOGGED_IN = 'LOGGED_IN';
 export const LOGGED_OUT = 'LOGGED_OUT';
+
+export const USER_GET_SUCCESS = 'USER_GET_SUCCESS';
+export const USER_SET_SUCCESS = 'USER_SET_SUCCESS';
+
+
+//export const RESET = 'RESET';
+//export const ERROR = 'ERROR';
+//export const EXCEPTION = 'EXCEPTION';
+
+
+//export const SOME_HOME_ACTION = 'SOME_HOME_ACTION';

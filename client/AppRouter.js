@@ -10,16 +10,14 @@ import AppContainer from './containers/AppContainer/AppContainer';
 import PageNotFound from './containers/PageNotFound/PageNotFound';
 
 
-const AppRouter = (props) => (
+const AppRouter = () => (
 
   <AppContainer>
 
     <Switch>
 
       { routes.map((route, index) => (
-
         <Route { ...route } key={ index }/>
-
       )) }
 
       <Route component={ PageNotFound } />
