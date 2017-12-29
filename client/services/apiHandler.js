@@ -24,7 +24,7 @@ export default function apiHandler (endpoint, method = 'get', body) {
 
   //const url = `${API_URL}/${endpoint}`;
 
-  const url = 'http://http://127.0.0.1:3000/api/user/getusertest'
+  const url = 'http://127.0.0.1:3000/api/user/getusertest'
 
   // default headers
   const headers = {
@@ -32,7 +32,7 @@ export default function apiHandler (endpoint, method = 'get', body) {
   };
 
   return fetch(url, {
-    //credentials: 'same-origin',
+    credentials: 'same-origin',
     headers,
     method,
     body: JSON.stringify(body),
