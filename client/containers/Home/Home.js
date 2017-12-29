@@ -6,27 +6,26 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 
 import { OK, NO_CONTENT, UNAUTHORIZED, FORBIDDEN } from '../../constants/statusCodes';
-import { getSOME_HOME_ACTION} from '../../actions/HomeActions';
+import { getSomeHomeAction} from '../../actions/HomeActions';
 //import { isError, isException } from '../../reducers/ErrorReducer';
 //import { isRegistered } from '../../reducers/AppContainerReducer';
 
-// import apiHandler from '../../services/apiHandler';
+//import styles from './styles.scss';
+
+import apiHandler from '../../services/apiHandler';
 
 class Home extends Component {
 
-  constructor(props) {
-    super(props)
+    constructor(props) {
+        super(props)
 
-    this.state = {
+        this.state = {
 
+        }
     }
-  }
-
-  componentDidMount() {
-    this.props.dispatch(someAction());
-  }
 
   render() {
+
 
     return(
 
@@ -46,20 +45,7 @@ class Home extends Component {
 
     )
   }
+}
 
-};
-
-const mapStateToProps = (state) => {
-  return {
-    ...state.dashboard,
-    ...state.user,
-    termsAccepted: areTermsAccepted(state),
-    isRegistered: isRegistered(state),
-    isError: isError(state),
-    isException: isException(state),
-    error: state.error,
-  };
-};
-
-export default connect(mapStateToProps)(Home);
+export default Home;
 

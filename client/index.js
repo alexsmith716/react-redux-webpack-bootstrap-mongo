@@ -5,19 +5,17 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 
-//import { store } from './store';
+import { configureStore } from './store';
 
 import AppRouter from './AppRouter';
 
 const mountApp = document.getElementById('app');
 
-
-
-// <Provider store={ store } key="provider">
+const store = configureStore(window.__INITIAL_STATE__);
 
 const Client = () => (
 
-  <Provider key="provider">
+  <Provider store={ store } key="provider">
 
     <Router>
 

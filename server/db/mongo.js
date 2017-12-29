@@ -1,11 +1,12 @@
 
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 let gracefulShutdown;
 
-dotenv.config();
+//dotenv.config();
 
-let dbURI = process.env.MONGO_URL;
+//let dbURI = process.env.MONGO_URL;
+let dbURI = 'mongodb://localhost/rrwbm-2018';
 
 if (process.env.NODE_ENV === 'production') {
   // dbURI = process.env.MONGOLAB_URI;

@@ -1,5 +1,5 @@
 
-//import { SOME_HOME_ACTION } from 'constants/actionTypes';
+import { SOMEHOMEACTION_SUCCESS } from '../constants/actionTypes';
 
 
 const initialState = { data: {} };
@@ -9,7 +9,7 @@ const HomeReducer = (state = initialState, action) => {
 
   switch (action.type) {
 
-    //case SOME_HOME_ACTION:
+    case SOMEHOMEACTION_SUCCESS:
       return { ...state, data: action.data };
 
     default:

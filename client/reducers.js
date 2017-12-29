@@ -2,11 +2,13 @@
 import { combineReducers } from 'redux';
 
 
-import AppContainerReducer from './reducers/AppContainerReducer';
-//import home from './reducers/HomeReducer';
+import app from './reducers/AppContainerReducer';
+import home from './reducers/HomeReducer';
+import user from './reducers/UserReducer';
 
 
 export default combineReducers({
-  AppContainerReducer,
-  //home,
+  app,
+  home,
+  user,
 });

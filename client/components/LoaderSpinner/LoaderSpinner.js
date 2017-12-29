@@ -7,11 +7,11 @@ import style from './style.css';
 
 const LoaderSpinner = () => (
 
-  <div className={styles.spinner}>
-    <div className={styles.cube1}/>
-    <div className={styles.cube2}/>
-    <div className={styles.cube3}/>
-    <div className={styles.cube4}/>
+  <div className={style.spinner}>
+    <div className={style.cube1}/>
+    <div className={style.cube2}/>
+    <div className={style.cube3}/>
+    <div className={style.cube4}/>
   </div>
 
 );
