@@ -1,11 +1,11 @@
 
-import { OK, ACCEPTED } from 'constants/statusTypes';
+import { OK, ACCEPTED } from '../constants/statusCodes';
 import { USER_GET_SUCCESS, USER_SET_SUCCESS } from '../constants/actionTypes';
 
-//import { errorOccurred, exceptionOccurred } from './actions/ErrorActions';
-import { spinnerOn, spinnerOff, registered, } from './actions/AppContainerActions';
+//import { errorOccurred, exceptionOccurred } from './ErrorActions';
+import { spinnerOn, spinnerOff, registered, } from './AppContainerActions';
 
-import apiHandler from '../../services/apiHandler';
+import apiHandler from '../services/apiHandler';
 
 
 export function getSuccess(json) {
@@ -31,13 +31,22 @@ export function getUser() {
 
     dispatch(spinnerOn());
 
-    return apiHandler('user/me')
+    return apiHandler('user/getusertest')
+
       .then(res => {
+
         dispatch(spinnerOff());
+
         if (res.status !== OK) {
-          return dispatch(errorOccurred(res.status, res.json));
+
+          console.log('>>>>>>>>>>> Client > UserActions > getUser() > apiHandler() > res.status !== OK > res.status: ', res.status);
+          console.log('>>>>>>>>>>> Client > UserActions > getUser()  apiHandler() > res.status !== OK > res.json: ', res.json);
+          //return dispatch(errorOccurred(res.status, res.json));
+          
         }
+
         if (res.json) {
+
           console.log('>>>>>>>>>>> Client > UserActions > getUser() > USER - RES');
           console.log(res);
 
@@ -45,27 +54,29 @@ export function getUser() {
           console.log(res.json);
 
           if (res.json && res.json.other) {
+
             console.log('>>>>>>>>>>> Client > UserActions > getUser() > USER - RES.JSON.OTHER');
             console.log(res.json.other);
 
             const other = res.json.other;
+
             if (other.registeredUser) {
+
               console.log('>>>>>>>>>>> Client > UserActions > getUser() > USER - FIRING REGISTERED');
               dispatch(registered());
             }
-            if (other.termsAccepted) {
-              console.log('>>>>>>>>>>> Client > UserActions > getUser() > USER - FIRING TERMS_ACCEPTED');
-              dispatch(termsAccepted());
-            }
+
           }
+
           dispatch(getSuccess(res.json));
         }
 
       })
+
       .catch(err => {
-        console.log('>>>>>>>>>>> UserActions > CRASHED GET - USER ACTIONS <<<<<<<<<<<<');
+        console.log('>>>>>>>>>>> Client > UserActions > getUser() > catch(err)', err);
         dispatch(spinnerOff());
-        dispatch(exceptionOccurred(err));
+        //dispatch(exceptionOccurred(err));
       });
 
   };
@@ -80,18 +91,28 @@ export function setUser(data) {
 
     dispatch(spinnerOn());
 
-    return apiHandler('user/me', 'put', data)
+    return apiHandler('user/getusertest', 'put', data)
+
       .then(res => {
+
         dispatch(spinnerOff());
+
         if (res.status !== ACCEPTED) {
-          return dispatch(errorOccurred(res.status, res.json));
+          console.log('>>>>>>>>>>> Client > UserActions > setUser() > apiHandler() > res.status !== ACCEPTED > res.status: ', res.status);
+          console.log('>>>>>>>>>>> Client > UserActions > setUser() > apiHandler() > res.status !== ACCEPTED > res.json: ', res.json);
+          //return dispatch(errorOccurred(res.status, res.json));
         }
+
         dispatch(setSuccess(res.json));
+
       })
+
       .catch(err => {
-        console.log('>>>>>>>>>>> Client > UserActions > getUser() > CRASHED SET - USER ACTIONS');
+
+        console.log('>>>>>>>>>>> Client > UserActions > setUser() > apiHandler() > catch(err)', err);
         dispatch(spinnerOff());
-        dispatch(exceptionOccurred(err));
+        //dispatch(exceptionOccurred(err));
+
       });
 
   };

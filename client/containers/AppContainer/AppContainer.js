@@ -4,33 +4,42 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import Helmet from 'react-helmet';
-// import { renderRoutes } from 'react-router-config';
 
 //import Header from '../../components/Header/Header';
 //import Footer from '../../components/Footer/Footer';
-import LoaderSpinner from '../../components/LoaderSpinner';
+import LoaderSpinner from '../../components/LoaderSpinner/LoaderSpinner';
 
-import { isSpinnerOn, isRegistered, isLoggedIn, } from 'reducers/AppContainerReducer';
+// import styles from './AppContainer.scss';
+
+
 import { spinnerOn, spinnerOff } from '../../actions/AppContainerActions';
 
-//import { getUser } from '../../actions/UserActions';
+import { getUser } from '../../actions/UserActions';
+
+import { isSpinnerOn, isRegistered, isLoggedIn, } from '../../reducers/AppContainerReducer';
+
 
 
 class AppContainer extends Component {
-
 
   constructor(props) {
     super(props);
     this.state = { isMounted: false };
   };
 
+  // App starting off actions with 'User' login status
   componentDidMount() {
+    console.log('>>>>>>>>>>>>>> Client > AppContainer > componentDidMount ++++++++++++++++++++');
     this.setState({ isMounted: true });
     this.props.dispatch(getUser());
   };
 
 
+
   render() {
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     const {
       spinner,
@@ -38,10 +47,15 @@ class AppContainer extends Component {
       registered,
     } = this.props;
 
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     let spinnerContent;
     if (spinner === true) {
       spinnerContent = <LoaderSpinner />;
     }
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     return(
 
@@ -85,12 +99,13 @@ AppContainer.defaultProps = {
   termsAccepted: false,
 };
 
+
 function mapStateToProps(state) {
-  console.log('>>>>>>> AppContainer > mapStateToProps(state): ', state);
+  //console.log('>>>>>>> AppContainer > mapStateToProps(state): ', state);
   return {
     spinner: isSpinnerOn(state),
     isLoggedIn: isLoggedIn(state),
-    isRegistered: isRegistered(state),
+    registered: isRegistered(state),
     isLoggedIn: isLoggedIn(state),
   };
 

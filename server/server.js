@@ -1,3 +1,4 @@
+
 import express from 'express';
 import compression from 'compression';
 import cors from 'cors';
@@ -5,19 +6,19 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import path from 'path';
 import http from 'http';
-import fs from 'fs';
+//import fs from 'fs';
 import favicon from 'serve-favicon';
 import locale from 'locale';
 import webpack from 'webpack';
 import config from '../webpack.config.dev';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 
 // #########################################################################
-// http://http://127.0.0.1:3000/api/foober
+// http://http://127.0.0.1:3000/api/
 
-dotenv.config();
+//dotenv.config();
 
 const app = new express();
 
@@ -102,7 +103,7 @@ import { configureStore } from '../client/store';
 app.use((req, res, next) => {
 // app.get('*', (req, res) => {
 
-  const store = configureStore({ intl: intl });
+  const store = configureStore({ });
 
   //const locale = req.locale.trim();
 
@@ -186,7 +187,7 @@ app.use((req, res, next) => {
 
     const appHtml = renderToString(
 
-      <Provider key="provider">
+      <Provider store={ store } key="provider">
         <StaticRouter context={ context } location={ req.url }>
           <AppRouter />
         </StaticRouter>
@@ -201,13 +202,18 @@ app.use((req, res, next) => {
     if (context.url) {
 
       res.redirect(context.url);
+
+    } else if (context.status === 404) {
+
+      res.status(404);
         
     } else {
 
+      const preloadedState = store.getState();
       const helmet = Helmet.renderStatic();
 
-      //let html = renderFullPage(helmet, appHtml, preloadedState);
-      let html = renderFullPage(helmet, appHtml);
+      let html = renderFullPage(helmet, appHtml, preloadedState);
+      //let html = renderFullPage(helmet, appHtml);
 
       console.log('>>>> server > Promise.all(promises) > html: ', html);
 

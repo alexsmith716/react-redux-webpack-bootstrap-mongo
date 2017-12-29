@@ -14,7 +14,7 @@ export function configureStore(initialState = {}) {
   const store = createStore(rootReducer, initialState, compose(...enhancers));
 
 
-
+  /*
   if (module.hot) {
 
     module.hot.accept('./reducers', () => {
@@ -25,6 +25,7 @@ export function configureStore(initialState = {}) {
     });
 
   }
+  */
 
 
   return store;

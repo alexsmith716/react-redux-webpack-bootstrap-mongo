@@ -1,7 +1,7 @@
 
 const webpack = require('webpack');
 const path = require('path');
-require('dotenv').config();
+//require('dotenv').config();
 
 console.log('>>>>> webpack.config.dev.js > process.env.NODE_ENV <<<<<: ', process.env.NODE_ENV);
 
