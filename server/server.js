@@ -6,19 +6,22 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import path from 'path';
 import http from 'http';
-//import fs from 'fs';
 import favicon from 'serve-favicon';
 import locale from 'locale';
 import webpack from 'webpack';
-import config from '../webpack.config.dev';
+import config from '../webpack.config.dev.js';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
-//import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 
 // #########################################################################
 // http://http://127.0.0.1:3000/api/
 
-//dotenv.config();
+global.__CLIENT__ = false;
+global.__SERVER__ = true;
+global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
+
+dotenv.config();
 
 const app = new express();
 
@@ -47,9 +50,13 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchPath } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import Helmet from 'react-helmet';
 
-import AppRouter from '../client/AppRouter';
+import App from '../client/App';
+
+import reducers from '../client/reducers';
 
 import routes from '../client/routes';
 import apiRouter from './apiRoutes';
@@ -92,36 +99,44 @@ app.use((req, res, next) => {
 app.use('/api', apiRouter);
 
 
+
+
 // #########################################################################
+
+
+
+// SERVER ++++++++++++++++++++++++++++++++++++++++++++++++++
+// combineReducers
+
+//console.log('>>>> server > configureStore: ', configureStore);
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//import { rootReducer } from '../client/store';
+//const store = createStore(rootReducer, applyMiddleware(thunk));
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//const store = createStore(reducers, applyMiddleware(thunk));
 
 import { configureStore } from '../client/store';
 
+
 // #########################################################################
 
 
-// all routes going though middleware 
 app.use((req, res, next) => {
-// app.get('*', (req, res) => {
 
-  const store = configureStore({ });
+  console.log('>>>>>>>>>>> server > app.use((req, res, next) <<<<<<<<<<<<<');
+
+  const store = configureStore();
+
+  console.log('>>>> server > store: ', store);
 
   //const locale = req.locale.trim();
 
   // `pathname`: The path section of the URL, that comes after the host and before the query, 
   // including the initial slash if present.
-
-  // since basically everything is an object ...
-  // ... and (knowing how) a method can be created to act upon an object in who knows how many different ways
-  // have a method that iterates over an array and returns an element (object) that contains the objects of the object
-  // while the "reduce" method iterates over the array,
-  // apply "matchPath" method to test if "req.url" matches current array element "route.path"
-  // reduce method: iterate through each element (object) "routes" array (object)
-  // reduce method: transform "routes" array by reducing it to accumulator "reducedRoutes"
-  // apply the reduce method to the "routes" array
-  // for each current array "route" element, apply "matchPath"
-  // "matchPath" evaluates a match using params "req.url", "route.path", "route"
-  // if returned (match && match.isExact)
-  // push objects "route", "match" and "promise" into empty array "reducedRoutes"
 
   // const matchedRoute = matchRoutes(routes, req.url);
 
@@ -141,9 +156,9 @@ app.use((req, res, next) => {
       // if an API request, push that promise into accumulatedRoute
       // if not an API request, push a null promise
 
-      // const promise = route.component.fetchData ? route.component.fetchData({ store, params: matchedPath.params }) : Promise.resolve(null)
+      const promise = route.component.fetchData ? route.component.fetchData({ store, params: matchedPath.params }) : Promise.resolve(null)
 
-      const promise = Promise.resolve(null);
+      //const promise = Promise.resolve(null);
 
       accumulatedRoute.push({
         route,
@@ -177,19 +192,18 @@ app.use((req, res, next) => {
   // 
   // Promise.all(matches.map(match => match.promise))
   Promise.all(promises)
+
   .then((data) => {
 
     let status = 200;
 
     const context = {};
 
-    // <Provider store={ store } key="provider">
-
     const appHtml = renderToString(
 
-      <Provider store={ store } key="provider">
+      <Provider store={ store } >
         <StaticRouter context={ context } location={ req.url }>
-          <AppRouter />
+          {renderRoutes(routes)}
         </StaticRouter>
       </Provider>
 
@@ -233,7 +247,7 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-
+/*
 const normalizePort = (val)  => {
 
   var port = parseInt(val, 10);
@@ -251,7 +265,7 @@ const normalizePort = (val)  => {
   return false;
 };
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '8000');
 app.set('port', port);
 
 // //const server = https.createServer(options, app).listen(app.get('port'), '', () => {
@@ -292,16 +306,18 @@ server.on('listening', () => {
   console.log('>>>>>> Express server Listening on: ', bind);
 
 });
+*/
 
-/*
-app.listen(process.env.PORT, (error) => {
+
+app.listen(3000, (error) => {
   if (error) {
-    console.log(`>>>>>>>> Server is running on port ${process.env.PORT} <<<<<<<<<<<`);
+    console.log('>>>>>>>> Server Error: ', error);
   } else {
-    console.log('>>>>>>>> Server Error <<<<<<<<<<<');
+    console.log(`>>>>>>>> Server is running on port ${process.env.PORT} <<<<<<<<<<<`);
+    
   }
 });
-*/
+
 
 export default app;
 

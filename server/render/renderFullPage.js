@@ -1,5 +1,5 @@
 
-const index = (helmet = {}, appHtml = '') => (
+const index = (helmet = {}, appHtml = '', initialState) => (
   `<!DOCTYPE html>
   <html lang="en-US">
     <head>
@@ -12,13 +12,17 @@ const index = (helmet = {}, appHtml = '') => (
 
       ${ helmet.title.toString() }
 
-      <link rel="stylesheet" href="${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/styles.css': '/app.css'}">
+      <link rel="stylesheet" href="${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/styles.css': ''}">
 
     </head>
 
     <body>
 
       <main id="app">${ appHtml }</main>
+
+      <script>
+          window.__INITIAL_STATE__ = ${ JSON.stringify(initialState) }
+      </script>
 
       <script src='${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/vendor.js' : '/vendor.js'}'></script>
 
@@ -30,9 +34,3 @@ const index = (helmet = {}, appHtml = '') => (
 );
 
 export default index;
-
-/*
-<script>
-  window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
-</script>
-*/

@@ -32,7 +32,7 @@ export default function apiHandler (endpoint, method = 'get', body) {
   };
 
   return fetch(url, {
-    credentials: 'same-origin',
+    //credentials: 'same-origin',
     headers,
     method,
     body: JSON.stringify(body),

@@ -2,6 +2,10 @@
 const webpack = require('webpack');
 const path = require('path');
 //require('dotenv').config();
+// path: __dirname,
+// path: path.join(__dirname, './dist'),
+//       'webpack/hot/only-dev-server',
+// publicPath: ' http://127.0.0.1:8000/',
 
 console.log('>>>>> webpack.config.dev.js > process.env.NODE_ENV <<<<<: ', process.env.NODE_ENV);
 
@@ -33,9 +37,8 @@ module.exports = {
 
   output: {
     path: __dirname,
-    filename: 'app.js',
+    filename: '[name].js',
     publicPath: '/',
-    //publicPath: 'http://localhost:3000/',
   },
 
   resolve: {
@@ -145,18 +148,9 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
 
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: Infinity,
-      filename: 'vendor.js',
-    }),
+    new webpack.NamedModulesPlugin(),
 
-    new webpack.DefinePlugin({
-      'process.env': {
-        CLIENT: JSON.stringify(true),
-        NODE_ENV: JSON.stringify('development'),
-      }
-    }),
+
     
   ]
 };

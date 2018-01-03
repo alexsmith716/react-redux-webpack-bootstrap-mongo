@@ -1,27 +1,49 @@
 
-import React from 'react'
+//  Workaround for async react routes to work with react-hot-reloader
+//  https://github.com/reactjs/react-router/issues/2182
+//  https://github.com/gaearon/react-hot-loader/issues/288
 
+// https://github.com/gaearon/react-hot-loader
+// "Wrap your application into <AppContainer>,
+// all children of <AppContainer> will be reloaded when a change occurs:""
+
+import App from './containers/App/App';
 import Home from './containers/Home/Home';
 import About from './containers/About/About';
 import Contact from './containers/Contact/Contact';
-//import Register from './containers/Register/Register';
-//import Login from './containers/Login/Login';
+import PageNotFound from './containers/PageNotFound/PageNotFound';
+
 
 const routes = [
   {
-    path: '/',
-    component: Home,
-    exact: true
-  },
-  {
-    path: '/about',
-    component: About
-  },
-  {
-    path: '/contact',
-    component: Contact
+    component: App ,
+    routes: [
+      {
+        path: '/',
+        component: Home,
+        exact: true,
+      },
+      {
+        path: '/about',
+        component: About,
+        exact: true,
+      },
+      {
+        path: '/contact',
+        component: Contact,
+        exact: true,
+      },
+      {
+        path: '*',
+        component: PageNotFound
+      },
+
+    ],
   },
 ];
+
+export default routes;
+
 
 /*
 ################### react-router-config #########################
@@ -55,5 +77,3 @@ const routes = [
   }
 ]
 */
-
-export default routes;
