@@ -1,11 +1,17 @@
 
-
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
+
 import rootReducer from './reducers';
 
 
 export function configureStore(initialState = {}) {
+
+  // const middleware = [
+  //    thunk,
+  //  ];
+  // compose(applyMiddleware(...middleware)
+
 
   const enhancers = [
     applyMiddleware(thunk),
@@ -14,7 +20,6 @@ export function configureStore(initialState = {}) {
   const store = createStore(rootReducer, initialState, compose(...enhancers));
 
 
-  /*
   if (module.hot) {
 
     module.hot.accept('./reducers', () => {
@@ -25,8 +30,6 @@ export function configureStore(initialState = {}) {
     });
 
   }
-  */
-
 
   return store;
-}
+};

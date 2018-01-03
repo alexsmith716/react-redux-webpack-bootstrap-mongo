@@ -6,7 +6,9 @@
   "author": "dev",
   "license": "MIT",
   "scripts": {
-    "sd": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon --inspect index.js"
+    "sd": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon --inspect index.js",
+    "sdd": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon index.js",
+    "sddd": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon --debug index.js"
   },
   "dependencies": {
     "axios": "^0.17.1",

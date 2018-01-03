@@ -1,36 +1,55 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { Provider } from 'react-redux';
+//import { render } from 'react-dom';
+//import { BrowserRouter as Router } from 'react-router-dom';
+//import BrowserRouter from 'react-router-dom/BrowserRouter';
 import { AppContainer } from 'react-hot-loader';
+import { Provider } from 'react-redux';
+
 
 import { configureStore } from './store';
 
-import AppRouter from './AppRouter';
-
-const mountApp = document.getElementById('app');
+import App from './App';
 
 const store = configureStore(window.__INITIAL_STATE__);
 
-const Client = () => (
-
-  <Provider store={ store } key="provider">
-
-    <Router>
-
-      <AppRouter />
-
-    </Router>
-
-  </Provider>
-
-);
+const mountApp = document.getElementById('app');
 
 
-window.onload = () => {
+const render = (Component: React.ComponentType<any>) => {
   ReactDOM.hydrate(
-    <Client />,
+    <AppContainer>
+      <Provider store={ store } >
+        <Component />
+      </Provider>
+    </AppContainer>,
     mountApp
   )
 };
+
+
+render(App);
+
+if (module.hot) {
+  
+  module.hot.accept('./App', () => { render(App); });
+  //module.hot.accept('./App', () => {
+  //  const NewApp = require('./App').default;
+  //  render(NewApp);
+  //});
+
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+

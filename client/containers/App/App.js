@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { renderRoutes } from 'react-router-config';
 import { NavLink } from 'react-router-dom';
 import Helmet from 'react-helmet';
 
@@ -9,18 +10,14 @@ import Helmet from 'react-helmet';
 //import Footer from '../../components/Footer/Footer';
 import LoaderSpinner from '../../components/LoaderSpinner/LoaderSpinner';
 
-// import styles from './AppContainer.scss';
-
+// import styles from './App.scss';
 
 import { spinnerOn, spinnerOff } from '../../actions/AppContainerActions';
-
 import { getUser } from '../../actions/UserActions';
-
 import { isSpinnerOn, isRegistered, isLoggedIn, } from '../../reducers/AppContainerReducer';
 
 
-
-class AppContainer extends Component {
+export class App extends Component {
 
   constructor(props) {
     super(props);
@@ -29,12 +26,10 @@ class AppContainer extends Component {
 
   // App starting off actions with 'User' login status
   componentDidMount() {
-    console.log('>>>>>>>>>>>>>> Client > AppContainer > componentDidMount ++++++++++++++++++++');
+    console.log('>>>>>>>>>>>>>> Client > App > componentDidMount ++++++++++++++++++++');
     this.setState({ isMounted: true });
     this.props.dispatch(getUser());
   };
-
-
 
   render() {
 
@@ -42,6 +37,7 @@ class AppContainer extends Component {
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     const {
+      route,
       spinner,
       isLoggedIn,
       registered,
@@ -70,7 +66,7 @@ class AppContainer extends Component {
         </header>
 
         <section>
-          { this.props.children }
+          { route ? renderRoutes(route.routes) : null }
         </section>
 
         {spinnerContent}
@@ -86,14 +82,14 @@ class AppContainer extends Component {
 };
 
 
-AppContainer.propTypes = {
+App.propTypes = {
   dispatch: PropTypes.func.isRequired,
   spinner: PropTypes.bool,
   registered: PropTypes.bool,
   isLoggedIn: PropTypes.bool,
 };
 
-AppContainer.defaultProps = {
+App.defaultProps = {
   isLoggedIn: false,
   registered: false,
   termsAccepted: false,
@@ -101,7 +97,7 @@ AppContainer.defaultProps = {
 
 
 function mapStateToProps(state) {
-  //console.log('>>>>>>> AppContainer > mapStateToProps(state): ', state);
+  //console.log('>>>>>>> App > mapStateToProps(state): ', state);
   return {
     spinner: isSpinnerOn(state),
     isLoggedIn: isLoggedIn(state),
@@ -112,6 +108,6 @@ function mapStateToProps(state) {
 };
 
 
-export default connect(mapStateToProps)(AppContainer);
+export default connect(mapStateToProps)(App);
 
 
