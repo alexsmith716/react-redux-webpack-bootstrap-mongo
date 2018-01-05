@@ -1,14 +1,13 @@
 {
   "presets": [
     "react",
-    ["env", { 
-      "targets": {
-        "browsers": ["last 2 versions", "safari >= 7"],
-      },
-      "modules": false,
-      "debug": false,
-    }],
-    "babel-preset-stage-2",
+    [
+      "es2015",
+      { modules: false
+      }
+    ],
+    "stage-2",
+    "flow",
   ],
   "plugins": [
     "react-hot-loader/babel",

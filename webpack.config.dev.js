@@ -5,19 +5,19 @@ const path = require('path');
 // path: __dirname,
 // path: path.join(__dirname, './dist'),
 //       'webpack/hot/only-dev-server',
-// publicPath: ' http://127.0.0.1:8000/',
+// 'webpack-hot-middleware/client?reload=true',
+// 'webpack-hot-middleware/client?path=http://127.0.0.1:3000/__webpack_hmr',
 
 console.log('>>>>> webpack.config.dev.js > process.env.NODE_ENV <<<<<: ', process.env.NODE_ENV);
 
 module.exports = {
-  
-  devtool: 'eval-source-map',
+
+  devtool: 'cheap-module-inline-source-map',
 
   entry: {
     app: [
       'eventsource-polyfill',
       'webpack-hot-middleware/client?reload=true',
-      'webpack/hot/only-dev-server',
       'react-hot-loader/patch',
       'babel-polyfill',
       'isomorphic-fetch',
@@ -38,14 +38,16 @@ module.exports = {
   output: {
     path: __dirname,
     filename: '[name].js',
-    publicPath: '/',
+    //filename: 'app.js',
+    //chunkFilename: '[name].[chunkhash].js',
+    //publicPath: '/',
+    publicPath: 'http://localhost:3000/',
   },
 
   resolve: {
     extensions: ['.js', '.jsx', '.scss', '.css', '.json',],
     modules: ['client', 'node_modules']
   },
-
 
   module: {
     loaders: [
@@ -147,10 +149,23 @@ module.exports = {
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.IgnorePlugin(/\/iconv-loader$/),
+    //new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 
-    new webpack.NamedModulesPlugin(),
+    //new webpack.NamedModulesPlugin(),
 
+    //new webpack.optimize.CommonsChunkPlugin({
+    //  name: 'vendor',
+    //  minChunks: Infinity,
+    //  filename: 'vendor.js',
+    //}),
 
+    new webpack.DefinePlugin({
+      'process.env': {
+        CLIENT: JSON.stringify(true),
+        'NODE_ENV': JSON.stringify('development'),
+      }
+    }),
     
   ]
 };
