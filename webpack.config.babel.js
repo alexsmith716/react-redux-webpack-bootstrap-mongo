@@ -18,33 +18,55 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.json',],
     modules: ['client', 'node_modules']
   },
 
   module: {
     loaders: [
       {
-        test: /\.jpe?g$|\.gif$|\.png$|\.svg$/i,
-        loader: 'url-loader?limit=10000'
-      }
+        test: /\.(jpg|jpeg|gif|png|svg)$/i,
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+          },
+        }],
+      },
+      {
+        test: /\.(ttf|eot|woff|woff2)$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+          },
+        }],
+      },
+      {
+        test: /\.json$/,
+        use: [{
+          loader: 'json-loader',
+        }]
+      },
     ]
   }
 };
 
 /*
-
       {
-        test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader',
+        test: /\.(ttf|eot|woff|woff2)$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+          },
+        }],
       },
       {
-        test: /\.(ttf|eot)(\?[\s\S]+)?$/,
-        loader: 'file-loader',
+        test: /\.json$/,
+        use: [{
+          loader: 'json-loader',
+        }]
       },
+      */
 
-  {
-    test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/,
-    use: 'file-loader',
-  },
-*/

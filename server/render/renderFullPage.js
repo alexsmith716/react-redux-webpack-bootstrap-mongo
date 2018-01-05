@@ -18,7 +18,7 @@ const index = (helmet = {}, appHtml = '', initialState) => (
 
     <body>
 
-      <main id="app">${ appHtml }</main>
+      <div id="app">${ appHtml }</div>
 
       <script>
           window.__INITIAL_STATE__ = ${ JSON.stringify(initialState) }

@@ -25,6 +25,8 @@ dotenv.config();
 
 const app = new express();
 
+app.use(cors());
+
 app.use(morgan('dev'));
 
 // const options = {
@@ -54,9 +56,20 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import Helmet from 'react-helmet';
 
-import App from '../client/App';
+//import App from '../client/App';
+//import App from '../client/containers/App/App';
 
 import reducers from '../client/reducers';
+
+/*
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods',);
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+*/
+
 
 import routes from '../client/routes';
 import apiRouter from './apiRoutes';
@@ -70,7 +83,7 @@ import './db/mongo';
 
 // #########################################################################
 
-app.use(cors());
+
 // app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
@@ -80,6 +93,9 @@ app.use('/public', express.static(path.join(__dirname, '../public')));
 app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico')),);
 
 // #########################################################################
+
+
+
 
 app.use((req, res, next) => {
   console.log('>>>>>>>>>>>>>>>>>>>>>> GOING THROUGH APP NOW >>>>>>>>>>>>>>>>>>');
@@ -95,6 +111,8 @@ app.use((req, res, next) => {
   console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
   next();
 });
+
+
 
 app.use('/api', apiRouter);
 
@@ -195,7 +213,7 @@ app.use((req, res, next) => {
 
   .then((data) => {
 
-    let status = 200;
+    //let status = 200;
 
     const context = {};
 
@@ -209,13 +227,10 @@ app.use((req, res, next) => {
 
     );
 
-    if (matchedRoute.length === 0) {
-      status = 404;
-    };
 
     if (context.url) {
 
-      res.redirect(context.url);
+      res.redirect(302, context.url);
 
     } else if (context.status === 404) {
 
@@ -231,9 +246,9 @@ app.use((req, res, next) => {
 
       console.log('>>>> server > Promise.all(promises) > html: ', html);
 
-      res.set('Content-Type', 'text/html');
+      res.set('content-type', 'text/html');
 
-      res.status(status);
+      res.status(200);
       
       res.send(html);
 
@@ -247,7 +262,7 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-/*
+
 const normalizePort = (val)  => {
 
   var port = parseInt(val, 10);
@@ -265,7 +280,7 @@ const normalizePort = (val)  => {
   return false;
 };
 
-const port = normalizePort(process.env.PORT || '8000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 // //const server = https.createServer(options, app).listen(app.get('port'), '', () => {
@@ -274,7 +289,7 @@ const server = http.createServer(app).listen( app.get('port'), '127.0.0.1', () =
 });
 
 server.on('error', (error) => {
-  
+
   if (error.syscall !== 'listen') {
     console.log('>>>>>> Express server error: ', error);
   }
@@ -306,9 +321,9 @@ server.on('listening', () => {
   console.log('>>>>>> Express server Listening on: ', bind);
 
 });
-*/
 
 
+/*
 app.listen(3000, (error) => {
   if (error) {
     console.log('>>>>>>>> Server Error: ', error);
@@ -317,7 +332,7 @@ app.listen(3000, (error) => {
     
   }
 });
-
+*/
 
 export default app;
 

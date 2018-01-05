@@ -5,7 +5,9 @@ const router = new Router();
 import usersRoutes from './user';
 
 //import { authorize, registeredOnly, jwtAuthAPI, ensureAuthenticated } from 'lib/auth';
-//import {accessControlheaders } from 'lib/headers';
+import { accessControlheaders } from '../lib/headers';
+
+router.use(accessControlheaders);
 
 router.use(function (req, res, next) {
   console.log('>>>>>>>>> server > apiRoutes > index > req.method: ', req.method);
@@ -15,9 +17,8 @@ router.use(function (req, res, next) {
   next();
 });
 
-router.use('/user', usersRoutes);
 
-//router.use(accessControlheaders);
+router.use('/user', usersRoutes);
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

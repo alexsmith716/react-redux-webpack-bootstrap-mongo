@@ -65,9 +65,9 @@ export class App extends Component {
           <NavLink to="/contact">Contact Us!!!</NavLink>
         </header>
 
-        <section>
+        <div>
           { route ? renderRoutes(route.routes) : null }
-        </section>
+        </div>
 
         {spinnerContent}
 
