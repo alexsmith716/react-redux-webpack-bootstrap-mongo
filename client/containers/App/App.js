@@ -6,6 +6,8 @@ import { renderRoutes } from 'react-router-config';
 import { NavLink } from 'react-router-dom';
 import Helmet from 'react-helmet';
 
+import DevTools from '../../components/DevTools/DevTools';
+
 //import Header from '../../components/Header/Header';
 //import Footer from '../../components/Footer/Footer';
 import LoaderSpinner from '../../components/LoaderSpinner/LoaderSpinner';
@@ -56,6 +58,8 @@ export class App extends Component {
     return(
 
       <div>
+
+        {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
 
         <header>
           <NavLink to="/">Home!</NavLink>

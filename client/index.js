@@ -31,17 +31,15 @@ const render = (Component) => {
 };
 
 
-render(App);
 
 if (module.hot) {
-  
-  // module.hot.accept('./App', () => { render(App); });
   module.hot.accept('./App', () => {
     const NewApp = require('./App').default;
     render(NewApp);
   });
+}
+render(App);
 
-} 
 
 
 

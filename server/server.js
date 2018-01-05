@@ -17,10 +17,6 @@ import dotenv from 'dotenv';
 // #########################################################################
 // http://http://127.0.0.1:3000/api/
 
-global.__CLIENT__ = false;
-global.__SERVER__ = true;
-global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
-
 dotenv.config();
 
 const app = new express();
