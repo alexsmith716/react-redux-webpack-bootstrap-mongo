@@ -1,15 +1,15 @@
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { renderRoutes } from 'react-router-config';
 import { NavLink } from 'react-router-dom';
 import Helmet from 'react-helmet';
+import { connect } from 'react-redux';
 
 import DevTools from '../../components/DevTools/DevTools';
 
-//import Header from '../../components/Header/Header';
-//import Footer from '../../components/Footer/Footer';
+import Header from '../../components/Header/Header';
+import Footer from '../../components/Footer/Footer';
 import LoaderSpinner from '../../components/LoaderSpinner/LoaderSpinner';
 
 // import styles from './App.scss';
@@ -55,33 +55,46 @@ export class App extends Component {
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    return(
+    return (
 
       <div>
 
         {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
 
-        <header>
-          <NavLink to="/">Home!</NavLink>
-          &nbsp;
-          <NavLink to="/about">About Us!!</NavLink>
-          &nbsp;
-          <NavLink to="/contact">Contact Us!!!</NavLink>
-        </header>
-
         <div>
-          { route ? renderRoutes(route.routes) : null }
+
+          <Helmet
+            title="Client - Containers - App - App"
+            titleTemplate="%s - ThisGreatApp!"
+            meta={[
+              { charset: 'utf-8' },
+              {
+                'http-equiv': 'X-UA-Compatible',
+                'content': 'IE=edge',
+              },
+              {
+                name: 'viewport',
+                content: 'width=device-width, initial-scale=1.0',
+              },
+            ]}
+          />
+
+          <Header
+            isLoggedIn={isLoggedIn}
+            registered={registered}
+          />
+
+          <div>{route ? renderRoutes(route.routes) : null}</div>
+
+          {spinnerContent}
+
+          <Footer />
+
         </div>
-
-        {spinnerContent}
-
-        <footer>
-          <p>Copyright &copy; ThisGreatApp! 2017</p>
-        </footer>
 
       </div>
 
-    )
+    );
   };
 };
 

@@ -1,5 +1,6 @@
 
 import express from 'express';
+import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -15,15 +16,25 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import dotenv from 'dotenv';
 
 // #########################################################################
-// http://http://127.0.0.1:3000/api/
 
 dotenv.config();
 
 const app = new express();
 
-app.use(cors());
+app.use(helmet());
 
 app.use(morgan('dev'));
+
+app.use(cors());
+
+/*
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods',);
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+*/
 
 // const options = {
 //   key: fs.readFileSync(__dirname + '../ssl/thisAppPEM.pem'),
@@ -50,27 +61,17 @@ import { matchPath } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import Helmet from 'react-helmet';
+import reactHelmet from 'react-helmet';
 
 //import App from '../client/App';
 //import App from '../client/containers/App/App';
 
 import reducers from '../client/reducers';
 
-/*
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods',);
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-*/
-
-
 import routes from '../client/routes';
 import apiRouter from './apiRoutes';
 
-import renderFullPage from './render/renderFullPage';
+//import renderFullPage from './render/renderFullPage';
 
 
 // #########################################################################
@@ -92,7 +93,6 @@ app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico'))
 
 
 
-
 app.use((req, res, next) => {
   console.log('>>>>>>>>>>>>>>>>>>>>>> GOING THROUGH APP NOW >>>>>>>>>>>>>>>>>>');
   console.log('REQ.method +++++: ', req.method);
@@ -108,15 +108,56 @@ app.use((req, res, next) => {
   next();
 });
 
-
+// #########################################################################
 
 app.use('/api', apiRouter);
 
-
-
-
 // #########################################################################
 
+//<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+//<meta name="viewport" content="width=device-width, initial-scale=1.0">
+//<meta name="description" content="react-redux-webpack-bootstrap-mongo">
+
+const renderFullPage = (appHtml, initialState) => {
+
+  const head = reactHelmet.rewind();
+
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+
+        ${head.base.toString()}
+        ${head.meta.toString()}
+        ${head.title.toString()}
+        ${head.link.toString()}
+
+        <!-- Bootstrap, Theme, Other CSS -->
+        <link rel="stylesheet" href="${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/styles.css': ''}">
+
+        ${head.script.toString()}
+
+      </head>
+
+      <body>
+
+        <div id="app">${ appHtml }</div>
+
+        <script>
+            window.__INITIAL_STATE__ = ${ JSON.stringify(initialState) }
+        </script>
+        
+        <script src='${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/vendor.js' : '/vendor.js'}'></script>
+
+        <script src='${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/app.js': '/app.js'}'></script>
+
+      </body>
+
+    </html>
+  `;
+};
+
+// #########################################################################
 
 
 // SERVER ++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -147,7 +188,7 @@ app.use((req, res, next) => {
 
   console.log('>>>> server > store: ', store);
 
-  //const locale = req.locale.trim();
+  // const locale = req.locale.trim();
 
   // `pathname`: The path section of the URL, that comes after the host and before the query, 
   // including the initial slash if present.
@@ -235,10 +276,12 @@ app.use((req, res, next) => {
     } else {
 
       const preloadedState = store.getState();
-      const helmet = Helmet.renderStatic();
 
-      let html = renderFullPage(helmet, appHtml, preloadedState);
-      //let html = renderFullPage(helmet, appHtml);
+      // const reactHelmet = Helmet.renderStatic();
+      // const reactHelmet = reactHelmet.rewind();
+
+      // let html = renderFullPage(reactHelmet, appHtml, preloadedState);
+      let html = renderFullPage(appHtml, preloadedState);
 
       console.log('>>>> server > Promise.all(promises) > html: ', html);
 

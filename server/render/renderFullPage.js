@@ -21,8 +21,6 @@ const index = (helmet = {}, appHtml = '', initialState) => (
       <script>
           window.__INITIAL_STATE__ = ${ JSON.stringify(initialState) }
       </script>
-
-      <script src='./public/static/js/core.min.js'></script>
       
       <script src='${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/vendor.js' : '/vendor.js'}'></script>
 
