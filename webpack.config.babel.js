@@ -1,8 +1,12 @@
 
 let cssModulesIdentName = '[name]__[local]__[hash:base64:5]';
+
 if (process.env.NODE_ENV === 'production') {
+
   cssModulesIdentName = '[hash:base64]';
+
 }
+
 
 console.log('>>>>>>> webpack.config.babel.js <<<<<<<<<<<<<<<<<<<<<<');
 
@@ -24,6 +28,24 @@ module.exports = {
 
   module: {
     loaders: [
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[name]__[local]__[hash:base64:5]',
+            }
+          },
+          {
+            loader: 'postcss-loader',
+          },
+        ]
+      },
       {
         test: /\.(jpg|jpeg|gif|png|svg)$/i,
         use: [{
