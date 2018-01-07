@@ -55,7 +55,7 @@ if (process.env.NODE_ENV === 'development') {
 
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderToString } from 'react-dom/server';
+import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchPath } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
@@ -127,14 +127,13 @@ const renderFullPage = (appHtml, initialState) => {
     <html>
       <head>
 
+        <!-- Bootstrap, Theme, Other CSS -->
+        <link rel="stylesheet" href="${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/styles.css': ''}">
+
         ${head.base.toString()}
         ${head.meta.toString()}
         ${head.title.toString()}
         ${head.link.toString()}
-
-        <!-- Bootstrap, Theme, Other CSS -->
-        <link rel="stylesheet" href="${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/styles.css': ''}">
-
         ${head.script.toString()}
 
       </head>
@@ -256,7 +255,7 @@ app.use((req, res, next) => {
 
     const appHtml = renderToString(
 
-      <Provider store={ store } >
+      <Provider store={ store } key="provider">
         <StaticRouter context={ context } location={ req.url }>
           {renderRoutes(routes)}
         </StaticRouter>

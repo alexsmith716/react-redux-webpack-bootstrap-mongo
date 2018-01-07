@@ -6,17 +6,22 @@ if (process.env.NODE_ENV === 'production') {
 } else {
 
   require('babel-register')({
+
     plugins: [
+
       ['babel-plugin-css-modules-transform', {
         preprocessCss: './loaders/sassLoader.js',
         generateScopedName: '[name]__[local]__[hash:base64:5]',
-        extensions: ['.css', '.scss'],
+        extensions: ['.css',],
       }],
+
       ['babel-plugin-webpack-loaders', {
         config: './webpack.config.babel.js',
         verbose: true,
       }],
+
     ],
+    
   });
   
   require('babel-polyfill');
