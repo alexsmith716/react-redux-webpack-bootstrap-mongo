@@ -46,6 +46,24 @@ class Home extends Component {
 
         </div>
 
+
+        <div className={`row ${style.bgSKYBLUE}`}>
+
+          <div className={`col-md-4 ${style.bgSPRINGGREEN}`}>
+            <span className={style.bgPINK}>fa fa-headphones</span>
+          </div>
+
+          <div className={`col-md-4 ${style.bgSPRINGGREEN}`}>
+            <span className={style.bgPINK}>fa fa-glass</span>
+          </div>
+
+          <div className={`col-md-4 ${style.bgSPRINGGREEN}`}>
+            <span className={style.bgPINK}>fa fa-thumbs-up</span>
+          </div>
+
+        </div>
+
+
       </div>
 
     )
