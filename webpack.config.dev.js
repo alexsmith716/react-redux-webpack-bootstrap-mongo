@@ -1,6 +1,7 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 //require('dotenv').config();
 // path: __dirname,
 // path: path.join(__dirname, './dist'),
@@ -152,7 +153,7 @@ module.exports = {
     new webpack.IgnorePlugin(/\/iconv-loader$/),
     //new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 
-    //new webpack.NamedModulesPlugin(),
+    new webpack.NamedModulesPlugin(),
 
     //new webpack.optimize.CommonsChunkPlugin({
     //  name: 'vendor',
@@ -166,6 +167,16 @@ module.exports = {
         'NODE_ENV': JSON.stringify('development'),
       }
     }),
+
+    /*
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'server',
+      analyzerPort: 3000,
+      defaultSizes: 'parsed',
+      openAnalyzer: false,
+      generateStatsFile: false
+    }),
+    */
     
   ]
 };

@@ -1,4 +1,7 @@
 
+const path = require('path');
+
+
 let cssModulesIdentName = '[name]__[local]__[hash:base64:5]';
 
 if (process.env.NODE_ENV === 'production') {
@@ -15,6 +18,8 @@ console.log('>>>>>>> webpack.config.babel.js <<<<<<<<<<<<<<<<<<<<<<');
 // while keeping in mind what will be transpiled and available client-side by "webpack.config.dev.js"
 // "webpack.config.dev.js" already will have the client-side css/scss ready for the server-side sent "res.send" html
 
+// CSS >>>>>>>> index.js > babel-register > babel-plugin-css-modules-transform <<<<<<<<<<<
+
 module.exports = {
   output: {
     publicPath: '/',
@@ -28,24 +33,6 @@ module.exports = {
 
   module: {
     loaders: [
-      {
-        test: /\.css$/,
-        use: [
-          {
-            loader: 'style-loader',
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-              localIdentName: '[name]__[local]__[hash:base64:5]',
-            }
-          },
-          {
-            loader: 'postcss-loader',
-          },
-        ]
-      },
       {
         test: /\.(jpg|jpeg|gif|png|svg)$/i,
         use: [{
@@ -76,19 +63,22 @@ module.exports = {
 
 /*
       {
-        test: /\.(ttf|eot|woff|woff2)$/,
-        use: [{
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'style-loader',
           },
-        }],
-      },
-      {
-        test: /\.json$/,
-        use: [{
-          loader: 'json-loader',
-        }]
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              localIdentName: '[name]__[local]__[hash:base64:5]',
+            }
+          },
+          {
+            loader: 'postcss-loader',
+          },
+        ]
       },
       */
 
