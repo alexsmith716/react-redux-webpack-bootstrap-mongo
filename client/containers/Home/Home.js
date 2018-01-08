@@ -11,6 +11,7 @@ import { getSomeHomeAction} from '../../actions/HomeActions';
 //import { isRegistered } from '../../reducers/AppContainerReducer';
 
 import style from './style.css';
+import styleSCSS from './styleSCSS.scss';
 
 import apiHandler from '../../services/apiHandler';
 
@@ -37,14 +38,17 @@ class Home extends Component {
 
         <div className={style.bgYellow}>
           <p>This is a local CSS module. The BG color is Yellow.</p>
-
         </div>
 
         <div className={style.bgCHARTREUSE}>
-
           <p>This is a local CSS module. The BG color is Chartreuse.</p>
-
         </div>
+
+
+        <div>
+          <span className={styleSCSS.bgORANGE}>SCSS SCSSS ??????</span>
+        </div>
+
 
         <div className={`row ${style.colItems}`}>
           <div className={`col-md-4 ${style.colItem}`}>
@@ -62,19 +66,15 @@ class Home extends Component {
         </div>
 
         <div className={`row ${style.bgSKYBLUE}`}>
-
           <div className={`col-md-4 ${style.bgSPRINGGREEN}`}>
             <span className={style.bgPINK}>fa fa-headphones</span>
           </div>
-
           <div className={`col-md-4 ${style.bgSPRINGGREEN}`}>
             <span className={style.bgPINK}>fa fa-glass</span>
           </div>
-
           <div className={`col-md-4 ${style.bgSPRINGGREEN}`}>
             <span className={style.bgPINK}>fa fa-thumbs-up</span>
           </div>
-
         </div>
 
 
