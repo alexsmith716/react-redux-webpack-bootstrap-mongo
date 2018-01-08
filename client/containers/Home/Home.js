@@ -46,6 +46,20 @@ class Home extends Component {
 
         </div>
 
+        <div className={`row ${style.colItems}`}>
+          <div className={`col-md-4 ${style.colItem}`}>
+            <span className="fa fa-headphones" />
+            <span className={style.text}>It!!!</span>
+          </div>
+          <div className={`col-md-4 ${style.colItem}`}>
+            <span className="fa fa-glass" />
+            <span className={style.text}>Just!!</span>
+          </div>
+          <div className={`col-md-4 ${style.colItem}`}>
+            <span className="fa fa-thumbs-up" />
+            <span className={style.text}>Works!</span>
+          </div>
+        </div>
 
         <div className={`row ${style.bgSKYBLUE}`}>
 

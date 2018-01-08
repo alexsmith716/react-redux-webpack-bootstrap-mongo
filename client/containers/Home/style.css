@@ -22,3 +22,35 @@
 .bgSPRINGGREEN {
   background: #00FF7F;
 }
+
+.coloredText1 {
+  color: #009900;
+}
+
+.coloredText2 {
+  color: #999000;
+}
+
+.fa2 {
+  transform: scale(1.5,1);
+}
+
+.fa1 {
+  font-size:60px;
+  color:red;
+}
+
+.colItems {
+  margin: 10px 0;
+
+  .colItem {
+    font-size: 50px;
+    text-align: center;
+
+    .text {
+      display: block;
+      font-size: 30px;
+      color: #00CD00;
+    }
+  }
+}
