@@ -1,5 +1,5 @@
 
-.bgYellow {
+.bgYELLOW {
   background: #FFFF00;
 }
 
@@ -42,15 +42,22 @@
 
 .colItems {
   margin: 10px 0;
-
-  .colItem {
-    font-size: 50px;
-    text-align: center;
-
-    .text {
-      display: block;
-      font-size: 30px;
-      color: #00CD00;
-    }
-  }
 }
+
+.colItem {
+  font-size: 50px;
+  text-align: center;
+}
+
+.text {
+  display: block;
+  font-size: 30px;
+  color: #666666;
+}
+
+.colorMarginStyle {
+  margin-top: 20px;
+  color: #5c6ac4;
+  border: 3px solid #5c6ac4;
+}
+

@@ -7,7 +7,7 @@
 // "Wrap your application into <AppContainer>,
 // all children of <AppContainer> will be reloaded when a change occurs:""
 
-import App from './containers/App/App';
+import Core from './containers/Core/Core';
 import Home from './containers/Home/Home';
 import About from './containers/About/About';
 import Contact from './containers/Contact/Contact';
@@ -16,7 +16,7 @@ import PageNotFound from './containers/PageNotFound/PageNotFound';
 
 const routes = [
   {
-    component: App ,
+    component: Core,
     routes: [
       {
         path: '/',
