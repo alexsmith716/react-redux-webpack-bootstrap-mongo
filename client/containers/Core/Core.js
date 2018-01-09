@@ -12,23 +12,23 @@ import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import LoaderSpinner from '../../components/LoaderSpinner/LoaderSpinner';
 
-// import styles from './App.scss';
+// import style from './style.scss';
 
 import { spinnerOn, spinnerOff } from '../../actions/AppContainerActions';
 import { getUser } from '../../actions/UserActions';
 import { isSpinnerOn, isRegistered, isLoggedIn, } from '../../reducers/AppContainerReducer';
 
 
-export class App extends Component {
+export class Core extends Component {
 
   constructor(props) {
     super(props);
     this.state = { isMounted: false };
   };
 
-  // App starting off actions with 'User' login status
+  // Core starting off actions with 'User' login status
   componentDidMount() {
-    console.log('>>>>>>>>>>>>>> Client > App > componentDidMount ++++++++++++++++++++');
+    console.log('>>>>>>>>>>>>>> Client > Core > componentDidMount ++++++++++++++++++++');
     this.setState({ isMounted: true });
     this.props.dispatch(getUser());
   };
@@ -64,7 +64,7 @@ export class App extends Component {
         <div>
 
           <Helmet
-            title="Client - Containers - App - App"
+            title="Client - Containers - Core - Core"
             titleTemplate="%s - ThisGreatApp!"
             meta={[
               { charset: 'utf-8' },
@@ -99,14 +99,14 @@ export class App extends Component {
 };
 
 
-App.propTypes = {
+Core.propTypes = {
   dispatch: PropTypes.func.isRequired,
   spinner: PropTypes.bool,
   registered: PropTypes.bool,
   isLoggedIn: PropTypes.bool,
 };
 
-App.defaultProps = {
+Core.defaultProps = {
   isLoggedIn: false,
   registered: false,
   termsAccepted: false,
@@ -114,7 +114,7 @@ App.defaultProps = {
 
 
 function mapStateToProps(state) {
-  //console.log('>>>>>>> App > mapStateToProps(state): ', state);
+  //console.log('>>>>>>> Core > mapStateToProps(state): ', state);
   return {
     spinner: isSpinnerOn(state),
     isLoggedIn: isLoggedIn(state),
@@ -125,6 +125,6 @@ function mapStateToProps(state) {
 };
 
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps)(Core);
 
 
