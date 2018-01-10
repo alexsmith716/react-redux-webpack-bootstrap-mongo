@@ -8,6 +8,8 @@ import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 
+//window.$ = window.jQuery = require("jquery");
+//import 'bootstrap';
 import routes from './routes';
 
 

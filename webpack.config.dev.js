@@ -2,12 +2,6 @@
 const webpack = require('webpack');
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-//require('dotenv').config();
-// path: __dirname,
-// path: path.join(__dirname, './dist'),
-//       'webpack/hot/only-dev-server',
-// 'webpack-hot-middleware/client?reload=true',
-// 'webpack-hot-middleware/client?path=http://127.0.0.1:3000/__webpack_hmr',
 
 console.log('>>>>> webpack.config.dev.js > process.env.NODE_ENV <<<<<: ', process.env.NODE_ENV);
 
@@ -23,7 +17,7 @@ module.exports = {
       'babel-polyfill',
       'isomorphic-fetch',
       path.join(__dirname, './client/assets/scss/global.scss'),
-      path.join(__dirname, './client/index.js')
+      path.join(__dirname, './client/index.js'),
     ],
     vendor: [
       'react',
@@ -33,13 +27,15 @@ module.exports = {
       'react-router-dom',
       'redux',
       'redux-thunk',
+      'tether',
+      'jquery',
+      'bootstrap',
     ],
   },
 
   output: {
     path: __dirname,
     filename: '[name].js',
-    //filename: 'app.js',
     //chunkFilename: '[name].[chunkhash].js',
     //publicPath: '/',
     publicPath: 'http://localhost:3000/',
@@ -155,11 +151,11 @@ module.exports = {
 
     new webpack.NamedModulesPlugin(),
 
-    //new webpack.optimize.CommonsChunkPlugin({
-    //  name: 'vendor',
-    //  minChunks: Infinity,
-    //  filename: 'vendor.js',
-    //}),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: Infinity,
+      filename: 'vendor.js',
+    }),
 
     new webpack.DefinePlugin({
       'process.env': {
@@ -180,3 +176,13 @@ module.exports = {
     
   ]
 };
+
+/*
+new webpack.ProvidePlugin({
+  $: "jquery",
+  jQuery: "jquery",
+  "window.jQuery": "jquery",
+  Tether: "tether",
+  "window.Tether": "tether",
+}),
+*/
