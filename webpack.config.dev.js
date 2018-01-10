@@ -151,6 +151,13 @@ module.exports = {
           options: '$'
         }]
       },
+      {
+        test: require.resolve('tether'),
+        use: [{
+          loader: 'expose-loader',
+          options: 'Tether'
+        }]
+      },
     ]
   },
 
