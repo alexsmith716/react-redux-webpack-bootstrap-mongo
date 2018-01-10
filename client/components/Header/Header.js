@@ -4,73 +4,28 @@ import PropTypes from 'prop-types';
 //import { Link } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 
-//import bg from 'assets/img/header-bk.png';
-//import UserBadge from 'components/UserBadge';
-//import LanguageSwitcher from 'components/LanguageSwitcher';
-
 //import styles from './Header.css';
 
 export function Header(props, context) {
 
   const { router } = context;
 
-  // const isRouteActive = (path) => {
-  //   if (!router || !router.history || !router.history.location) {
-  //     return false;
-  //   }
-  //   return router.history.location.pathname === path;
-  // };
-
-  const buildLink = () => {
-
-    if (!router || !router.history || !router.history.location) {
-      return false;
-    }
-
-    let path = '/';
-    let textId = 'Home';
-
-    switch (router.history.location.pathname) {
-
-      case '/error':
-        // back to dashboard
-        break;
-
-      case '/about':
-        path = '/about';
-        textId = 'About';
-        break;
-
-      case '/contact':
-        path = '/contact';
-        textId = 'Contact';
-        break;
-
-      default:
-        path = '/about';
-        textId = 'About';
-        break;
-    }
-
-    if ( path === null ) {
-      return path;
-    }
-    return <NavLink to={path} >{textId}</NavLink>;
-  };
-
-  const menu = buildLink();
-
-  console.log(props.isLoggedIn);
-
   return (
-    <div>
-      <div>
-        {menu}
+
+    <nav className="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+      <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <NavLink className="navbar-brand" to="/">ThisGreatApp</NavLink>
+      <div className="collapse navbar-collapse" id="navbarCollapse">
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item active"><NavLink className="nav-link" to="/">Home</NavLink></li>
+          <li className="nav-item"><NavLink className="nav-link" to="/about">About</NavLink></li>
+          <li className="nav-item"><NavLink className="nav-link" to="/contact">Contact</NavLink></li>
+        </ul>
       </div>
-      <div>
-        Foooooo!!!: {props.isLoggedIn}
-      </div>
-    </div>
+    </nav>
+
   );
 }
 

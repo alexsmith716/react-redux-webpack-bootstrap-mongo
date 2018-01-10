@@ -24,18 +24,20 @@ ul {
 
 body {
   margin: 0;
-  padding: 0;
   margin-bottom: 20px;
   font-family: sans-serif;
   background-color: #F7F7F7;
+  height: 100%;
+  min-height: 75rem;
+  padding-top: 4.5rem;
 }
 
 $brand-success: adjust-hue($green, -20deg);
 
 @font-face {
-    font-family: 'Old English';
-    src: url('../fonts/old-english.woff2') format('woff2'),
-    url('../fonts/old-english.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'Old English';
+  src: url('../fonts/old-english.woff2') format('woff2'),
+  url('../fonts/old-english.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
 }
