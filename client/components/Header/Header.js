@@ -5,6 +5,11 @@ import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 
 //import styles from './Header.css';
+// <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02">
+//    <img src="/public/static/images/icon-bar-36.svg" alt="menu icon"></img>
+//  </button>
+// <li className="nav-item"><NavLink className="nav-link" to="#">Sign Up</NavLink></li>
+// <li className="nav-item"><NavLink className="nav-link" to="#">Log In</NavLink></li>
 
 export function Header(props, context) {
 
@@ -12,18 +17,24 @@ export function Header(props, context) {
 
   return (
 
-    <nav className="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
-      <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <nav className="navbar navbar-toggleable-md navbar-custom navbar-inverse fixed-top bg-inverse" role="navigation">
+
+      <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse">
         <span className="navbar-toggler-icon"></span>
       </button>
-      <NavLink className="navbar-brand" to="/">ThisGreatApp</NavLink>
+
+      <NavLink className="navbar-brand" to="/">Election App 2018</NavLink>
+
       <div className="collapse navbar-collapse" id="navbarCollapse">
+
         <ul className="navbar-nav mr-auto">
           <li className="nav-item active"><NavLink className="nav-link" to="/">Home</NavLink></li>
           <li className="nav-item"><NavLink className="nav-link" to="/about">About</NavLink></li>
           <li className="nav-item"><NavLink className="nav-link" to="/contact">Contact</NavLink></li>
         </ul>
+
       </div>
+
     </nav>
 
   );
