@@ -36,7 +36,7 @@ module.exports = {
   output: {
     path: __dirname,
     filename: '[name].js',
-    //chunkFilename: '[name].[chunkhash].js',
+    chunkFilename: '[name].js',
     //publicPath: '/',
     publicPath: 'http://localhost:3000/',
   },
@@ -171,7 +171,7 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: Infinity,
-      filename: 'vendor.js',
+      filename: '[name].js'
     }),
 
     new webpack.DefinePlugin({

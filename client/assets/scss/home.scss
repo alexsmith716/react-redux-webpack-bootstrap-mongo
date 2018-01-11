@@ -1,5 +1,30 @@
 
 /* Home Page Header */
+
+
+.navbar-custom {
+  text-transform: uppercase;
+  top: 0;
+  left: 0;
+  background-color: #ffffff;
+}
+
+
+.navbar-custom .navbar-brand {
+  font-size: 16px;
+  color: #777777;
+}
+
+.navbar-custom .navbar-toggler {
+  padding: 0 2px;
+  font-size: 16px;
+}
+
+.navbar-custom .navbar-toggler:active,.navbar-custom .navbar-toggler:focus {
+  outline: 0;
+}
+
+
 .intro {
   background-color:#eeeeee;
   padding-top: 50px;
@@ -26,6 +51,9 @@
 }
 
 @media (min-width:768px) {
+  .navbar-custom .navbar-toggler {
+    display: none;
+  }
   .intro{
     padding-top: 50px;
     padding-bottom: 50px;
