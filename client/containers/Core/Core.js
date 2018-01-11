@@ -86,10 +86,6 @@ export class Core extends Component {
 
           <div>{route ? renderRoutes(route.routes) : null}</div>
 
-          {spinnerContent}
-
-          <Footer />
-
         </div>
 
       </div>
