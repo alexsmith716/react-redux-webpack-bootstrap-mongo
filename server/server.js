@@ -58,6 +58,10 @@ import { Provider } from 'react-redux';
 import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchPath } from 'react-router';
+
+// import { match } from 'react-router';
+// import { syncHistoryWithStore } from 'react-router-redux';
+
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';

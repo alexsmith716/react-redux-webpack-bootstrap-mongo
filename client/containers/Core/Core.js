@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import DevTools from '../../components/DevTools/DevTools';
 
 import Header from '../../components/Header/Header';
-import Footer from '../../components/Footer/Footer';
+
 import LoaderSpinner from '../../components/LoaderSpinner/LoaderSpinner';
 
 // import style from './style.scss';
@@ -79,12 +79,14 @@ export class Core extends Component {
             ]}
           />
 
-          <Header
+          <Nav
             isLoggedIn={isLoggedIn}
             registered={registered}
           />
 
           <div>{route ? renderRoutes(route.routes) : null}</div>
+
+          {spinnerContent}
 
         </div>
 

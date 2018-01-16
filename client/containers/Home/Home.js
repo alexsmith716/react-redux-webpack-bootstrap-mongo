@@ -5,6 +5,8 @@ import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
+import Footer from '../../components/Footer/Footer';
+
 import { OK, NO_CONTENT, UNAUTHORIZED, FORBIDDEN } from '../../constants/statusCodes';
 import { getSomeHomeAction} from '../../actions/HomeActions';
 //import { isError, isException } from '../../reducers/ErrorReducer';
@@ -124,15 +126,8 @@ class Home extends Component {
 
           <hr />
 
-          <footer className="text-center">
-            <div className="container">
-              <div className="row">
-                <div className="col-lg-12">
-                  <p>Copyright &copy; This Great Election App 2017</p>
-                </div>
-              </div>
-            </div>
-          </footer>
+          <Footer />
+
 
         </div>
       </div>

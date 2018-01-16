@@ -1,7 +1,7 @@
 
 /* Home Page Header */
 
-
+/*
 .navbar-custom {
   text-transform: uppercase;
   top: 0;
@@ -23,7 +23,7 @@
 .navbar-custom .navbar-toggler:active,.navbar-custom .navbar-toggler:focus {
   outline: 0;
 }
-
+*/
 
 .intro {
   background-color:#eeeeee;
@@ -51,9 +51,9 @@
 }
 
 @media (min-width:768px) {
-  .navbar-custom .navbar-toggler {
+  /*.navbar-custom .navbar-toggler {
     display: none;
-  }
+  }*/
   .intro{
     padding-top: 50px;
     padding-bottom: 50px;
