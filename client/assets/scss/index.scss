@@ -6,10 +6,14 @@ body {
 
 body {
   min-height: 75rem;
-  padding-top: 4.5rem;
+  // 1 rem = 16 px
+  // 50 pixels
+  padding-top: 3.125rem; 
 }
 
-$brand-success: adjust-hue($green, -20deg);
+//$brand-success: adjust-hue($green, -20deg);
+
+//.container{position:relative}
 
 //@font-face {
 //  font-family: 'Old English';
