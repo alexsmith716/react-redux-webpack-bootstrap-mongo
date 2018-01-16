@@ -20,21 +20,18 @@ const routes = [
     routes: [
       {
         path: '/',
-        component: Home,
         exact: true,
+        component: Home,
       },
       {
         path: '/about',
         component: About,
-        exact: true,
       },
       {
         path: '/contact',
         component: Contact,
-        exact: true,
       },
       {
-        path: '*',
         component: PageNotFound
       },
 

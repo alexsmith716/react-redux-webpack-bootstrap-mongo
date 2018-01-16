@@ -6,6 +6,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import path from 'path';
+import url from 'URL';
 import http from 'http';
 import favicon from 'serve-favicon';
 import locale from 'locale';
@@ -17,30 +18,33 @@ import dotenv from 'dotenv';
 
 // #########################################################################
 
+// const chunksPath = path.join(__dirname, '..', 'public', 'dist', 'chunks.json');
+
 dotenv.config();
+
+// #########################################################################
+
+// https://nodejs.org/dist/latest-v9.x/docs/api/process.html
+// The process object is a global that provides information about, and control over, the current Node.js process.
+// The process object is an instance of EventEmitter.
+// 'unhandledRejection' event is emitted whenever a Promise is rejected
+// and no error handler is attached to the promise within a turn of the event loop
+process.on('unhandledRejection', error => console.error('>>>>>> Server > Node > process.on(unhandledRejection) > error: ', error));
+
+// #########################################################################
 
 const app = new express();
 
-app.use(helmet());
-
-app.use(morgan('dev'));
-
-app.use(cors());
-
-/*
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods',);
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
-*/
+// #########################################################################
 
 // const options = {
 //   key: fs.readFileSync(__dirname + '../ssl/thisAppPEM.pem'),
 //   cert: fs.readFileSync(__dirname + '../ssl/thisAppCRT.crt')
 // };
 
+// https://nodejs.org/dist/latest-v9.x/docs/api/http.html
+// Create a new instance of http.Server
+// const server = new http.Server(app);
 
 // #########################################################################
 
@@ -52,17 +56,15 @@ if (process.env.NODE_ENV === 'development') {
 
 // #########################################################################
 
-
 import React from 'react';
-import { Provider } from 'react-redux';
-import { renderToString, renderToStaticMarkup } from 'react-dom/server';
+import ReactDOM from 'react-dom/server';
+//import { Provider } from 'react-redux';
+//import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchPath } from 'react-router';
 
-// import { match } from 'react-router';
-// import { syncHistoryWithStore } from 'react-router-redux';
-
-import { matchRoutes, renderRoutes } from 'react-router-config';
+import matchRoutesAsync from '../shared/matchRoutesAsync';
+import { renderRoutes, matchRoutes } from 'react-router-config';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import reactHelmet from 'react-helmet';
@@ -71,27 +73,51 @@ import reactHelmet from 'react-helmet';
 //import App from '../client/containers/App/App';
 
 import reducers from '../client/reducers';
-
 import routes from '../client/routes';
 import apiRouter from './apiRoutes';
-
 //import renderFullPage from './render/renderFullPage';
 
-
 // #########################################################################
-
-import './db/mongo';
-
-// #########################################################################
-
-
-// app.use(compression());
-app.use(bodyParser.json({ limit: '20mb' }));
-app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 
 app.use('/public', express.static(path.join(__dirname, '../public')));
 //app.use('/static', express.static(path.resolve(__dirname, '../dist/client')));
 app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico')),);
+
+// #########################################################################
+
+app.use(morgan('dev'));
+app.use(helmet());
+app.use(cors());
+
+// #########################################################################
+
+app.use(bodyParser.json({ limit: '20mb' }));
+app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
+// app.use(cookieParser());
+// app.use(compression());
+
+// #########################################################################
+
+//<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+//<meta name="viewport" content="width=device-width, initial-scale=1.0">
+//<meta name="description" content="react-redux-webpack-bootstrap-mongo">
+
+/*
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods',);
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+*/
+
+// #########################################################################
+
+app.use('/api', apiRouter);
+
+// #########################################################################
+
+import './db/mongo';
 
 // #########################################################################
 
@@ -114,13 +140,7 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-app.use('/api', apiRouter);
 
-// #########################################################################
-
-//<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-//<meta name="viewport" content="width=device-width, initial-scale=1.0">
-//<meta name="description" content="react-redux-webpack-bootstrap-mongo">
 
 const renderFullPage = (appHtml, initialState) => {
 
@@ -189,6 +209,10 @@ app.use((req, res, next) => {
 
   const store = configureStore();
 
+  if (process.env.NODE_ENV === 'development') {
+    // webpackIsomorphicTools.refresh();
+  }
+
   console.log('>>>> server > store: ', store);
 
   // const locale = req.locale.trim();
@@ -198,50 +222,38 @@ app.use((req, res, next) => {
 
   // const matchedRoute = matchRoutes(routes, req.url);
 
+  /*
   const matchedRoute = routes.reduce((accumulatedRoute, route, index) => {
-
-    //console.log('>>>> server > routes.reduce: ', index, ' :ROUTE: ', route, ' :MATCHEDROUTE: ', matchedRoute);
-
     const matchedPath = matchPath(req.url, route.path, route);
-
     if (matchedPath && matchedPath.isExact) {
-
-      console.log('>>>> server > routes.reduce > matchedPath: ', matchedPath);
-      console.log('>>>> server > routes.reduce > matchedPath.isExact: ', matchedPath.isExact);
-
-      // test if incoming route is a HTTP API/Ajax request
-      // if an API request, dispatch request event promise from route.component.fetchData()
-      // if an API request, push that promise into accumulatedRoute
-      // if not an API request, push a null promise
-
       const promise = route.component.fetchData ? route.component.fetchData({ store, params: matchedPath.params }) : Promise.resolve(null)
-
-      //const promise = Promise.resolve(null);
-
       accumulatedRoute.push({
         route,
         matchedPath,
         promise: promise,
       })
-
     }
-
     return accumulatedRoute;
-
   }, []);
-
+  */
 
   // -------------------------------------------------------------------------
-
 
   // const promises = matchedRoute.map(({ route }) => {
   //   const fetchData = route.component.fetchData;
   //   return fetchData instanceof Function ? fetchData(store) : Promise.resolve(null);
   // });
 
-  const promises = matchedRoute.map((match) =>  {
-    return match.promise
-  });
+  //const promises = matchedRoute.map((match) =>  {
+  //  return match.promise
+  //});
+
+  const parsedUrl = url.parse(req.url, true);
+
+  const prefetchingRequests = matchRoutes(routes, parsedUrl.pathname)
+    .map(({ route, match }) => {
+      return route.component.loadData ? route.component.loadData(match) : Promise.resolve(null);
+    });
 
 
   // -------------------------------------------------------------------------
@@ -267,35 +279,31 @@ app.use((req, res, next) => {
 
     );
 
-
     if (context.url) {
-
       res.redirect(302, context.url);
-
     } else if (context.status === 404) {
-
       res.status(404);
-        
     } else {
 
-      const preloadedState = store.getState();
+      Promise.all(prefetchingRequests)
+        .then(prefetchedData => {
+          const html = React.renderToString(<App data={prefetchedData} />);
+          res.set('content-type', 'text/html');
+          res.status(200);
+          res.send(html);
+        });
 
+
+      //const preloadedState = store.getState();
       // const reactHelmet = Helmet.renderStatic();
       // const reactHelmet = reactHelmet.rewind();
-
       // let html = renderFullPage(reactHelmet, appHtml, preloadedState);
-      let html = renderFullPage(appHtml, preloadedState);
-
-      console.log('>>>> server > Promise.all(promises) > html: ', html);
-
-      res.set('content-type', 'text/html');
-
-      res.status(200);
-      
-      res.send(html);
-
+      //let html = renderFullPage(appHtml, preloadedState);
+      //console.log('>>>> server > Promise.all(promises) > html: ', html);
+      //res.set('content-type', 'text/html');
+      //res.status(200);
+      //res.send(html);
     };
-
   })
   .catch((error) => next(error));
 
@@ -325,7 +333,8 @@ const normalizePort = (val)  => {
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-// //const server = https.createServer(options, app).listen(app.get('port'), '', () => {
+// http.createServer([requestListener]): Returns a new instance of http.Server
+// const server = https.createServer(options, app).listen(app.get('port'), '', () => {
 const server = http.createServer(app).listen( app.get('port'), '127.0.0.1', () => {
   console.log('>>>>>> Express server connected: ', server.address());
 });
