@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 //import { Link } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 
-//import styles from './Nav.css';
+//import styles from './Navbar.css';
 // <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02">
 //    <img src="/public/static/images/icon-bar-36.svg" alt="menu icon"></img>
 //  </button>
@@ -12,7 +12,7 @@ import { NavLink } from 'react-router-dom';
 // <li className="nav-item"><NavLink className="nav-link" to="#">Log In</NavLink></li>
 // <nav className="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse" role="navigation">
 
-export function Nav(props, context) {
+export function Navbar(props, context) {
 
   const { router } = context;
 
@@ -59,13 +59,13 @@ export function Nav(props, context) {
   );
 }
 
-Nav.contextTypes = {
+Navbar.contextTypes = {
   router: PropTypes.object,
 };
 
-Nav.propTypes = {
+Navbar.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
   registered: PropTypes.bool.isRequired,
 };
 
-export default Nav;
+export default Navbar;

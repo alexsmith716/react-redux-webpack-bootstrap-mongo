@@ -8,7 +8,8 @@ import { connect } from 'react-redux';
 
 import DevTools from '../../components/DevTools/DevTools';
 
-import Header from '../../components/Header/Header';
+//import Header from '../../components/Header/Header';
+import Navbar from '../../components/Navbar/Navbar';
 
 import LoaderSpinner from '../../components/LoaderSpinner/LoaderSpinner';
 
@@ -79,7 +80,7 @@ export class Core extends Component {
             ]}
           />
 
-          <Nav
+          <Navbar
             isLoggedIn={isLoggedIn}
             registered={registered}
           />
