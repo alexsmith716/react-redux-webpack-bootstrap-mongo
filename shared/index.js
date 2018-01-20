@@ -1,2 +1,2 @@
 
-export Provider from './Provider/Provider';
+export Provider from './Provider';
