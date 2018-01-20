@@ -14,6 +14,7 @@ import webpack from 'webpack';
 import config from '../webpack.config.dev.js';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
+import { trigger } from 'redial'; // https://github.com/markdalgleish/redial
 import dotenv from 'dotenv';
 
 // #########################################################################
@@ -58,12 +59,15 @@ if (process.env.NODE_ENV === 'development') {
 
 import React from 'react';
 import ReactDOM from 'react-dom/server';
-//import { Provider } from 'react-redux';
+//import { Provider } from '../shared';
+import { Provider } from 'react-redux';
 //import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
-import { matchPath } from 'react-router';
+import { matchPath } from 'react-router'; // react-router v4
+// import { match } from 'react-router'; // react-router v3
 
 import matchRoutesAsync from '../shared/matchRoutesAsync';
+
 import { renderRoutes, matchRoutes } from 'react-router-config';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -127,6 +131,7 @@ app.use((req, res, next) => {
   console.log('>>>>>>>>>>>>>>>>>>>>>> GOING THROUGH APP NOW >>>>>>>>>>>>>>>>>>');
   console.log('REQ.method +++++: ', req.method);
   console.log('REQ.url ++++++++: ', req.url);
+  console.log('REQ.originalUrl ++++++++: ', req.originalUrl);
   console.log('REQ.headers ++++: ', req.headers);
   if(req.user) {
     console.log('REQ.user +++++: ', req.user);
@@ -182,7 +187,6 @@ const renderFullPage = (appHtml, initialState) => {
 
 // #########################################################################
 
-
 // SERVER ++++++++++++++++++++++++++++++++++++++++++++++++++
 // combineReducers
 
@@ -199,119 +203,83 @@ const renderFullPage = (appHtml, initialState) => {
 
 import { configureStore } from '../client/store';
 
-
 // #########################################################################
 
 
-app.use((req, res, next) => {
+// react-router v4
+// async > await
+app.use(async (req, res) => {
 
-  console.log('>>>>>>>>>>> server > app.use((req, res, next) <<<<<<<<<<<<<');
+  console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
+
+  // if (__DEVELOPMENT__) {};
+  // const providers = {};
 
   const store = configureStore();
+  const preloadedState = store.getState();
 
-  if (process.env.NODE_ENV === 'development') {
-    // webpackIsomorphicTools.refresh();
-  }
+  // function hydrate() {};
+  // if (__DISABLE_SSR__) {};
 
-  console.log('>>>> server > store: ', store);
+  try {
 
-  // const locale = req.locale.trim();
+    // await I/O for matchRoutes()
+    // {components, match, params }
 
-  // `pathname`: The path section of the URL, that comes after the host and before the query, 
-  // including the initial slash if present.
+    const { components, match, params }  = await matchRoutesAsync(routes, req.originalUrl);
 
-  // const matchedRoute = matchRoutes(routes, req.url);
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > components: ', components);
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > match: ', match);
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > params: ', params);
 
-  /*
-  const matchedRoute = routes.reduce((accumulatedRoute, route, index) => {
-    const matchedPath = matchPath(req.url, route.path, route);
-    if (matchedPath && matchedPath.isExact) {
-      const promise = route.component.fetchData ? route.component.fetchData({ store, params: matchedPath.params }) : Promise.resolve(null)
-      accumulatedRoute.push({
-        route,
-        matchedPath,
-        promise: promise,
-      })
-    }
-    return accumulatedRoute;
-  }, []);
-  */
+    // ensure all data for routes is prefetched on the server before attempting to render
 
-  // -------------------------------------------------------------------------
-
-  // const promises = matchedRoute.map(({ route }) => {
-  //   const fetchData = route.component.fetchData;
-  //   return fetchData instanceof Function ? fetchData(store) : Promise.resolve(null);
-  // });
-
-  //const promises = matchedRoute.map((match) =>  {
-  //  return match.promise
-  //});
-
-  const parsedUrl = url.parse(req.url, true);
-
-  const prefetchingRequests = matchRoutes(routes, parsedUrl.pathname)
-    .map(({ route, match }) => {
-      return route.component.loadData ? route.component.loadData(match) : Promise.resolve(null);
+    // await I/O for prefetched data
+    await trigger('fetch', components, {
+      store,
+      match,
+      params,
     });
 
+    res.status(200).send('response success >>>> 200 !!!!!');
+    //res.status(200).send();
 
-  // -------------------------------------------------------------------------
-
-  // resolve matchedRoute's promise(s) asynchronously
-  // 
-  // Promise.all(matches.map(match => match.promise))
-  Promise.all(promises)
-
-  .then((data) => {
-
-    //let status = 200;
-
-    const context = {};
-
-    const appHtml = renderToString(
-
-      <Provider store={ store } key="provider">
-        <StaticRouter context={ context } location={ req.url }>
-          {renderRoutes(routes)}
-        </StaticRouter>
-      </Provider>
-
-    );
-
-    if (context.url) {
-      res.redirect(302, context.url);
-    } else if (context.status === 404) {
-      res.status(404);
-    } else {
-
-      Promise.all(prefetchingRequests)
-        .then(prefetchedData => {
-          const html = React.renderToString(<App data={prefetchedData} />);
-          res.set('content-type', 'text/html');
-          res.status(200);
-          res.send(html);
-        });
-
-
-      //const preloadedState = store.getState();
-      // const reactHelmet = Helmet.renderStatic();
-      // const reactHelmet = reactHelmet.rewind();
-      // let html = renderFullPage(reactHelmet, appHtml, preloadedState);
-      //let html = renderFullPage(appHtml, preloadedState);
-      //console.log('>>>> server > Promise.all(promises) > html: ', html);
-      //res.set('content-type', 'text/html');
-      //res.status(200);
-      //res.send(html);
-    };
-  })
-  .catch((error) => next(error));
-
+  } catch(err) {
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > catch > err: ', err);
+    res.status(500).send('response error >>>> 500 !!!!!');
+    //res.status(500);
+    //hydrate();
+  }
 });
 
 
+/*
+// react-router v4
+// Promise.all
+import matchRoutesPromise from '../shared/matchRoutesPromise';
+
+app.use((req, res) => {
+
+  matchRoutesPromise(routes, req.originalUrl)
+  .then(result => {
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result: ', result);
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.components: ', result.components);
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.match: ', result.match);
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.params: ', result.params);
+  })
+  .catch(err => {
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .catch > err: ', err);
+  });
+
+});
+*/
+
+
 // #########################################################################
 
+// app.use(routeNotFound);
+
+// #########################################################################
 
 const normalizePort = (val)  => {
 
@@ -339,17 +307,17 @@ const server = http.createServer(app).listen( app.get('port'), '127.0.0.1', () =
   console.log('>>>>>> Express server connected: ', server.address());
 });
 
-server.on('error', (error) => {
+server.on('error', (err) => {
 
-  if (error.syscall !== 'listen') {
-    console.log('>>>>>> Express server error: ', error);
+  if (err.syscall !== 'listen') {
+    console.log('>>>>>> Express server error: ', err);
   }
 
   var bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
 
-  switch (error.code) {
+  switch (err.code) {
     case 'EACCES':
       console.error('>>>>>> Express server error: ' + bind + ' requires elevated privileges');
       process.exit(1);
@@ -359,7 +327,7 @@ server.on('error', (error) => {
       process.exit(1);
       break;
     default:
-      console.log('>>>>>> Express server error.code: ', error.code);
+      console.log('>>>>>> Express server error.code: ', err.code);
   }
 });
 
@@ -373,11 +341,10 @@ server.on('listening', () => {
 
 });
 
-
 /*
-app.listen(3000, (error) => {
-  if (error) {
-    console.log('>>>>>>>> Server Error: ', error);
+app.listen(3000, (err) => {
+  if (err) {
+    console.log('>>>>>>>> Server Error: ', err);
   } else {
     console.log(`>>>>>>>> Server is running on port ${process.env.PORT} <<<<<<<<<<<`);
     
@@ -385,6 +352,67 @@ app.listen(3000, (error) => {
 });
 */
 
+// #########################################################################
+
 export default app;
+
+// #########################################################################
+
+
+/*
+// react-router v3
+app.use((req, res) => {
+
+  match (
+  
+    async (err, redirectLocation, renderProps) => {
+
+      if (redirectLocation) {
+
+        res.redirect(redirectLocation.pathname + redirectLocation.search);
+
+      } else if (err) {
+
+        res.status(500);
+
+      } else if (renderProps) {
+
+        try {
+
+          await loadOnServer({
+            ...renderProps,
+            store,
+            helpers: { ...providers, redirect },
+            filter: item => !item.deferred
+          });
+
+          const component = (
+            <Provider store={store} key="provider">
+              <ReduxAsyncConnect {...renderProps} />
+            </Provider>
+          );
+          
+          const html = <Html assets={webpackIsomorphicTools.assets()} component={component} store={store} />;
+          res.status(200);
+          res.send(`<!doctype html>${ReactDOM.renderToString(html)}`);
+
+        } catch (err) {
+
+          if (err.name === 'RedirectError') {
+            return res.redirect(VError.info(err).to);
+          }
+          res.status(500);
+
+        }
+
+      } else {
+
+        res.status(404).send('Not found');
+
+      }
+    }
+  );
+});
+*/
 
 
