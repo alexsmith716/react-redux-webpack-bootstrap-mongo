@@ -15,6 +15,8 @@ const getComponents = (match) => {
 
   //console.log('>>>>>>>> matchRoutesPromise > getComponents 1 >>>>>>>');
 
+  // Promise required for the blocking callback while awaiting the 'result' with 'reduce()' method
+  // utilizing Promise.all() to await multiple (array) results on getComponents() function call
   const promises = match.map(v => v.route.component).reduce((result, component) => {
     if (component.preload) {
       const res = component.preload();
@@ -59,12 +61,17 @@ const matchRoutesPromise = (routes, pathname) => {
       console.log('>>>>>>>> matchRoutesPromise() > getComponents > .then > match: ', match);
       console.log('>>>>>>>> matchRoutesPromise() > getComponents > .then > params: ', params);
       console.log('>>>>>>>> matchRoutesPromise() > getComponents > .then > components: ', components);
+      // once the 'result' of the asynchronous computation (getComponents(match)) is ready ...
+      // ... it is delivered 'calledback' via resolve()
+      //setTimeout(() => resolve(result), 5000);
       resolve(result);
     })
-    .catch(err => { 
-      console.log('>>>>>>>> matchRoutesPromise() > getComponents > .catch > err: ', err);
-      reject(err);
-    });
+    // uncaught errors are passed on until there is an error handler
+    // 'catch' error at initial call from 'server'
+    //.catch(err => { 
+    //  console.log('>>>>>>>> matchRoutesPromise() > getComponents > .catch > err: ', err);
+    //  reject(err);
+    //});
   });
 }
 
