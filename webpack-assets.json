@@ -1,0 +1,11 @@
+{
+  "javascript": {
+    "app": "http://localhost:3000/app.js",
+    "vendor": "http://localhost:3000/vendor.js"
+  },
+  "styles": {},
+  "assets": {},
+  "webpack": {
+    "version": "3.10.0"
+  }
+}

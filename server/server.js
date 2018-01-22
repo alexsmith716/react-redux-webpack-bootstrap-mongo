@@ -238,6 +238,39 @@ import { configureStore } from '../client/store';
 // match urls to handlers & components
 // match routes on the server
 
+
+// react-router v4
+// Promise.all
+import matchRoutesPromise from '../shared/matchRoutesPromise';
+
+app.use((req, res) => {
+
+  console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
+
+  if (process.env.NODE_ENV === 'development') {
+    global.webpackIsomorphicTools.refresh();
+  }
+  
+
+  matchRoutesPromise(routes, req.originalUrl)
+  .then(result => {
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result: ', result);
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.components: ', result.components);
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.match: ', result.match);
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.params: ', result.params);
+    res.status(200).send('response success >>>> 200 !!!!!');
+    //res.status(200).send();
+  })
+  .catch(err => {
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .catch > err: ', err);
+    res.status(500).send('response error >>>> 500 !!!!!');
+    //res.status(500);
+    //hydrate();
+  });
+});
+
+
+/*
 // react-router v4
 // async > await
 app.use(async (req, res) => {
@@ -280,7 +313,52 @@ app.use(async (req, res) => {
     //hydrate();
   }
 });
+*/
 
+/*
+// react-router v4
+// async > await
+app.use(async (req, res) => {
+
+  console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
+
+  if (process.env.NODE_ENV === 'development') {
+    global.webpackIsomorphicTools.refresh();
+  }
+  
+  // const providers = {};
+
+  const store = configureStore();
+  const preloadedState = store.getState();
+
+  // function hydrate() {};
+  // if (__DISABLE_SSR__) {};
+
+  try {
+
+    // await I/O for matchRoutes()
+    // {components, match, params }
+
+    // map incoming requests to a route (matchRoutes - react-router-config)
+    const { components, match, params }  = await matchRoutesAsync(routes, req.originalUrl);
+
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > components: ', components);
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > match: ', match);
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > params: ', params);
+
+    // ensure all data for routes is prefetched on the server before attempting to render
+
+    res.status(200).send('response success >>>> 200 !!!!!');
+    //res.status(200).send();
+
+  } catch(err) {
+    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > catch > err: ', err);
+    res.status(500).send('response error >>>> 500 !!!!!');
+    //res.status(500);
+    //hydrate();
+  }
+});
+*/
 
 /*
 // react-router v4
