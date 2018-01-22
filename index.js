@@ -1,7 +1,18 @@
 
+const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
+
+const webpackIsomorphicToolsConfig = require('./webpack.config.isomorphic');
+
+const projectBasePath = require('path').resolve(__dirname, './');
+
 if (process.env.NODE_ENV === 'production') {
 
-    require('./build/server/server.bundle');
+  //require('./build/server/server.bundle');
+  global.webpackIsomorphicTools = new WebpackIsomorphicTools(
+    webpackIsomorphicToolsConfig).server(projectBasePath, () => {
+      require('./build/server/server.bundle');
+    }
+  );
 
 } else {
 
@@ -27,6 +38,14 @@ if (process.env.NODE_ENV === 'production') {
   require('babel-polyfill');
   require('es6-promise').polyfill();
   require('isomorphic-fetch');
-  require('./server/server');
+  //require('./server/server');
+
+  global.webpackIsomorphicTools = new WebpackIsomorphicTools(
+    webpackIsomorphicToolsConfig).server(projectBasePath, () => {
+    require('./server/server');
+    }
+  );
+
+
 
 }

@@ -15,7 +15,12 @@ import config from '../webpack.config.dev.js';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import { trigger } from 'redial'; // https://github.com/markdalgleish/redial
+import { parse as parseUrl } from 'url';
 import dotenv from 'dotenv';
+
+global.__CLIENT__ = false;
+global.__SERVER__ = true;
+global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
 
 // #########################################################################
 
@@ -239,7 +244,10 @@ app.use(async (req, res) => {
 
   console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
 
-  // if (__DEVELOPMENT__) {};
+  if (process.env.NODE_ENV === 'development') {
+    global.webpackIsomorphicTools.refresh();
+  }
+  
   // const providers = {};
 
   const store = configureStore();

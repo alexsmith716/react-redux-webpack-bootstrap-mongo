@@ -1,6 +1,8 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+const webpackIsomorphicToolsConfig = require('./webpack.config.isomorphic');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 console.log('>>>>> webpack.config.dev.js > process.env.NODE_ENV <<<<<: ', process.env.NODE_ENV);
@@ -178,8 +180,14 @@ module.exports = {
       'process.env': {
         CLIENT: JSON.stringify(true),
         'NODE_ENV': JSON.stringify('development'),
-      }
+      },
+      __CLIENT__: true,
+      __SERVER__: false,
+      __DEVELOPMENT__: true,
+      __DEVTOOLS__: true
     }),
+
+    new WebpackIsomorphicToolsPlugin(webpackIsomorphicToolsConfig).development(),
 
     /*
     new BundleAnalyzerPlugin({
