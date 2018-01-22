@@ -26,11 +26,14 @@ dotenv.config();
 // #########################################################################
 
 // https://nodejs.org/dist/latest-v9.x/docs/api/process.html
-// The process object is a global that provides information about, and control over, the current Node.js process.
-// The process object is an instance of EventEmitter.
+// https://nodejs.org/api/process.html#process_event_unhandledrejection
+// http://2ality.com/2016/04/unhandled-rejections.html
 // 'unhandledRejection' event is emitted whenever a Promise is rejected
-// and no error handler is attached to the promise within a turn of the event loop
-process.on('unhandledRejection', error => console.error('>>>>>> Server > Node > process.on(unhandledRejection) > error: ', error));
+// and no error handler is attached to the promise
+
+process.on('unhandledRejection', (error, promise) => {
+  console.error('>>>>>> server > Unhandled Rejection at:', promise, 'reason:', error);
+});
 
 // #########################################################################
 
@@ -125,8 +128,6 @@ import './db/mongo';
 
 // #########################################################################
 
-
-
 app.use((req, res, next) => {
   console.log('>>>>>>>>>>>>>>>>>>>>>> GOING THROUGH APP NOW >>>>>>>>>>>>>>>>>>');
   console.log('REQ.method +++++: ', req.method);
@@ -144,7 +145,6 @@ app.use((req, res, next) => {
 });
 
 // #########################################################################
-
 
 // render serialize data from server to client template
 const renderFullPage = (appHtml, initialState) => {
@@ -206,7 +206,8 @@ import { configureStore } from '../client/store';
 // #########################################################################
 
 // Sharing Templates
-// In order to achieve faster (perceived) performance and proper search engine indexing, we want to be able to render any view on the server as well as the client. 
+// In order to achieve faster (perceived) performance and proper search engine indexing,
+// we want to be able to render any view on the server as well as the client. 
 // On the client, template rendering is as simple as evaluating a template and attaching the output to a DOM element.
 // On the server, the same template is rendered as a string and returned in the response.
 // The tricky part of isomorphic view rendering is that the client has to pick up wherever the server left off.
@@ -260,13 +261,6 @@ app.use(async (req, res) => {
     console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > params: ', params);
 
     // ensure all data for routes is prefetched on the server before attempting to render
-
-    // await I/O for prefetched data
-    await trigger('fetch', components, {
-      store,
-      match,
-      params,
-    });
 
     res.status(200).send('response success >>>> 200 !!!!!');
     //res.status(200).send();

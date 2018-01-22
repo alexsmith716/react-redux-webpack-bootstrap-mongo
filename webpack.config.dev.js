@@ -41,11 +41,6 @@ module.exports = {
     publicPath: 'http://localhost:3000/',
   },
 
-  resolve: {
-    extensions: ['.js', '.jsx', '.scss', '.css', '.json',],
-    modules: ['client', 'node_modules']
-  },
-
   module: {
     loaders: [
       {
@@ -159,6 +154,11 @@ module.exports = {
         }]
       },
     ]
+  },
+
+  resolve: {
+    modules: ['client', 'node_modules'],
+    extensions: ['.js', '.jsx', '.scss', '.css', '.json',],
   },
 
   plugins: [
