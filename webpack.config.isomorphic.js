@@ -6,7 +6,7 @@ module.exports = {
 
   debug: false,
 
-  webpack_assets_file_path: 'webpack/webpack-assets.json',
+  webpack_assets_file_path: './webpack-assets.json',
 
   assets: {
     images: {

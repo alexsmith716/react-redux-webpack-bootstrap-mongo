@@ -1,6 +1,5 @@
 
 const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
-
 const webpackIsomorphicToolsConfig = require('./webpack.config.isomorphic');
 
 const projectBasePath = require('path').resolve(__dirname, './');
@@ -42,7 +41,7 @@ if (process.env.NODE_ENV === 'production') {
 
   global.webpackIsomorphicTools = new WebpackIsomorphicTools(
     webpackIsomorphicToolsConfig).server(projectBasePath, () => {
-    require('./server/server');
+      require('./server/server');
     }
   );
 
