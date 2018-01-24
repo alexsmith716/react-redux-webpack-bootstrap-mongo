@@ -4,9 +4,12 @@ import ReactDOM from 'react-dom';
 //import { render } from 'react-dom';
 //import { BrowserRouter as Router } from 'react-router-dom';
 //import BrowserRouter from 'react-router-dom/BrowserRouter';
+import createBrowserHistory from 'history/createBrowserHistory';
 import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
+import { ReduxAsyncConnect } from 'redux-connect';
+import { getStoredState } from 'redux-persist';
 
 //window.$ = window.jQuery = require("jquery");
 //import 'bootstrap';

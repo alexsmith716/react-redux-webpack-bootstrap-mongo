@@ -6857,9 +6857,9 @@ redux-ava@^2.2.0:
     deep-freeze "0.0.1"
     immutable "^3.8.1"
 
-redux-connect@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/redux-connect/-/redux-connect-6.0.0.tgz#cad1a9e0fa64395eded3f4dc6b6c0c1170519b85"
+redux-connect@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/redux-connect/-/redux-connect-7.0.0.tgz#0555cebfa637ebe65499a67e46964d647b6ecd93"
   dependencies:
     babel-runtime "^6.26.0"
     redux-actions "^2.2.1"

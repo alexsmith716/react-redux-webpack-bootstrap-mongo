@@ -10,7 +10,6 @@ if (process.env.NODE_ENV === 'production') {
 
 }
 
-
 console.log('>>>>>>> webpack.config.babel.js <<<<<<<<<<<<<<<<<<<<<<');
 
 // this concerns server only
