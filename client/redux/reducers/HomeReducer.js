@@ -1,5 +1,5 @@
 
-import { SOMEHOMEACTION_SUCCESS } from '../constants/actionTypes';
+import { SOMEHOMEACTION_SUCCESS } from '../../constants/actionTypes';
 
 
 const initialState = { data: {} };

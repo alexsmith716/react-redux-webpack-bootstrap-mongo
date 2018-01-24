@@ -5,7 +5,7 @@ import {
   REGISTERED,
   LOGGED_IN,
   LOGGED_OUT,
-} from '../constants/actionTypes';
+} from '../../constants/actionTypes';
 
 const initialState = {
   spinner: false,

@@ -17,7 +17,7 @@ import LoaderSpinner from '../../components/LoaderSpinner/LoaderSpinner';
 
 import { spinnerOn, spinnerOff } from '../../actions/AppContainerActions';
 import { getUser } from '../../actions/UserActions';
-import { isSpinnerOn, isRegistered, isLoggedIn, } from '../../reducers/AppContainerReducer';
+import { isSpinnerOn, isRegistered, isLoggedIn, } from '../../redux/reducers/AppContainerReducer';
 
 
 export class Core extends Component {

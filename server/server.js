@@ -6,20 +6,50 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import path from 'path';
-import url from 'URL';
 import http from 'http';
 import favicon from 'serve-favicon';
 import locale from 'locale';
 import webpack from 'webpack';
-import config from '../webpack.config.dev.js';
+import webpackConfig from '../webpack.config.dev.js';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import { trigger } from 'redial'; // https://github.com/markdalgleish/redial
 import { parse as parseUrl } from 'url';
 import dotenv from 'dotenv';
+import apiClient from './helpers/apiClient';
+import config from './config';
 
+// #########################################################################
+
+import React from 'react';
+import ReactDOM from 'react-dom/server';
+import { Provider } from 'react-redux';
+import { renderToString, renderToStaticMarkup } from 'react-dom/server';
+import { StaticRouter, matchPath } from 'react-router'; // react-router v4
+import { renderRoutes, matchRoutes } from 'react-router-config'; // react-router v4
+import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
+// import { match } from 'react-router'; // react-router v3
+
+import createMemoryHistory from 'history/createMemoryHistory';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+
+// import matchRoutesAsync from './utils/matchRoutesAsync';
+import matchRoutesPromise from './utils/matchRoutesPromise';
+
+import routes from '../client/routes';
+import apiRouter from './apiRoutes';
+//import renderFullPage from './render/renderFullPage';
+import Html from './helpers/Html';
+
+// #########################################################################
+
+/**
+ * Define isomorphic constants.
+ */
 global.__CLIENT__ = false;
 global.__SERVER__ = true;
+global.__DISABLE_SSR__ = false; // <----- DISABLES SERVER SIDE RENDERING FOR ERROR DEBUGGING
 global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
 
 // #########################################################################
@@ -58,36 +88,15 @@ const app = new express();
 // #########################################################################
 
 if (process.env.NODE_ENV === 'development') {
-  const compiler = webpack(config);
-  app.use(webpackDevMiddleware(compiler, { noInfo: false, publicPath: config.output.publicPath }));
+  const compiler = webpack(webpackConfig);
+  app.use(webpackDevMiddleware(compiler, { noInfo: false, publicPath: webpackConfig.output.publicPath }));
   app.use(webpackHotMiddleware(compiler));
 }
 
 // #########################################################################
 
-import React from 'react';
-import ReactDOM from 'react-dom/server';
-//import { Provider } from '../shared';
-import { Provider } from 'react-redux';
-//import { renderToString, renderToStaticMarkup } from 'react-dom/server';
-import { StaticRouter } from 'react-router';
-import { matchPath } from 'react-router'; // react-router v4
-// import { match } from 'react-router'; // react-router v3
-
-import matchRoutesAsync from '../shared/matchRoutesAsync';
-
-import { renderRoutes, matchRoutes } from 'react-router-config';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import reactHelmet from 'react-helmet';
-
-//import App from '../client/App';
-//import App from '../client/containers/App/App';
-
-import reducers from '../client/reducers';
-import routes from '../client/routes';
-import apiRouter from './apiRoutes';
-//import renderFullPage from './render/renderFullPage';
+// const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
+// const proxy = 
 
 // #########################################################################
 
@@ -100,6 +109,13 @@ app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico'))
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
+
+// #########################################################################
+
+//app.use('/dist/service-worker.js', (req, res, next) => {
+//  res.setHeader('Service-Worker-Allowed', '/');
+//  return next();
+//});
 
 // #########################################################################
 
@@ -151,45 +167,6 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-// render serialize data from server to client template
-const renderFullPage = (appHtml, initialState) => {
-
-  const head = reactHelmet.rewind();
-
-  return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-
-        <!-- Bootstrap, Theme, Other CSS -->
-        <link rel="stylesheet" href="${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/styles.css': ''}">
-
-        ${head.base.toString()}
-        ${head.meta.toString()}
-        ${head.title.toString()}
-        ${head.link.toString()}
-        ${head.script.toString()}
-
-      </head>
-
-      <body>
-
-        <div id="app">${ appHtml }</div>
-
-        <script>
-            window.__INITIAL_STATE__ = ${ JSON.stringify(initialState) }
-        </script>
-        
-        <script src='${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/vendor.js' : '/vendor.js'}'></script>
-
-        <script src='${process.env.NODE_ENV === 'production' ? '/public/static/dist/client/app.js': '/app.js'}'></script>
-
-      </body>
-
-    </html>
-  `;
-};
-
 // #########################################################################
 
 // SERVER ++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -206,7 +183,6 @@ const renderFullPage = (appHtml, initialState) => {
 
 //const store = createStore(reducers, applyMiddleware(thunk));
 
-import { configureStore } from '../client/store';
 
 // #########################################################################
 
@@ -238,11 +214,8 @@ import { configureStore } from '../client/store';
 // match urls to handlers & components
 // match routes on the server
 
-
 // react-router v4
 // Promise.all
-import matchRoutesPromise from '../shared/matchRoutesPromise';
-
 app.use((req, res) => {
 
   console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
@@ -250,7 +223,30 @@ app.use((req, res) => {
   if (process.env.NODE_ENV === 'development') {
     global.webpackIsomorphicTools.refresh();
   }
-  
+
+  const url = req.originalUrl || req.url;
+  const location = parseUrl(url);
+
+  const client = apiClient(req);
+  const history = createMemoryHistory({ initialEntries: [url] });
+  const store = createStore(history, client);
+
+  console.log('>>>>>>>> server > app.use((req,res) > parseUrl(url) > location: ', location);
+
+  const matches = routes.reduce((matches, route) => {
+    const match = matchPath(req.url, route.path, route)
+    console.log('>>>>>>>> server > app.use((req,res) > routes.reduce > match: ', match);
+    if (match && match.isExact) {
+      matches.push({
+        route,
+        match,
+      })
+    }
+    return matches
+  }, [])
+
+  console.log('>>>>>>>> server > app.use((req,res) > routes.reduce > matches: ', matches);
+  console.log('>>>>>>>> server > app.use((req,res) > routes.reduce > matches.length: ', matches.length);
 
   matchRoutesPromise(routes, req.originalUrl)
   .then(result => {
@@ -258,7 +254,10 @@ app.use((req, res) => {
     console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.components: ', result.components);
     console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.match: ', result.match);
     console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.params: ', result.params);
-    res.status(200).send('response success >>>> 200 !!!!!');
+
+    const html = <Html/>;
+    res.status(200).send(`<!doctype html>${renderToStaticMarkup(html)}`);
+    //res.status(200).send('response success >>>> 200 !!!!!');
     //res.status(200).send();
   })
   .catch(err => {
@@ -268,123 +267,6 @@ app.use((req, res) => {
     //hydrate();
   });
 });
-
-
-/*
-// react-router v4
-// async > await
-app.use(async (req, res) => {
-
-  console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
-
-  if (process.env.NODE_ENV === 'development') {
-    global.webpackIsomorphicTools.refresh();
-  }
-  
-  // const providers = {};
-
-  const store = configureStore();
-  const preloadedState = store.getState();
-
-  // function hydrate() {};
-  // if (__DISABLE_SSR__) {};
-
-  try {
-
-    // await I/O for matchRoutes()
-    // {components, match, params }
-
-    // map incoming requests to a route (matchRoutes - react-router-config)
-    const { components, match, params }  = await matchRoutesAsync(routes, req.originalUrl);
-
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > components: ', components);
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > match: ', match);
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > params: ', params);
-
-    // ensure all data for routes is prefetched on the server before attempting to render
-
-    res.status(200).send('response success >>>> 200 !!!!!');
-    //res.status(200).send();
-
-  } catch(err) {
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > catch > err: ', err);
-    res.status(500).send('response error >>>> 500 !!!!!');
-    //res.status(500);
-    //hydrate();
-  }
-});
-*/
-
-/*
-// react-router v4
-// async > await
-app.use(async (req, res) => {
-
-  console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
-
-  if (process.env.NODE_ENV === 'development') {
-    global.webpackIsomorphicTools.refresh();
-  }
-  
-  // const providers = {};
-
-  const store = configureStore();
-  const preloadedState = store.getState();
-
-  // function hydrate() {};
-  // if (__DISABLE_SSR__) {};
-
-  try {
-
-    // await I/O for matchRoutes()
-    // {components, match, params }
-
-    // map incoming requests to a route (matchRoutes - react-router-config)
-    const { components, match, params }  = await matchRoutesAsync(routes, req.originalUrl);
-
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > components: ', components);
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > match: ', match);
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > try > params: ', params);
-
-    // ensure all data for routes is prefetched on the server before attempting to render
-
-    res.status(200).send('response success >>>> 200 !!!!!');
-    //res.status(200).send();
-
-  } catch(err) {
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesAsync > catch > err: ', err);
-    res.status(500).send('response error >>>> 500 !!!!!');
-    //res.status(500);
-    //hydrate();
-  }
-});
-*/
-
-/*
-// react-router v4
-// Promise.all
-import matchRoutesPromise from '../shared/matchRoutesPromise';
-
-app.use((req, res) => {
-
-  matchRoutesPromise(routes, req.originalUrl)
-  .then(result => {
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result: ', result);
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.components: ', result.components);
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.match: ', result.match);
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.params: ', result.params);
-    res.status(200).send('response success >>>> 200 !!!!!');
-    //res.status(200).send();
-  })
-  .catch(err => {
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .catch > err: ', err);
-    res.status(500).send('response error >>>> 500 !!!!!');
-    //res.status(500);
-    //hydrate();
-  });
-});
-*/
-
 
 // #########################################################################
 
@@ -451,79 +333,5 @@ server.on('listening', () => {
   console.log('>>>>>> Express server Listening on: ', bind);
 
 });
-
-/*
-app.listen(3000, (err) => {
-  if (err) {
-    console.log('>>>>>>>> Server Error: ', err);
-  } else {
-    console.log(`>>>>>>>> Server is running on port ${process.env.PORT} <<<<<<<<<<<`);
-    
-  }
-});
-*/
-
-// #########################################################################
-
-export default app;
-
-// #########################################################################
-
-
-/*
-// react-router v3
-app.use((req, res) => {
-
-  match (
-  
-    async (err, redirectLocation, renderProps) => {
-
-      if (redirectLocation) {
-
-        res.redirect(redirectLocation.pathname + redirectLocation.search);
-
-      } else if (err) {
-
-        res.status(500);
-
-      } else if (renderProps) {
-
-        try {
-
-          await loadOnServer({
-            ...renderProps,
-            store,
-            helpers: { ...providers, redirect },
-            filter: item => !item.deferred
-          });
-
-          const component = (
-            <Provider store={store} key="provider">
-              <ReduxAsyncConnect {...renderProps} />
-            </Provider>
-          );
-          
-          const html = <Html assets={webpackIsomorphicTools.assets()} component={component} store={store} />;
-          res.status(200);
-          res.send(`<!doctype html>${ReactDOM.renderToString(html)}`);
-
-        } catch (err) {
-
-          if (err.name === 'RedirectError') {
-            return res.redirect(VError.info(err).to);
-          }
-          res.status(500);
-
-        }
-
-      } else {
-
-        res.status(404).send('Not found');
-
-      }
-    }
-  );
-});
-*/
 
 

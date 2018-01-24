@@ -36,30 +36,16 @@ import PageNotFound from './containers/PageNotFound/PageNotFound';
 //});
 
 
-const routes = [
-  {
-    component: Core,
-    routes: [
-      {
-        path: '/',
-        exact: true,
-        component: Home,
-      },
-      {
-        path: '/about',
-        component: About,
-      },
-      {
-        path: '/contact',
-        component: Contact,
-      },
-      {
-        component: PageNotFound
-      },
+const routes = [{
+  component: Core,
 
-    ],
-  },
-];
+  routes: [
+    { path: '/', exact: true, component: Home },
+    { path: '/about', component: About },
+    { path: '/contact', component: Contact },
+    { component: PageNotFound },
+  ],
+}];
 
 export default routes;
 

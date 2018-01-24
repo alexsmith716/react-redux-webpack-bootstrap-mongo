@@ -2,7 +2,7 @@
 import {
   USER_GET_SUCCESS,
   USER_SET_SUCCESS,
-} from '../constants/actionTypes';
+} from '../../constants/actionTypes';
 
 
 const initialState = {};
