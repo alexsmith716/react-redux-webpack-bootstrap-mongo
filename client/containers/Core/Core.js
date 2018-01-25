@@ -4,34 +4,62 @@ import PropTypes from 'prop-types';
 import { renderRoutes } from 'react-router-config';
 import { NavLink } from 'react-router-dom';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
 
-import DevTools from '../../components/DevTools/DevTools';
+import { asyncConnect } from 'redux-connect';
+import { connect } from 'react-redux';
 
 //import Header from '../../components/Header/Header';
 import Navbar from '../../components/Navbar/Navbar';
 
 import LoaderSpinner from '../../components/LoaderSpinner/LoaderSpinner';
 
-// import style from './style.scss';
+//import { isLoaded as isInfoLoaded, load as loadInfo } from '../../redux/modules/info';
+//import { isAuthLoaded, loadAuth, logout } from '../../redux/modules/auth';
 
-import { spinnerOn, spinnerOff } from '../../actions/AppContainerActions';
-import { getUser } from '../../actions/UserActions';
-import { isSpinnerOn, isRegistered, isLoggedIn, } from '../../redux/reducers/AppContainerReducer';
+//import { spinnerOn, spinnerOff } from '../../actions/AppContainerActions';
+//import { getUser } from '../../actions/UserActions';
+//import { isSpinnerOn, isRegistered, isLoggedIn, } from '../../redux/reducers/AppContainerReducer';
+
+import Notifs from '../../components/Notifs/Notifs';
 
 
-export class Core extends Component {
+@asyncConnect([
+  {
+    promise: async ({ store: { dispatch, getState } }) => {
+      //if (!isAuthLoaded(getState())) {
+      //  await dispatch(loadAuth());
+      //}
+      //if (!isInfoLoaded(getState())) {
+      //  await dispatch(loadInfo());
+      //}
+    }
+  }
+])
 
-  constructor(props) {
-    super(props);
-    this.state = { isMounted: false };
-  };
+@connect(
+  state => ({
+    //notifs: state.notifs,
+    //user: state.auth.user
+  }),
+  {
+    //logout
+  }
+)
 
-  // Core starting off actions with 'User' login status
-  componentDidMount() {
-    console.log('>>>>>>>>>>>>>> Client > Core > componentDidMount ++++++++++++++++++++');
-    this.setState({ isMounted: true });
-    this.props.dispatch(getUser());
+
+export default class App extends Component {
+
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.user && nextProps.user) {
+      this.context.router.history.push('/loginSuccess');
+    } else if (this.props.user && !nextProps.user) {
+      this.context.router.history.push('/');
+    }
+  }
+
+  handleLogout = event => {
+    event.preventDefault();
+    this.props.logout();
   };
 
   render() {
@@ -40,19 +68,10 @@ export class Core extends Component {
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     const {
+      user,
+      notifs,
       route,
-      spinner,
-      isLoggedIn,
-      registered,
     } = this.props;
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-    let spinnerContent;
-    if (spinner === true) {
-      spinnerContent = <LoaderSpinner />;
-    }
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -60,36 +79,30 @@ export class Core extends Component {
 
       <div>
 
-        {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
+        <Helmet
+          title="Client - Containers - Core - Core"
+          titleTemplate="%s - ThisGreatApp!"
+          meta={[
+            { charset: 'utf-8' },
+            {
+              'http-equiv': 'X-UA-Compatible',
+              'content': 'IE=edge',
+            },
+            {
+              name: 'viewport',
+              content: 'width=device-width, initial-scale=1.0',
+            },
+          ]}
+        />
 
-        <div>
+        <Navbar
+          isLoggedIn={isLoggedIn}
+          registered={registered}
+        />
 
-          <Helmet
-            title="Client - Containers - Core - Core"
-            titleTemplate="%s - ThisGreatApp!"
-            meta={[
-              { charset: 'utf-8' },
-              {
-                'http-equiv': 'X-UA-Compatible',
-                'content': 'IE=edge',
-              },
-              {
-                name: 'viewport',
-                content: 'width=device-width, initial-scale=1.0',
-              },
-            ]}
-          />
+        <div>{route ? renderRoutes(route.routes) : null}</div>
 
-          <Navbar
-            isLoggedIn={isLoggedIn}
-            registered={registered}
-          />
-
-          <div>{route ? renderRoutes(route.routes) : null}</div>
-
-          {spinnerContent}
-
-        </div>
+        {spinnerContent}
 
       </div>
 
@@ -99,31 +112,24 @@ export class Core extends Component {
 
 
 Core.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  spinner: PropTypes.bool,
-  registered: PropTypes.bool,
-  isLoggedIn: PropTypes.bool,
+  //user: PropTypes.shape({ email: PropTypes.string }),
+  //notifs: PropTypes.shape({ global: PropTypes.array }).isRequired,
+  //logout: PropTypes.func.isRequired,
+  //route: PropTypes.objectOf(PropTypes.any).isRequired,
+  //location: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
 Core.defaultProps = {
-  isLoggedIn: false,
-  registered: false,
-  termsAccepted: false,
+  //user: null
 };
 
-
-function mapStateToProps(state) {
-  //console.log('>>>>>>> Core > mapStateToProps(state): ', state);
-  return {
-    spinner: isSpinnerOn(state),
-    isLoggedIn: isLoggedIn(state),
-    registered: isRegistered(state),
-    isLoggedIn: isLoggedIn(state),
-  };
-
+Core.contextTypes = {
+  //store: PropTypes.object.isRequired,
+  //router: PropTypes.shape({
+  //  history: PropTypes.object.isRequired
+  //})
 };
 
-
-export default connect(mapStateToProps)(Core);
+export default Core;
 
 

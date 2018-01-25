@@ -1,38 +1,40 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router';
 import { connect } from 'react-redux';
+import { asyncConnect } from 'redux-connect';
+
 import { NavLink } from 'react-router-dom';
 
 import Footer from '../../components/Footer/Footer';
 
-import { OK, NO_CONTENT, UNAUTHORIZED, FORBIDDEN } from '../../constants/statusCodes';
-import { getSomeHomeAction} from '../../actions/HomeActions';
-//import { isError, isException } from '../../reducers/ErrorReducer';
-//import { isRegistered } from '../../reducers/AppContainerReducer';
+//import { isAuthenticated } from '../../redux/modules/auth';
+//import { loadList } from '../../redux/modules/spend';
 
 // import style from './style.css';
 
-import apiHandler from '../../services/apiHandler';
+//import apiHandler from '../../services/apiHandler';
 
-// <div className={`row ${css.colItems}`}>
-// <div className={`col-md-4 ${css.colItem}`}>
-// <div className="modal-backdrop fade in" style="display: none;"><img src="/public/static/images/ajax-loader.gif" style="position: fixed; top: 45%; left: 49%;"></img></div>
-
-class Home extends Component {
-
-    constructor(props) {
-        super(props)
-
-        this.state = {
-
-        }
+@asyncConnect([
+  {
+    promise: async ({ store: { dispatch, getState } }) => {
+      //if (isAuthenticated(getState())) {
+      //  await dispatch(loadList());
+      //}
     }
+  }
+])
+
+@connect(state => ({
+  //user: state.auth.user
+}))
+
+
+export default class Home extends Component {
 
   render() {
 
-    return(
+    return (
 
       <div id="content">
 
@@ -135,5 +137,15 @@ class Home extends Component {
   }
 }
 
-export default Home;
+Home.propTypes = {
+  //user: PropTypes.shape({
+  //  email: PropTypes.string,
+  //  fullName: PropTypes.string
+  //})
+};
 
+Core.defaultProps = {
+  //user: null
+};
+
+export default Home;

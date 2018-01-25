@@ -39,7 +39,7 @@ import matchRoutesPromise from './utils/matchRoutesPromise';
 import routes from '../client/routes/routes';
 import apiRouter from './apiRoutes';
 //import renderFullPage from './render/renderFullPage';
-import Html from './helpers/Html1';
+import Html from './helpers/Html';
 
 // #########################################################################
 
@@ -242,20 +242,23 @@ app.use((req, res) => {
         </Provider>
       );
 
+      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > component: ', component);
+
       const content = renderToString(component);
 
       const assets = global.webpackIsomorphicTools.assets();
 
-      console.log('>>>>>>>> server > app.use((req,res) > loadOnServer > then > content: ', content);
+      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > content: ', content);
 
-      //const html = <Html/>;
       const html = <Html assets={assets} content={content} store={store} />;
+
+      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > html: ', html);
       
-      res.status(200).send(`<!doctype html>${renderToStaticMarkup(html)}`);
+      res.status(200).send(`<!doctype html>${renderToString(html)}`);
 
     })
     .catch((err) => {
-      console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .catch > err: ', err);
+      console.log('>>>>>>>> server > app.use() > loadOnServer() > .catch > err: ', err);
       res.status(500).send('response error >>>> 500 !!!!!');
       //res.status(500);
       //hydrate();
@@ -263,9 +266,10 @@ app.use((req, res) => {
 
 });
 
-/*
+
 // async:  callback function must have the async keyword attached to it
 // async:  only use await directly within the async function
+/*
 app.use(async (req, res) => {
   
   try {
