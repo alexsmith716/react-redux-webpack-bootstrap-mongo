@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 //import { Router } from 'react-router';
 //import { render } from 'react-dom';
-//import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 //import BrowserRouter from 'react-router-dom/BrowserRouter';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { AppContainer } from 'react-hot-loader';
@@ -18,7 +18,7 @@ import createStore from './redux/createStore';
 import apiClient from '../server/helpers/apiClient';
 const client = apiClient();
 
-const mountApp = document.getElementById('app');
+const mountApp = document.getElementById('content');
 
 const offlinePersistConfig = {
   storage: localForage,
@@ -30,12 +30,12 @@ const history = createBrowserHistory();
 const store = createStore(history, client, data);
 
 
-const render = (_routes) => {
+const render = (routes) => {
   ReactDOM.hydrate(
     <AppContainer>
       <Provider store={store}>
         <Router>
-          <ReduxAsyncConnect routes={_routes} helpers={{ client }} />
+          <ReduxAsyncConnect routes={routes} helpers={{ client }} />
         </Router>
       </Provider>
     </AppContainer>,
