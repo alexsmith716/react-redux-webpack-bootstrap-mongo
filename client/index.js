@@ -1,6 +1,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+//import { Router } from 'react-router';
 //import { render } from 'react-dom';
 //import { BrowserRouter as Router } from 'react-router-dom';
 //import BrowserRouter from 'react-router-dom/BrowserRouter';
@@ -10,38 +11,44 @@ import { Provider } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { ReduxAsyncConnect } from 'redux-connect';
 import { getStoredState } from 'redux-persist';
+import localForage from 'localforage';
 
-//window.$ = window.jQuery = require("jquery");
-//import 'bootstrap';
-import routes from './routes';
-
-
-import { configureStore } from './store';
-const store = configureStore(window.__INITIAL_STATE__);
-
-import App from './App';
+import routes from './routes/routes';
+import createStore from './redux/createStore';
+import apiClient from '../server/helpers/apiClient';
+const client = apiClient();
 
 const mountApp = document.getElementById('app');
 
+const offlinePersistConfig = {
+  storage: localForage,
+  whitelist: ['auth',]
+};
 
-const render = (Component) => {
+const data = { ...window.__data };
+const history = createBrowserHistory();
+const store = createStore(history, client, data);
+
+
+const render = (_routes) => {
   ReactDOM.hydrate(
     <AppContainer>
       <Provider store={store}>
-        <Component />
+        <Router>
+          <ReduxAsyncConnect routes={_routes} helpers={{ client }} />
+        </Router>
       </Provider>
     </AppContainer>,
     mountApp
   )
 };
 
-
+render(routes);
 
 if (module.hot) {
-  module.hot.accept('./App', () => {
-    const NewApp = require('./App').default;
-    render(NewApp);
+  module.hot.accept('./routes/routes', () => {
+    render(require('./routes/routes'));
   });
 }
-render(App);
+
 

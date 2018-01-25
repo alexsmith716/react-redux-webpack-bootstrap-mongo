@@ -7,6 +7,8 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 console.log('>>>>> webpack.config.dev.js > process.env.NODE_ENV <<<<<: ', process.env.NODE_ENV);
 
+var assetsPath = path.resolve(__dirname, './public/dist');
+
 module.exports = {
 
   devtool: 'cheap-module-inline-source-map',
@@ -36,11 +38,11 @@ module.exports = {
   },
 
   output: {
-    path: __dirname,
+    path: assetsPath,
     filename: '[name].js',
     chunkFilename: '[name].js',
     //publicPath: '/',
-    publicPath: 'http://localhost:3000/',
+    publicPath: 'http://localhost:3000/dist/',
   },
 
   module: {
