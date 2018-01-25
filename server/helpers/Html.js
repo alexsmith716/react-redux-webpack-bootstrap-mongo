@@ -3,6 +3,7 @@ import React from 'react';
 
 
 const Html = () => {
+
   <html lang='en'>
 
     <head>
@@ -24,6 +25,7 @@ const Html = () => {
     </body>
 
   </html>
+  
 };
 
 

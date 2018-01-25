@@ -21,7 +21,7 @@ const Html = props => {
 
   /* eslint-disable react/no-danger */
   return (
-    <html lang="en-US">
+    <html lang="en">
       <head>
         {head.base.toComponent()}
         {head.title.toComponent()}

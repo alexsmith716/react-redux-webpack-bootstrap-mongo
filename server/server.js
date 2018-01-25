@@ -31,16 +31,15 @@ import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
 // import { match } from 'react-router'; // react-router v3
 
 import createMemoryHistory from 'history/createMemoryHistory';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import createStore from '../client/redux/createStore';
 
 // import matchRoutesAsync from './utils/matchRoutesAsync';
 import matchRoutesPromise from './utils/matchRoutesPromise';
 
-import routes from '../client/routes';
+import routes from '../client/routes/routes';
 import apiRouter from './apiRoutes';
 //import renderFullPage from './render/renderFullPage';
-import Html from './helpers/Html';
+import Html from './helpers/Html1';
 
 // #########################################################################
 
@@ -126,10 +125,6 @@ app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 
 // #########################################################################
 
-//<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-//<meta name="viewport" content="width=device-width, initial-scale=1.0">
-//<meta name="description" content="react-redux-webpack-bootstrap-mongo">
-
 /*
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -214,8 +209,7 @@ app.use((req, res, next) => {
 // match urls to handlers & components
 // match routes on the server
 
-// react-router v4
-// Promise.all
+
 app.use((req, res) => {
 
   console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
@@ -231,42 +225,58 @@ app.use((req, res) => {
   const history = createMemoryHistory({ initialEntries: [url] });
   const store = createStore(history, client);
 
-  console.log('>>>>>>>> server > app.use((req,res) > parseUrl(url) > location: ', location);
+  console.log('>>>>>>>> server > app.use((req,res) > parseUrl() > location: ', location);
+  console.log('>>>>>>>> server > app.use((req,res) > apiClient() > client: ', client);
+  console.log('>>>>>>>> server > app.use((req,res) > createStore() > store: ', store);
 
-  const matches = routes.reduce((matches, route) => {
-    const match = matchPath(req.url, route.path, route)
-    console.log('>>>>>>>> server > app.use((req,res) > routes.reduce > match: ', match);
-    if (match && match.isExact) {
-      matches.push({
-        route,
-        match,
-      })
-    }
-    return matches
-  }, [])
+  loadOnServer({ store, location, routes, helpers: { client } })
+    .then(() => {
 
-  console.log('>>>>>>>> server > app.use((req,res) > routes.reduce > matches: ', matches);
-  console.log('>>>>>>>> server > app.use((req,res) > routes.reduce > matches.length: ', matches.length);
+      const context = {};
 
-  matchRoutesPromise(routes, req.originalUrl)
-  .then(result => {
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result: ', result);
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.components: ', result.components);
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.match: ', result.match);
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .then > result.params: ', result.params);
+      const component = (
+        <Provider store={store} key='provider'>
+          <StaticRouter location={req.url} context={context}>
+            <ReduxAsyncConnect routes={routes} helpers={{ client }} />
+          </StaticRouter>
+        </Provider>
+      );
 
-    const html = <Html/>;
-    res.status(200).send(`<!doctype html>${renderToStaticMarkup(html)}`);
-    //res.status(200).send('response success >>>> 200 !!!!!');
-    //res.status(200).send();
-  })
-  .catch(err => {
-    console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .catch > err: ', err);
-    res.status(500).send('response error >>>> 500 !!!!!');
-    //res.status(500);
-    //hydrate();
-  });
+      const content = renderToString(component);
+
+      const assets = global.webpackIsomorphicTools.assets();
+
+      console.log('>>>>>>>> server > app.use((req,res) > loadOnServer > then > content: ', content);
+
+      //const html = <Html/>;
+      const html = <Html assets={assets} content={content} store={store} />;
+      
+      res.status(200).send(`<!doctype html>${renderToStaticMarkup(html)}`);
+
+    })
+    .catch((err) => {
+      console.log('>>>>>>>> server > app.use((req,res) > matchRoutesPromise > .catch > err: ', err);
+      res.status(500).send('response error >>>> 500 !!!!!');
+      //res.status(500);
+      //hydrate();
+    });
+
 });
+
+/*
+// async:  callback function must have the async keyword attached to it
+// async:  only use await directly within the async function
+app.use(async (req, res) => {
+  
+  try {
+
+    await eventEmittingObject({passedVar1, passedVar2: { passedVar2a }});
+
+  } catch (err) {
+    // 
+  }
+});
+*/
 
 // #########################################################################
 

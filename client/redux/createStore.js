@@ -24,6 +24,7 @@ export default function createStore(history, client, data, persistConfig = null)
 
   let enhancers = [applyMiddleware(...middleware)];
 
+  /*
   if (__CLIENT__ && __DEVTOOLS__) {
     const { persistState } = require('redux-devtools');
     const DevTools = require('../containers/DevTools/DevTools');
@@ -33,6 +34,7 @@ export default function createStore(history, client, data, persistConfig = null)
       persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
     ];
   }
+  */
 
   const finalCreateStore = compose(...enhancers)(_createStore);
   const missingReducers = getMissingReducers(createReducers(), data);

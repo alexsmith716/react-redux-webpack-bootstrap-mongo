@@ -6,8 +6,6 @@
   "author": "dev",
   "license": "MIT",
   "scripts": {
-    "sd1": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon --inspect index.js",
-    "sd2": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon index.js",
     "sd3": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon index.js --ignore client/",
     "bd": "NODE_ENV=development webpack --config ./webpack.config.dev.js",
     "sd4": "NODE_ENV=development BABEL_DISABLE_CACHE=1 nodemon index.js --ignore client/ --ignore webpack-assets.json"
@@ -36,6 +34,7 @@
     "isomorphic-fetch": "^2.2.1",
     "jsonwebtoken": "^8.1.0",
     "locale": "^0.1.0",
+    "localforage": "^1.5.6",
     "mongoose": "^4.13.9",
     "object-path": "^0.11.4",
     "passport": "^0.4.0",

@@ -1,7 +1,7 @@
 {
   "javascript": {
-    "app": "http://localhost:3000/app.js",
-    "vendor": "http://localhost:3000/vendor.js"
+    "app": "http://localhost:3000/dist/app.js",
+    "vendor": "http://localhost:3000/dist/vendor.js"
   },
   "styles": {},
   "assets": {},
