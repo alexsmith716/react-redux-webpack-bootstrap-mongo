@@ -3,8 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 //import { Router } from 'react-router';
 //import { render } from 'react-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
-//import BrowserRouter from 'react-router-dom/BrowserRouter';
+//import { BrowserRouter as Router } from 'react-router-dom';
+import BrowserRouter from 'react-router-dom/BrowserRouter';
 import createBrowserHistory from 'history/createBrowserHistory';
 import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
@@ -34,9 +34,9 @@ const render = (routes) => {
   ReactDOM.hydrate(
     <AppContainer>
       <Provider store={store}>
-        <Router>
+        <BrowserRouter>
           <ReduxAsyncConnect routes={routes} helpers={{ client }} />
-        </Router>
+        </BrowserRouter>
       </Provider>
     </AppContainer>,
     mountApp

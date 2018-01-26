@@ -1,17 +1,21 @@
 
-export const SPINNER_ON = 'SPINNER_ON';
-export const SPINNER_OFF = 'SPINNER_OFF';
-export const REGISTERED = 'REGISTERED';
-export const LOGGED_IN = 'LOGGED_IN';
-export const LOGGED_OUT = 'LOGGED_OUT';
+export const LOAD = 'LOAD';
+export const LOAD_SUCCESS = 'LOAD_SUCCESS';
+export const LOAD_FAIL = 'LOAD_FAIL';
 
-export const USER_GET_SUCCESS = 'USER_GET_SUCCESS';
-export const USER_SET_SUCCESS = 'USER_SET_SUCCESS';
+export const LOGIN = 'LOGIN';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_FAIL = 'LOGIN_FAIL';
+
+export const REGISTER = 'REGISTER';
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
+export const REGISTER_FAIL = 'REGISTER_FAIL';
+
+export const LOGOUT = 'LOGOUT';
+
+export const NOTIF_SEND = 'NOTIF_SEND';
+export const NOTIF_DISMISS = 'NOTIF_DISMISS';
+export const NOTIF_CLEAR = 'NOTIF_CLEAR';
+export const NOTIF_CLEAR_ALL = 'NOTIF_CLEAR_ALL';
 
 
-export const RESET = 'RESET';
-export const ERROR = 'ERROR';
-export const EXCEPTION = 'EXCEPTION';
-
-
-export const SOMEHOMEACTION_SUCCESS = 'SOMEHOMEACTION_SUCCESS';

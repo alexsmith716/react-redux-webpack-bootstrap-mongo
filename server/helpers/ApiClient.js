@@ -1,8 +1,10 @@
 
 import axios from 'axios';
+
 import config from '../config';
 
 export default function apiClient(req) {
+
   const instance = axios.create({
     baseURL: __SERVER__ ? `http://${config.apiHost}:${config.apiPort}` : '/api'
   });
@@ -12,6 +14,11 @@ export default function apiClient(req) {
   instance.setJwtToken = newToken => {
     token = newToken;
   };
+
+
+  console.log('>>>>>>>> ApiClient() > instance: ', instance);
+  console.log('>>>>>>>> ApiClient() > token: ', token);
+
 
   instance.interceptors.request.use(
     conf => {
