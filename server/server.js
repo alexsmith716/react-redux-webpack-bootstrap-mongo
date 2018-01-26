@@ -37,7 +37,7 @@ import createStore from '../client/redux/createStore';
 import matchRoutesPromise from './utils/matchRoutesPromise';
 
 import routes from '../client/routes/routes';
-import apiRouter from './apiRoutes';
+import appApi from './api/api';
 //import renderFullPage from './render/renderFullPage';
 import Html from './helpers/Html';
 
@@ -136,7 +136,7 @@ app.use(function (req, res, next) {
 
 // #########################################################################
 
-app.use('/api', apiRouter);
+app.use('/api', appApi);
 
 // #########################################################################
 
@@ -227,6 +227,7 @@ app.use((req, res) => {
 
   console.log('>>>>>>>> server > app.use((req,res) > parseUrl() > location: ', location);
   console.log('>>>>>>>> server > app.use((req,res) > apiClient() > client: ', client);
+  console.log('>>>>>>>> server > app.use((req,res) > createMemoryHistory() > history: ', history);
   console.log('>>>>>>>> server > app.use((req,res) > createStore() > store: ', store);
 
   loadOnServer({ store, location, routes, helpers: { client } })
@@ -235,26 +236,28 @@ app.use((req, res) => {
       const context = {};
 
       const component = (
-        <Provider store={store} key='provider'>
+        <Provider store={store} key="provider">
           <StaticRouter location={req.url} context={context}>
             <ReduxAsyncConnect routes={routes} helpers={{ client }} />
           </StaticRouter>
         </Provider>
       );
 
-      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > component: ', component);
+      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > component1: ', component);
 
-      const content = renderToString(component);
+      const content = ReactDOM.renderToString(component);
+
+      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > content2: ', content);
 
       const assets = global.webpackIsomorphicTools.assets();
 
-      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > content: ', content);
+      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > assets3: ', assets);
 
       const html = <Html assets={assets} content={content} store={store} />;
 
-      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > html: ', html);
+      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > html3: ', html);
       
-      res.status(200).send(`<!doctype html>${renderToString(html)}`);
+      res.status(200).send(`<!doctype html>${ReactDOM.renderToString(html)}`);
 
     })
     .catch((err) => {

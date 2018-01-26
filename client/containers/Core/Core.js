@@ -13,8 +13,8 @@ import Navbar from '../../components/Navbar/Navbar';
 
 import LoaderSpinner from '../../components/LoaderSpinner/LoaderSpinner';
 
-//import { isLoaded as isInfoLoaded, load as loadInfo } from '../../redux/modules/info';
-//import { isAuthLoaded, loadAuth, logout } from '../../redux/modules/auth';
+import { isLoaded as isInfoLoaded, load as loadInfo } from '../../redux/reducers/info';
+import { isAuthLoaded, loadAuth, logout } from '../../redux/reducers/auth';
 
 //import { spinnerOn, spinnerOff } from '../../actions/AppContainerActions';
 //import { getUser } from '../../actions/UserActions';
@@ -26,28 +26,28 @@ import Notifs from '../../components/Notifs/Notifs';
 @asyncConnect([
   {
     promise: async ({ store: { dispatch, getState } }) => {
-      //if (!isAuthLoaded(getState())) {
-      //  await dispatch(loadAuth());
-      //}
-      //if (!isInfoLoaded(getState())) {
-      //  await dispatch(loadInfo());
-      //}
+      if (!isAuthLoaded(getState())) {
+        await dispatch(loadAuth());
+      }
+      if (!isInfoLoaded(getState())) {
+        await dispatch(loadInfo());
+      }
     }
   }
 ])
 
 @connect(
   state => ({
-    //notifs: state.notifs,
-    //user: state.auth.user
+    notifs: state.notifs,
+    user: state.auth.user
   }),
   {
-    //logout
+    logout
   }
 )
 
 
-export default class App extends Component {
+class Core extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!this.props.user && nextProps.user) {
@@ -95,14 +95,7 @@ export default class App extends Component {
           ]}
         />
 
-        <Navbar
-          isLoggedIn={isLoggedIn}
-          registered={registered}
-        />
-
         <div>{route ? renderRoutes(route.routes) : null}</div>
-
-        {spinnerContent}
 
       </div>
 
@@ -112,22 +105,22 @@ export default class App extends Component {
 
 
 Core.propTypes = {
-  //user: PropTypes.shape({ email: PropTypes.string }),
-  //notifs: PropTypes.shape({ global: PropTypes.array }).isRequired,
-  //logout: PropTypes.func.isRequired,
-  //route: PropTypes.objectOf(PropTypes.any).isRequired,
-  //location: PropTypes.objectOf(PropTypes.any).isRequired
+  user: PropTypes.shape({ email: PropTypes.string }),
+  notifs: PropTypes.shape({ global: PropTypes.array }).isRequired,
+  logout: PropTypes.func.isRequired,
+  route: PropTypes.objectOf(PropTypes.any).isRequired,
+  location: PropTypes.objectOf(PropTypes.any).isRequired
 };
 
 Core.defaultProps = {
-  //user: null
+  user: null
 };
 
 Core.contextTypes = {
-  //store: PropTypes.object.isRequired,
-  //router: PropTypes.shape({
-  //  history: PropTypes.object.isRequired
-  //})
+  store: PropTypes.object.isRequired,
+  router: PropTypes.shape({
+    history: PropTypes.object.isRequired
+  })
 };
 
 export default Core;

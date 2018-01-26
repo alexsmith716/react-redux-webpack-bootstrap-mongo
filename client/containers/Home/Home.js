@@ -6,10 +6,8 @@ import { asyncConnect } from 'redux-connect';
 
 import { NavLink } from 'react-router-dom';
 
-import Footer from '../../components/Footer/Footer';
-
-//import { isAuthenticated } from '../../redux/modules/auth';
-//import { loadList } from '../../redux/modules/spend';
+import { isAuthenticated } from '../../redux/reducers/auth';
+//import { checkSomething } from '../../redux/reducers/checkSomething';
 
 // import style from './style.css';
 
@@ -18,19 +16,19 @@ import Footer from '../../components/Footer/Footer';
 @asyncConnect([
   {
     promise: async ({ store: { dispatch, getState } }) => {
-      //if (isAuthenticated(getState())) {
-      //  await dispatch(loadList());
-      //}
+      if (isAuthenticated(getState())) {
+        //await dispatch(checkSomething());
+      }
     }
   }
 ])
 
 @connect(state => ({
-  //user: state.auth.user
+  user: state.auth.user
 }))
 
 
-export default class Home extends Component {
+class Home extends Component {
 
   render() {
 
@@ -128,9 +126,6 @@ export default class Home extends Component {
 
           <hr />
 
-          <Footer />
-
-
         </div>
       </div>
     )
@@ -138,14 +133,14 @@ export default class Home extends Component {
 }
 
 Home.propTypes = {
-  //user: PropTypes.shape({
-  //  email: PropTypes.string,
-  //  fullName: PropTypes.string
-  //})
+  user: PropTypes.shape({
+    email: PropTypes.string,
+    fullName: PropTypes.string
+  })
 };
 
-Core.defaultProps = {
-  //user: null
+Home.defaultProps = {
+  user: null
 };
 
 export default Home;

@@ -1,7 +1,7 @@
 
-import { LOAD } from '../constants/actionTypes';
-import { LOAD_SUCCESS } from '../constants/actionTypes';
-import { LOAD_FAIL } from '../constants/actionTypes';
+import { LOAD } from '../../constants/actionTypes';
+import { LOAD_SUCCESS } from '../../constants/actionTypes';
+import { LOAD_FAIL } from '../../constants/actionTypes';
 
 const initialState = {
   loaded: false
@@ -40,6 +40,6 @@ export function isLoaded(globalState) {
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: client => client.get('/info/load')
+    promise: client => client.get('http://127.0.0.1:3000/api/info/load')
   };
 }

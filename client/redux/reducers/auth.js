@@ -1,18 +1,18 @@
 
 import { SubmissionError } from 'redux-form';
-//import jsCookie from 'js-cookie';
+import jsCookie from 'js-cookie';
 
 
-import { LOAD } from '../constants/actionTypes';
-import { LOAD_SUCCESS } from '../constants/actionTypes';
-import { LOAD_FAIL } from '../constants/actionTypes';
-import { LOGIN } from '../constants/actionTypes';
-import { LOGIN_SUCCESS } from '../constants/actionTypes';
-import { LOGIN_FAIL } from '../constants/actionTypes';
-import { REGISTER } from '../constants/actionTypes';
-import { REGISTER_SUCCESS } from '../constants/actionTypes';
-import { REGISTER_FAIL } from '../constants/actionTypes';
-import { LOGOUT } from '../constants/actionTypes';
+import { LOAD } from '../../constants/actionTypes';
+import { LOAD_SUCCESS } from '../../constants/actionTypes';
+import { LOAD_FAIL } from '../../constants/actionTypes';
+import { LOGIN } from '../../constants/actionTypes';
+import { LOGIN_SUCCESS } from '../../constants/actionTypes';
+import { LOGIN_FAIL } from '../../constants/actionTypes';
+import { REGISTER } from '../../constants/actionTypes';
+import { REGISTER_SUCCESS } from '../../constants/actionTypes';
+import { REGISTER_FAIL } from '../../constants/actionTypes';
+import { LOGOUT } from '../../constants/actionTypes';
 
 
 const initialState = {
@@ -112,7 +112,7 @@ export function loadAuth() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
     promise: async client => {
-      const result = await client.post('/auth/load');
+      const result = await client.post('http://127.0.0.1:3000/api/auth/load');
       return result;
     }
   };
@@ -122,7 +122,7 @@ export function register(data) {
   return {
     types: [REGISTER, REGISTER_SUCCESS, REGISTER_FAIL],
     promise: async client => {
-      const result = client.post('/auth/register', { ...data, fullName: 'bangnguyen' });
+      const result = client.post('/auth/register', { ...data, fullName: 'usersFullNameHere' });
       return result;
     }
   };
