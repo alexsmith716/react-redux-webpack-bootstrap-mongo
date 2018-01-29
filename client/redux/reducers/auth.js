@@ -14,6 +14,8 @@ import { REGISTER_SUCCESS } from '../../constants/actionTypes';
 import { REGISTER_FAIL } from '../../constants/actionTypes';
 import { LOGOUT } from '../../constants/actionTypes';
 
+console.log('>>>>>>>> Auth <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+
 
 const initialState = {
   loaded: false
@@ -109,9 +111,11 @@ export function isAuthLoaded(state) {
 }
 
 export function loadAuth() {
+  console.log('>>>>>>>> Auth > loadAuth() > await client.post 1 >>>>>>>>>>>>>>>');
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
     promise: async client => {
+      console.log('>>>>>>>> Auth > loadAuth() > await client.post 2 >>>>>>>>>>>>>>>');
       const result = await client.post('http://127.0.0.1:3000/api/auth/load');
       return result;
     }

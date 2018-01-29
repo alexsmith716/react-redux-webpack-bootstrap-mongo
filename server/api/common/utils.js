@@ -1,7 +1,7 @@
-import moment from 'moment';
+//import moment from 'moment';
 //import jwt from 'jwt-simple';
-import ejwt from 'express-jwt';
-import * as config from './config';
+//import ejwt from 'express-jwt';
+//import * as config from './config';
 
 export const mapUrl = (availableActions = {}, url = []) => {
 
