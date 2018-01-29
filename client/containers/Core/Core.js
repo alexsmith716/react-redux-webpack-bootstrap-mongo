@@ -22,11 +22,13 @@ import { isAuthLoaded, loadAuth, logout } from '../../redux/reducers/auth';
 
 import Notifs from '../../components/Notifs/Notifs';
 
+console.log('>>>>>>>> Core <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
 @asyncConnect([
   {
     promise: async ({ store: { dispatch, getState } }) => {
       if (!isAuthLoaded(getState())) {
+        console.log('>>>>>>>> Core > asyncConnect > isAuthLoaded <<<<<<<<<<<<');
         await dispatch(loadAuth());
       }
       if (!isInfoLoaded(getState())) {

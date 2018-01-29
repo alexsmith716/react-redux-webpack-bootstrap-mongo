@@ -37,9 +37,12 @@ import createStore from '../client/redux/createStore';
 import matchRoutesPromise from './utils/matchRoutesPromise';
 
 import routes from '../client/routes/routes';
-import appApi from './api/api';
+//import appApi from './api/api';
+import appApi2 from './api/apiRoutes2';
 //import renderFullPage from './render/renderFullPage';
 import Html from './helpers/Html';
+
+console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> SERVER >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
 
 // #########################################################################
 
@@ -94,11 +97,6 @@ if (process.env.NODE_ENV === 'development') {
 
 // #########################################################################
 
-// const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
-// const proxy = 
-
-// #########################################################################
-
 app.use('/public', express.static(path.join(__dirname, '../public')));
 //app.use('/static', express.static(path.resolve(__dirname, '../dist/client')));
 app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico')),);
@@ -111,13 +109,6 @@ app.use(cors());
 
 // #########################################################################
 
-//app.use('/dist/service-worker.js', (req, res, next) => {
-//  res.setHeader('Service-Worker-Allowed', '/');
-//  return next();
-//});
-
-// #########################################################################
-
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 // app.use(cookieParser());
@@ -125,18 +116,24 @@ app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 
 // #########################################################################
 
-/*
+//app.use('/dist/service-worker.js', (req, res, next) => {
+//  res.setHeader('Service-Worker-Allowed', '/');
+//  return next();
+//});
+
+// #########################################################################
+
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods',);
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
+  return next();
 });
-*/
 
-// #########################################################################
-
-app.use('/api', appApi);
+app.use((req, res, next) => {
+  res.setHeader('X-Forwarded-For', req.ip);
+  return next();
+});
 
 // #########################################################################
 
@@ -146,6 +143,7 @@ import './db/mongo';
 
 app.use((req, res, next) => {
   console.log('>>>>>>>>>>>>>>>>>>>>>> GOING THROUGH APP NOW >>>>>>>>>>>>>>>>>>');
+  console.log('REQ.ip +++++: ', req.ip);
   console.log('REQ.method +++++: ', req.method);
   console.log('REQ.url ++++++++: ', req.url);
   console.log('REQ.originalUrl ++++++++: ', req.originalUrl);
@@ -157,10 +155,16 @@ app.use((req, res, next) => {
     console.log('REQ.user +++++: NO USER');
   };
   console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
-  next();
+  return next();
 });
 
 // #########################################################################
+
+app.use('/api', appApi2);
+
+//app.use('/api', async (req, res) => {
+//  console.log('>>>>>>>>>>>>>>>>>> APP.USE(API) >>>>>>>>>>>>>>>>>>');
+//});
 
 // #########################################################################
 
@@ -225,16 +229,21 @@ app.use((req, res) => {
   const history = createMemoryHistory({ initialEntries: [url] });
   const store = createStore(history, client);
 
-  console.log('>>>>>>>> server > app.use((req,res) > parseUrl() > location: ', location);
-  console.log('>>>>>>>> server > app.use((req,res) > apiClient() > client: ', client);
-  console.log('>>>>>>>> server > app.use((req,res) > createMemoryHistory() > history: ', history);
-  console.log('>>>>>>>> server > app.use((req,res) > createStore() > store: ', store);
+  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > url: ', url);
+  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > location: ', location);
+  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > client: ', client);
+  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > history: ', history);
+  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > store: ', store);
 
+  // request data and store it to redux state
+
+  // 1. load data (loadOnServer)
   loadOnServer({ store, location, routes, helpers: { client } })
     .then(() => {
 
       const context = {};
 
+      // 2. use `ReduxAsyncConnect` to render component tree
       const component = (
         <Provider store={store} key="provider">
           <StaticRouter location={req.url} context={context}>
@@ -243,25 +252,26 @@ app.use((req, res) => {
         </Provider>
       );
 
-      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > component1: ', component);
+      console.log('>>>>>>>> server > app.use() > loadOnServer > .then > component1: ', component);
 
       const content = ReactDOM.renderToString(component);
 
-      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > content2: ', content);
+      console.log('>>>>>>>> server > app.use() > loadOnServer > .then > content2: ', content);
 
       const assets = global.webpackIsomorphicTools.assets();
 
-      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > assets3: ', assets);
+      console.log('>>>>>>>> server > app.use() > loadOnServer > .then > assets3: ', assets);
 
+      // 3. render the Redux initial data into the server markup
       const html = <Html assets={assets} content={content} store={store} />;
 
-      console.log('>>>>>>>> server > app.use() > loadOnServer() > .then > html3: ', html);
+      console.log('>>>>>>>> server > app.use() > loadOnServer > .then > html3: ', html);
       
       res.status(200).send(`<!doctype html>${ReactDOM.renderToString(html)}`);
 
     })
     .catch((err) => {
-      console.log('>>>>>>>> server > app.use() > loadOnServer() > .catch > err: ', err);
+      console.log('>>>>>>>> server > app.use() > loadOnServer > .catch > err: ', err);
       res.status(500).send('response error >>>> 500 !!!!!');
       //res.status(500);
       //hydrate();
