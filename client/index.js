@@ -1,54 +1,86 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom';
-//import { Router } from 'react-router';
-//import { render } from 'react-dom';
-//import { BrowserRouter as Router } from 'react-router-dom';
-import BrowserRouter from 'react-router-dom/BrowserRouter';
 import createBrowserHistory from 'history/createBrowserHistory';
-import { AppContainer } from 'react-hot-loader';
-import { Provider } from 'react-redux';
-import { renderRoutes } from 'react-router-config';
-import { ReduxAsyncConnect } from 'redux-connect';
-import { getStoredState } from 'redux-persist';
+import BrowserRouter from 'react-router-dom/BrowserRouter';
 import localForage from 'localforage';
-
-import routes from './routes/routes';
-import createStore from './redux/createStore';
+import { ReduxAsyncConnect } from 'redux-connect';
+import { AppContainer as HotEnabler } from 'react-hot-loader';
+import { getStoredState } from 'redux-persist';
+import { Provider } from 'react-redux';
+import createStore from './redux/create';
 import apiClient from '../server/helpers/apiClient';
-const client = apiClient();
-
-const mountApp = document.getElementById('content');
+import routes from './routes';
+import isOnline from '../server/utils/isOnline';
 
 const offlinePersistConfig = {
   storage: localForage,
-  whitelist: ['auth',]
+  whitelist: ['auth', 'info']
 };
 
-const data = { ...window.__data };
-const history = createBrowserHistory();
-const store = createStore(history, client, data);
+const client = apiClient();
+const dest = document.getElementById('content');
 
+(async () => {
+  const storedData = await getStoredState(offlinePersistConfig);
+  const online = await (window.__data ? true : isOnline());
+  const data = !online ? { ...storedData, ...window.__data, online } : { ...window.__data, online };
+  const history = createBrowserHistory();
+  const store = createStore(history, client, data, offlinePersistConfig);
 
-const render = (routes) => {
-  ReactDOM.hydrate(
-    <AppContainer>
-      <Provider store={store}>
-        <BrowserRouter>
-          <ReduxAsyncConnect routes={routes} helpers={{ client }} />
-        </BrowserRouter>
-      </Provider>
-    </AppContainer>,
-    mountApp
-  )
-};
+  const hydrate = _routes => {
+    ReactDOM.hydrate(
+      <HotEnabler>
+        <Provider store={store}>
+          <BrowserRouter>
+            <ReduxAsyncConnect routes={_routes} helpers={{ client }} />
+          </BrowserRouter>
+        </Provider>
+      </HotEnabler>
+      , dest
+    );
+  };
 
-render(routes);
+  hydrate(routes);
 
-if (module.hot) {
-  module.hot.accept('./routes/routes', () => {
-    render(require('./routes/routes'));
-  });
-}
+  if (module.hot) {
+    module.hot.accept('./routes', () => {
+      hydrate(require('./routes'));
+    });
+  }
 
+  if (process.env.NODE_ENV !== 'production') {
+    window.React = React; // enable debugger
 
+    if (!dest || !dest.firstChild || !dest.firstChild.attributes || !dest.firstChild.attributes['data-reactroot']) {
+      console.error('Server-side React render was discarded.' +
+        'Make sure that your initial render does not contain any client-side code.');
+    }
+  }
+
+  if (__DEVTOOLS__ && !window.devToolsExtension) {
+    const devToolsDest = document.createElement('div');
+    window.document.body.insertBefore(devToolsDest, null);
+    const DevTools = require('./containers/DevTools/DevTools');
+
+    ReactDOM.hydrate(
+      <Provider store={store} key="provider">
+        <DevTools />
+      </Provider>,
+      devToolsDest
+    );
+  }
+
+  if (online && !__DEVELOPMENT__ && 'serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        await navigator.serviceWorker.register('/dist/service-worker.js', { scope: '/' });
+        console.log('Service worker registered!');
+      } catch (error) {
+        console.log('Error registering service worker: ', error);
+      }
+
+      await navigator.serviceWorker.ready;
+      console.log('Service Worker Ready');
+    });
+  }
+})();

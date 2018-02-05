@@ -28,7 +28,6 @@ module.exports = {
       'react-router',
       'react-router-dom',
       'redux',
-      'redux-thunk',
       'tether',
       'jquery',
       'bootstrap',
@@ -166,7 +165,7 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.IgnorePlugin(/\/iconv-loader$/),
-    //new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 
     new webpack.NamedModulesPlugin(),
 
@@ -179,11 +178,12 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         CLIENT: JSON.stringify(true),
-        'NODE_ENV': JSON.stringify('development'),
+        NODE_ENV: JSON.stringify('development'),
       },
       __CLIENT__: true,
       __SERVER__: false,
       __DEVELOPMENT__: true,
+      __DEVTOOLS__: true
     }),
 
     new WebpackIsomorphicToolsPlugin(webpackIsomorphicToolsConfig).development(),

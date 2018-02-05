@@ -1,28 +1,28 @@
 import axios from 'axios';
 import config from '../config';
 
-
-// FILE IS CLIENT SIDE ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// axios: Promise based HTTP client for the browser and node.js
+// Requests can be made by passing the relevant config to axios
 
 export default function apiClient(req) {
-  const voo = { baseURL: __SERVER__ ? `http://${config.apiHost}:${config.apiPort}` : '/api' };
-  console.log('>>>>>>>>>>>>>> ApiClient() > __SERVER__ > config.host: ', config.host);
-  console.log('>>>>>>>>>>>>>> ApiClient() > __SERVER__ > config.port: ', config.port);
-  console.log('>>>>>>>>>>>>>> ApiClient() > __SERVER__ > config.apiHost: ', config.apiHost);
-  console.log('>>>>>>>>>>>>>> ApiClient() > __SERVER__ > config.apiPort: ', config.apiPort);
-  console.log('>>>>>>>>>>>>>> ApiClient() > __SERVER__ > baseURL: ', voo);
+  // create a new instance of axios and set config defaults
   const instance = axios.create({
     baseURL: __SERVER__ ? `http://${config.apiHost}:${config.apiPort}` : '/api'
   });
 
   let token;
 
+  // set jwt token for axios instance
   instance.setJwtToken = newToken => {
     token = newToken;
   };
 
+  // interceptors: intercept requests or responses before they are handled by then or catch
+
+  // Add a request interceptor
   instance.interceptors.request.use(
     conf => {
+      // Do something before request is sent
       if (__SERVER__) {
         if (req.header('cookie')) {
           conf.headers.Cookie = req.header('cookie');
@@ -33,11 +33,15 @@ export default function apiClient(req) {
       }
       return conf;
     },
+    // Do something with request error
     error => Promise.reject(error)
   );
 
+  // Add a response interceptor
   instance.interceptors.response.use(
+    // Do something with response data
     response => response.data,
+    // Do something with response error
     error => Promise.reject(error.response ? error.response.data : error)
   );
 

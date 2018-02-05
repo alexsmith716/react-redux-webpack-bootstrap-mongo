@@ -1,26 +1,63 @@
+import React, { Component } from 'react';
+import Helmet from 'react-helmet';
 
-import React from 'react';
-import { Helmet } from 'react-helmet';
+export default class About extends Component {
+  state = {
+    showKitten: false
+  };
 
+  handleToggleKitten = () => this.setState({ showKitten: !this.state.showKitten });
 
+  render() {
+    const { showKitten } = this.state;
+    const kitten = require('./kitten.jpg');
+    return (
+      <div className="container">
+        <h1>About Us</h1>
+        <Helmet title="About Us" />
 
-const About = () => (
+        <p>
+          This project was originally created by Erik Rasmussen (
+          <a href="https://twitter.com/erikras" target="_blank" rel="noopener noreferrer">
+            @erikras
+          </a>), but has since seen many contributions from the open source community. Thank you to{' '}
+          <a
+            href="https://github.com/erikras/react-redux-universal-hot-example/graphs/contributors"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            all the contributors
+          </a>.
+        </p>
 
-  <div>
+        <h3>
+          Mini Bar <span style={{ color: '#aaa' }}>(not that kind)</span>
+        </h3>
 
-    <Helmet>
+        <p>
+          Hey! You found the mini info bar! The following component is display-only. Note that it shows the same time as
+          the info bar.
+        </p>
 
-      <title>About Us</title>
+        <h3>Images</h3>
 
-    </Helmet>
+        <p>
+          Psst! Would you like to see a kitten?
+          <button
+            className={`btn btn-${showKitten ? 'danger' : 'success'}`}
+            style={{ marginLeft: 50 }}
+            onClick={this.handleToggleKitten}
+          >
+            {showKitten ? 'No! Take it away!' : 'Yes! Please!'}
+          </button>
+        </p>
 
-
-    <h1>About ThisGreatApp</h1>
-
-    <p>We at ThisGreatApp XXXX are dedicated to providing the highest level of customer service. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
-
-  </div>
-
-);
-
-export default About;
+        {showKitten && (
+          <div>
+            <img src={kitten} alt="kitchen" />
+          </div>
+        )}
+      </div>
+    );
+  }
+}

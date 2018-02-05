@@ -3,6 +3,10 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
+const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+const webpackIsomorphicToolsConfig = require('./webpack.config.isomorphic');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 console.log('>>>>>>> webpack.config.prod.js > process.env.NODE_ENV <<<<<<<<: ', process.env.NODE_ENV);
 
@@ -18,13 +22,24 @@ module.exports = {
       path.join(__dirname, './client/assets/scss/global.scss'),
       path.join(__dirname, './client/index.js'),
     ],
-    vendor: ['react', 'react-dom'],
+    vendor: [
+      'react',
+      'react-dom',
+      'react-redux',
+      'react-router',
+      'react-router-dom',
+      'redux',
+      'tether',
+      'jquery',
+      'bootstrap',
+    ],
   },
 
   output: {
     path: path.join(__dirname, './public/static/dist/client'),
-    filename: '[name].js',
-    publicPath: '/public/static/dist/client/',
+    filename: '[name]-[chunkhash].js',
+    chunkFilename: '[name]-[chunkhash].js',
+    publicPath: '/dist/',
   },
 
   resolve: {
@@ -131,10 +146,12 @@ module.exports = {
   },
 
   plugins: [
-
+    new webpack.IgnorePlugin(/\/iconv-loader$/),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
+        CLIENT: JSON.stringify(true),
       },
     }),
 

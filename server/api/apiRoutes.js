@@ -1,18 +1,53 @@
-import { Router } from 'express';
-import userRoutes from './Users.routes';
-import companyRoutes from './Company.routes';
-import jobsRoutes from './Jobs.routes';
-import paymentRoutes from './Payments.routes';
-import uploadRoutes from './Upload.routes';
-import searchRoutes from './Search.routes';
+import cookie from 'cookie';
+import config from '../config';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+// actions: (login, logout, register)
+import actions from './actions';
+import { mapUrl, parseToken } from './common/utils';
 
-const router = new Router();
+// req.url:  /auth/load
+// splittedUrlPath:  [ 'auth', 'load' ]
 
-router.use('/', companyRoutes);
-router.use('/', jobsRoutes);
-router.use('/', paymentRoutes);
-router.use('/', userRoutes);
-router.use('/', uploadRoutes);
-router.use('/', searchRoutes);
+const apiRoutes = async (req,res) => {
+  console.log('>>>>>>>>>>>>>>>>> !!!!!!!!!!! apiRoutes - app.use !!!!!!!!!!!! <<<<<<<<<<<<<<<<<<<');
+  const splittedUrlPath = req.url.split('?')[0].split('/').slice(1);
+  const { action, params } = mapUrl(actions, splittedUrlPath);
 
-export default router;
+  req.app.use(bodyParser.json());
+  req.app.use(cookieParser());
+
+  if (action) {
+    const token = cookie.parse(req.headers.cookie || '').accessToken;
+    if (token) {
+      req.session.user = parseToken(token).sub;
+    }
+
+    try {
+      const result = await action(req, params);
+
+      console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > apiRoutes > async > try > result: ', result);
+
+      if (result.isAnonymous) {
+        return res.end();
+      }
+
+      if (result instanceof Function) {
+        result(res);
+      } else {
+        res.json(result);
+      }
+    } catch (error) {
+      if (error.redirect) {
+        return res.redirect(error.redirect);
+      }
+
+      console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > catch > error:', error);
+      res.status(error.status || 500).json(error);
+    }
+  } else {
+    res.status(404).end('NOT FOUND');
+  }
+};
+
+export default apiRoutes;

@@ -1,4 +1,4 @@
-import { Device } from 'models';
+import { Device } from '../../models/Device';
 
 export default function add(req) {
   return new Promise((resolve, reject) => {

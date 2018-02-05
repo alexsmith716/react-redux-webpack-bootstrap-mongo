@@ -1,12 +1,8 @@
-//import moment from 'moment';
-//import jwt from 'jwt-simple';
-//import ejwt from 'express-jwt';
-//import * as config from './config';
+import moment from 'moment';
+import jwt from 'jwt-simple';
+import * as config from './config';
 
 export const mapUrl = (availableActions = {}, url = []) => {
-
-  console.error('>>>>>>>>>>>>>>>> server > appApi > utils <<<<<<<<<<<<<<<<<');
-
   const notFound = { action: null, params: [] };
 
   if (url.length === 0 || Object.keys(availableActions).length === 0) {
@@ -30,7 +26,6 @@ export const mapUrl = (availableActions = {}, url = []) => {
   return (typeof actionAndParams.action === 'function') ? actionAndParams : notFound;
 };
 
-/*
 export const createToken = user => {
   const payload = {
     sub: {
@@ -57,4 +52,4 @@ export function checkNested(obj) {
   }
   return true;
 }
-*/
+
