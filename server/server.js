@@ -148,6 +148,70 @@ mongoose.connect('mongodb://localhost/apptest2018');
 
 // #########################################################################
 
+app.use(async (req, res) => {
+  console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
+
+  if (process.env.NODE_ENV === 'development') {
+    global.webpackIsomorphicTools.refresh();
+  }
+
+  const url = req.originalUrl || req.url;
+  const location = parseUrl(url);
+  const client = apiClient(req);
+  const history = createMemoryHistory({ initialEntries: [url] });
+  const store = createStore(history, client);
+
+  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > url: ', url);
+  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > location: ', location);
+  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > client: ', client);
+  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > history: ', history);
+  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > store: ', store);
+
+  // request data and store it to redux state
+
+  try {
+    console.log('>>>>>>>>>>>>>> server > app.use async (req, res) > try <<<<<<<<<<<<<<<<<<<');
+
+    // 1. load data (loadOnServer)
+    await loadOnServer({store, location, routes, helpers: { client }});
+
+    const context = {};
+
+    // 2. use `ReduxAsyncConnect` to render component tree
+    const component = (
+      <Provider store={store} key="provider">
+        <StaticRouter location={url} context={context}>
+          <ReduxAsyncConnect routes={routes} helpers={{ client }} />
+        </StaticRouter>
+      </Provider>
+    );
+
+    //console.log('>>>>>>>>>>>>>> server > app.use async (req, res) > try > component: ', component);
+
+    const content = ReactDOM.renderToString(component);
+
+    if (context.url) {
+      return res.redirect(302, context.url);
+    }
+
+    const assets = global.webpackIsomorphicTools.assets();
+
+    // 3. render the Redux initial data into the server markup
+    const html = <Html assets={assets} content={content} store={store} />;
+
+    console.log('>>>>>>>>>>>>>> server > app.use async (req, res) > try > html: ', html);
+
+    res.status(200).send(`<!doctype html>${renderToStaticMarkup(html)}`);
+    
+    } catch (err) {
+      console.log('>>>>>>>> server > app.use() > loadOnServer > .catch > err: ', err);
+      res.status(500).send('response error >>>> 500 !!!!!');
+      //res.status(500);
+      //hydrate();
+    }
+
+});
+/*
 app.use((req, res) => {
 
   console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
@@ -212,6 +276,7 @@ app.use((req, res) => {
     });
 
 });
+*/
 
 // #########################################################################
 // #########################################################################
