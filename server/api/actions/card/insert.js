@@ -1,4 +1,4 @@
-import { Card } from 'models';
+import { Card } from '../../models/Card';
 
 export default function insert(req) {
   return new Promise((resolve, reject) => {

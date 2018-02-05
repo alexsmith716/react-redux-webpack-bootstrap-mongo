@@ -1,8 +1,7 @@
 export default function load() {
   return new Promise(resolve => {
-    resolve({
-      message: 'This came from the api server',
-      time: Date.now()
-    });
+    let resolved  = { message: 'This came from the api server', time: Date.now()}
+    console.log('>>>>>>>>>>>>>> api > actions > info > load > resolved: ', resolved);
+    resolve(resolved);
   });
 }

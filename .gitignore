@@ -1,21 +1,24 @@
 
-/node_modules
-/log
-logs
-/ssl
+node_modules/
+log/
+logs/
+ssl/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-/dist
-/build
-/coverage
+dist/
+build
+coverage
 gh-pages/
 bin/*.json
+package-lock.json
+yarn.lock
 
 #################################
 
-.DS_Store
+*.DS_Store
 *.log
+*.iml
 .env
 .crt
 .pem
@@ -33,9 +36,10 @@ bin/*.json
 .nyc_output
 .yarn-integrity
 /.vscode
-/.idea
+.idea/
 .env
 *.sublime-workspace
+*.report.html
 
 #################################
 
@@ -46,7 +50,10 @@ server/mail/config.js
 server/config.js
 /client/build
 dist/
+static/dist/
+public/dist/
 public/static/dist
 public/dist
 public/uploads
 public/sw.js
+npm-debug.log

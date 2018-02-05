@@ -3,74 +3,36 @@ import PropTypes from 'prop-types';
 import serialize from 'serialize-javascript';
 import Helmet from 'react-helmet';
 
-/**
- * Wrapper component containing HTML metadata and boilerplate tags.
- * Used in server-side code only to wrap the string output of the
- * rendered route component.
- *
- * The only thing this component doesn't (and can't) include is the
- * HTML doctype declaration, which is added to the rendered output
- * by the server.js file.
- */
 const Html = props => {
+
   const { assets, content, store } = props;
   const head = Helmet.renderStatic();
 
-  /* eslint-disable react/no-danger */
+
   return (
     <html lang="en">
       <head>
-        {head.base.toComponent()}
-        {head.title.toComponent()}
-        {head.meta.toComponent()}
-        {head.link.toComponent()}
-        {head.script.toComponent()}
 
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="application-name" content="ThisGreatApp!" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <meta name="apple-mobile-web-app-title" content="ThisGreatApp!" />
-        <meta name="theme-color" content="#3677dd" />
-        {/* styles (will be present only in production with webpack extract text plugin) */}
-        {assets.styles &&
-          Object.keys(assets.styles).map(style => (
-            <link
-              href={assets.styles[style]}
-              key={style}
-              media="screen, projection"
-              rel="stylesheet"
-              type="text/css"
-              charSet="UTF-8"
-            />
-          ))}
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta http-equiv="X-UA-Compatible' content='IE=edge"/>
+        <meta name="viewport', content='width=device-width, initial-scale=1"/>
+        <meta name="description" content="Election App XXXXXX!!"/>
 
-        {/* (will be present only in development mode) */}
-        {assets.styles && Object.keys(assets.styles).length === 0 ? (
-          <style dangerouslySetInnerHTML={{ __html: '#content{display:none}' }} />
-        ) : null}
+        <title>ThisGreatApp!</title>
+
       </head>
       <body>
-        <div id="content" dangerouslySetInnerHTML={{ __html: content }} />
-        {store && (
-          <script
-            dangerouslySetInnerHTML={{ __html: `window.__data=${serialize(store.getState())};` }}
-            charSet="UTF-8"
-          />
-        )}
-        {assets.javascript && <script src={assets.javascript.main} charSet="UTF-8" />}
-
-        {/* (will be present only in development mode) */}
-        {assets.styles && Object.keys(assets.styles).length === 0 ? (
-          <script dangerouslySetInnerHTML={{ __html: 'document.getElementById("content").style.display="block";' }} />
-        ) : null}
+        <div>
+          <h3>Welcome back! Bbdhhd cdcdsnc ncsdcdscmn njkvfvjdkfvn.</h3>
+          <ul>
+            <li>Home</li>
+            <li>Log In</li>
+          </ul>
+        </div>
       </body>
     </html>
   );
-  /* eslint-enable react/no-danger */
+
 };
 
 Html.propTypes = {
@@ -78,14 +40,16 @@ Html.propTypes = {
     styles: PropTypes.object,
     javascript: PropTypes.object
   }),
-  component: PropTypes.node.isRequired,
+  content: PropTypes.string,
   store: PropTypes.shape({
     getState: PropTypes.func
   }).isRequired
 };
 
 Html.defaultProps = {
-  assets: {}
+  assets: {},
+  content: ''
 };
 
 export default Html;
+

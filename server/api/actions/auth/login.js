@@ -1,4 +1,4 @@
-import { User } from 'models';
+import { User } from '../../models/User';
 import { createToken } from '../../common/utils';
 import { sessionExpiredTime } from '../../common/config';
 
