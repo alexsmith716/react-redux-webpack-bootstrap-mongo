@@ -2,7 +2,7 @@
 import React from 'react';
 
 
-const Html3 = () => {
+const Html2 = () => {
 
   <html lang='en'>
 
@@ -30,4 +30,4 @@ const Html3 = () => {
 
 
 
-export default Html3;
+export default Html2;
