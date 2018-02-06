@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import serialize from 'serialize-javascript';
 import Helmet from 'react-helmet';
 
-const Html = props => {
+const Html1 = props => {
 
   const { assets, content, store } = props;
   const head = Helmet.renderStatic();
@@ -51,5 +51,5 @@ Html.defaultProps = {
   content: ''
 };
 
-export default Html;
+export default Html1;
 

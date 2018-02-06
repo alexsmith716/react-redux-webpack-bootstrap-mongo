@@ -93,7 +93,7 @@ app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico'))
 
 // #########################################################################
 
-app.get('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '../public/static/manifest/manifest.json')));
+//app.get('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '../public/static/manifest/manifest.json')));
 
 // production +++++++++++++++++++++++++++++++
 //app.use('/dist/service-worker.js', (req, res, next) => {
@@ -122,7 +122,7 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-app.use('/api', mongoStore);
+//app.use('/api', mongoStore);
 //app.use('/api', require('./db/mongoStore'));
 app.use('/api', apiRoutes);
 
@@ -204,7 +204,7 @@ app.use(async (req, res) => {
     res.status(200).send(`<!doctype html>${renderToStaticMarkup(html)}`);
     
     } catch (err) {
-      console.log('>>>>>>>> server > app.use() > loadOnServer > .catch > err: ', err);
+      console.log('>>>>>>>> server > app.use > loadOnServer > .catch > err: ', err);
       res.status(500).send('response error >>>> 500 !!!!!');
       //res.status(500);
       //hydrate();

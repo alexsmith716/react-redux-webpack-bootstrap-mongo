@@ -154,7 +154,7 @@ module.exports = {
         CLIENT: JSON.stringify(true),
       },
     }),
-
+    new WebpackIsomorphicToolsPlugin(webpackIsomorphicToolsConfig),
     new ExtractTextPlugin('styles.css'),
 
   ]
