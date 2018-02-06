@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
 import { asyncConnect } from 'redux-connect';
 import renderRoutes from 'react-router-config/renderRoutes';
-
 import Helmet from 'react-helmet';
 
 import { isLoaded as isInfoLoaded, load as loadInfo } from '../../redux/modules/info';
@@ -17,6 +15,9 @@ import config from '../../../server/config';
   {
     promise: async ({ store: { dispatch, getState } }) => {
       if (!isAuthLoaded(getState())) {
+        const c = {...config.app};
+        console.log('>>>>>>>>>>>>>>>>>> APP > config >>>>>>>>>>>>>>>>>>>>>>1: ', c);
+        console.log('>>>>>>>>>>>>>>>>>> APP > config >>>>>>>>>>>>>>>>>>>>>>2: ', config);
         await dispatch(loadAuth());
       }
       if (!isInfoLoaded(getState())) {
@@ -86,7 +87,6 @@ export default class App extends Component {
               />
             </div>
           )}
-
           {renderRoutes(route.routes)}
         </div>
       </div>

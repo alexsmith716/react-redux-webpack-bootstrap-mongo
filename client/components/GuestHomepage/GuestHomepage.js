@@ -12,7 +12,7 @@ const GuestHomepage = () => {
   const imgThumb6 = require('./img/portfolio/thumbnails/6.jpg');
 
   return (
-    <div>GuestHomepage: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sed voluptate nihil eum consectetur similique? Consectetur, quod, incidunt, harum nisi dolores delectus reprehenderit voluptatem perferendis dicta dolorem non blanditiis ex fugiat.</div>
+    <div>GuestHomepage: ThisGreatApp! is all about people sharing their favorite novelties across America. Aut tenetur sit quam aliquid quia dolorum voluptate. Numquam itaque et hic reiciendis. Et eligendi quidem officia maiores. Molestiae ex sed vel architecto nostrum. Debitis culpa omnis perspiciatis vel eum. Vitae doloremque dolor enim aut minus. Possimus quaerat enim voluptatibus provident. Unde commodi ipsum voluptas ut velit. Explicabo voluptas at alias voluptas commodi. Illum et nihil ut nihil et. Voluptas iusto sed facere maiores.</div>
   );
 };
 

@@ -93,7 +93,7 @@ app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico'))
 
 // #########################################################################
 
-//app.get('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '../public/static/manifest/manifest.json')));
+app.get('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '../public/static/manifest/manifest.json')));
 
 // production +++++++++++++++++++++++++++++++
 //app.use('/dist/service-worker.js', (req, res, next) => {
