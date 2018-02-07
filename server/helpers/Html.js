@@ -21,23 +21,32 @@ const Html = props => {
   const head = Helmet.renderStatic();
   
   return (
-    <html lang="en">
-      <head>
-        {head.title.toComponent()}
-        {head.meta.toComponent()}
-        {head.link.toComponent()}
-        {head.script.toComponent()}
 
-        <link rel="shortcut icon" href="/favicon.ico" />
+    <html lang="en">
+
+      <head>
+        {/* (>>>>>>> META <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
+        {head.meta.toComponent()}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="manifest" href="/manifest.json" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="application-name" content="Election App 2018!" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta name="apple-mobile-web-app-title" content="Election App 2018!" />
-        <meta name="theme-color" content="#1E90FF" /> {/* dodgerblue 1 */}
-        {/* styles (will be present only in production with webpack extract text plugin) */}
+        <meta name="theme-color" content="#1E90FF" />
+
+        {/* (>>>>>>> TITLE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
+        {head.title.toComponent()}
+
+        {/* (>>>>>>> LINK <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
+        {head.link.toComponent()}
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="manifest" href="/manifest.json" />
+
+        {/* (>>>>>>> SCRIPT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
+        {head.script.toComponent()}
+
+        {/* (>>>>>>> STYLES (production via webpack extract text plugin)) */}
         {assets.styles &&
           Object.keys(assets.styles).map(style => (
             <link
@@ -54,20 +63,30 @@ const Html = props => {
         {assets.styles && Object.keys(assets.styles).length === 0 ? (
           <style dangerouslySetInnerHTML={{ __html: '#content{display:none}' }} />
         ) : null}
+
       </head>
+
       <body>
+
+        {/* (>>>>>>> APP CONTENT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         <div id="content" dangerouslySetInnerHTML={{ __html: content }} />
 
+        {/* (>>>>>>> APP CONTENT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         {assets.javascript && <script src={assets.javascript.main} charSet="UTF-8" />}
 
         {/* (will be present only in development mode) */}
         {assets.styles && Object.keys(assets.styles).length === 0 ? (
           <script dangerouslySetInnerHTML={{ __html: 'document.getElementById("content").style.display="block";' }} />
         ) : null}
+        
+        {Object.keys(assets.javascript)
+          .filter(key => key.includes('app') || key.includes('vendor'))
+          .reverse()
+          .map(key => <script key={key} src={assets.javascript[key]} />)}
+
       </body>
     </html>
   );
-
 };
 
 Html.propTypes = {

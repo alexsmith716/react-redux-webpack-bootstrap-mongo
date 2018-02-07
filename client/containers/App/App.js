@@ -15,9 +15,10 @@ import config from '../../../server/config';
   {
     promise: async ({ store: { dispatch, getState } }) => {
       if (!isAuthLoaded(getState())) {
-        const c = {...config.app};
-        console.log('>>>>>>>>>>>>>>>>>> APP > config >>>>>>>>>>>>>>>>>>>>>>1: ', c);
-        console.log('>>>>>>>>>>>>>>>>>> APP > config >>>>>>>>>>>>>>>>>>>>>>2: ', config);
+        //const c = {...config.app};
+        //console.log('>>>>>>>>>>>>>>>>>> APP > config >>>>>>>>>>>>>>>>>>>>>>1: ', c);
+        //console.log('>>>>>>>>>>>>>>>>>> APP > config >>>>>>>>>>>>>>>>>>>>>>2: ', config);
+        console.log('>>>>>>>>>>>>>>>>>> app.js > asyncConnect >  loadAuth > __SERVER__: ', __SERVER__);
         await dispatch(loadAuth());
       }
       if (!isInfoLoaded(getState())) {

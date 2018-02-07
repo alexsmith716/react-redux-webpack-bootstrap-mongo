@@ -106,6 +106,7 @@ export function isAuthLoaded(state) {
 }
 
 export function loadAuth() {
+  console.log('>>>>>>>>>>>>>>>>>> auth.js > loadAuth > __SERVER__: ', __SERVER__);
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
     promise: async client => {
@@ -119,7 +120,7 @@ export function register(data) {
   return {
     types: [REGISTER, REGISTER_SUCCESS, REGISTER_FAIL],
     promise: async client => {
-      const result = client.post('/auth/register', { ...data, fullName: 'Bdscdcdsjbh' });
+      const result = client.post('/auth/register', { ...data, fullName: 'AuthJSFullName' });
       return result;
     }
   };

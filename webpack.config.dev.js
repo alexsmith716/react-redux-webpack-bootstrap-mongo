@@ -4,8 +4,14 @@ const path = require('path');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 const webpackIsomorphicToolsConfig = require('./webpack.config.isomorphic');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+require('dotenv').config();
+
+const host = process.env.HOST;
+const port = process.env.PORT;
 
 console.log('>>>>> webpack.config.dev.js > process.env.NODE_ENV <<<<<: ', process.env.NODE_ENV);
+// 'webpack-hot-middleware/client?path=http://' + host + ':' + port + '/__webpack_hmr',
+// 'webpack-hot-middleware/client?reload=true',
 
 module.exports = {
 
@@ -35,11 +41,15 @@ module.exports = {
   },
 
   output: {
-    path: path.resolve(__dirname, './public/dist'),
-    filename: '[name].js',
-    chunkFilename: '[name].js',
-    //publicPath: '/',
-    publicPath: 'http://localhost:3000/dist/',
+    path: path.join(__dirname, './dist'),
+    // the target directory for all output files
+    filename: '[name].[chunkhash].js',
+    // the filename template for entry chunks
+    chunkFilename: '[name].[chunkhash].js',
+    // the filename template for additional chunks
+    publicPath: '/',
+    //publicPath: 'http://localhost:3000/dist/',
+    // the url to the output directory resolved relative to the HTML page
   },
 
   module: {
@@ -51,7 +61,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        include: [ path.resolve(__dirname, 'client/assets/scss') ],
+        include: [ path.join(__dirname, 'client/assets/scss') ],
         use: [
           {
             loader: 'style-loader',
@@ -172,7 +182,7 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: Infinity,
-      filename: '[name].js'
+      filename: '[name].[hash].js',
     }),
 
     new webpack.DefinePlugin({
