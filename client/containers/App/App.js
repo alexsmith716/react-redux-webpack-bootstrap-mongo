@@ -11,6 +11,9 @@ import { isAuthLoaded, loadAuth, logout } from '../../redux/modules/auth';
 import Notifs from '../../components/Notifs/Notifs';
 import config from '../../../server/config';
 
+import styles from './App.scss';
+import style from './style.css';
+
 @asyncConnect([
   {
     promise: async ({ store: { dispatch, getState } }) => {
@@ -66,6 +69,8 @@ export default class App extends Component {
   //   }
   // }
 
+  //                <span className={style.colorGold}>Headphones!!</span>
+
   handleLogout = event => {
     event.preventDefault();
     this.props.logout();
@@ -73,11 +78,39 @@ export default class App extends Component {
 
   render() {
     const { user, notifs, route } = this.props;
-    const styles = require('./App.scss');
 
     return (
-      <div className={styles.app}>
+      <div>
+
         <Helmet {...config.app.head} />
+
+        <nav className="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+          <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <a className={`navbar-brand ${style.colorGold}`} href="#">Fixed navbar</a>
+          <div className="collapse navbar-collapse" id="navbarCollapse">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item active">
+                <a className="nav-link" href="#">Home <span className="sr-only">(current)</span></a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="#">Link</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link disabled" href="#">Disabled</a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="#"><span className={`fa fa-headphones ${style.colorGold}`}/>Headphones!</a>
+              </li>
+            </ul>
+            <form className="form-inline mt-2 mt-md-0">
+              <input className="form-control mr-sm-2" placeholder="Search" type="text"></input>
+              <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+          </div>
+        </nav>
+
         <div className={styles.appContent}>
           {notifs.global && (
             <div className="container">
@@ -90,6 +123,7 @@ export default class App extends Component {
           )}
           {renderRoutes(route.routes)}
         </div>
+
       </div>
     );
   }
