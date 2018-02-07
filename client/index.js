@@ -57,6 +57,7 @@ const dest = document.getElementById('content');
     }
   }
 
+  /*
   if (__DEVTOOLS__ && !window.devToolsExtension) {
     const devToolsDest = document.createElement('div');
     window.document.body.insertBefore(devToolsDest, null);
@@ -69,6 +70,7 @@ const dest = document.getElementById('content');
       devToolsDest
     );
   }
+  */
 
   if (online && !__DEVELOPMENT__ && 'serviceWorker' in navigator) {
     window.addEventListener('load', async () => {

@@ -24,8 +24,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/server';
 import { Provider } from 'react-redux';
 import { renderToString, renderToStaticMarkup } from 'react-dom/server';
-import { StaticRouter, matchPath } from 'react-router'; // react-router v4
-import { renderRoutes, matchRoutes } from 'react-router-config'; // react-router v4
+import { StaticRouter, matchPath } from 'react-router';
+import { renderRoutes, matchRoutes } from 'react-router-config';
 import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
 
 import createMemoryHistory from 'history/createMemoryHistory';
@@ -39,8 +39,6 @@ global.__CLIENT__ = false;
 global.__SERVER__ = true;
 global.__DISABLE_SSR__ = false;
 global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
-
-const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
 
 dotenv.config();
 
@@ -122,8 +120,7 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-//app.use('/api', mongoStore);
-//app.use('/api', require('./db/mongoStore'));
+app.use('/api', mongoStore);
 app.use('/api', apiRoutes);
 
 // #########################################################################
@@ -167,7 +164,14 @@ app.use(async (req, res) => {
   console.log('>>>>>>>>>>>>>> server > app.use((req, res) > history: ', history);
   console.log('>>>>>>>>>>>>>> server > app.use((req, res) > store: ', store);
 
-  // request data and store it to redux state
+  const hydrate = () => {
+    res.write('<!doctype html>');
+    ReactDOM.renderToNodeStream(<Html assets={global.webpackIsomorphicTools.assets()} store={store} />).pipe(res);
+  };
+
+  if (__DISABLE_SSR__) {
+    return hydrate();
+  }
 
   try {
     console.log('>>>>>>>>>>>>>> server > app.use async (req, res) > try <<<<<<<<<<<<<<<<<<<');
@@ -186,7 +190,7 @@ app.use(async (req, res) => {
       </Provider>
     );
 
-    //console.log('>>>>>>>>>>>>>> server > app.use async (req, res) > try > component: ', component);
+    console.log('>>>>>>>>>>>>>> server > app.use async (req, res) > try > component: ', component);
 
     const content = ReactDOM.renderToString(component);
 
@@ -194,14 +198,15 @@ app.use(async (req, res) => {
       return res.redirect(302, context.url);
     }
 
-    const assets = global.webpackIsomorphicTools.assets();
-
     // 3. render the Redux initial data into the server markup
-    const html = <Html assets={assets} content={content} store={store} />;
+    const html = <Html assets={global.webpackIsomorphicTools.assets()} content={content} store={store} />;
 
     console.log('>>>>>>>>>>>>>> server > app.use async (req, res) > try > html: ', html);
 
-    res.status(200).send(`<!doctype html>${renderToStaticMarkup(html)}`);
+
+    res.status(200).send(`<!doctype html>${ReactDOM.renderToString(html)}`);
+
+    // res.status(200).send(`<!doctype html>${renderToStaticMarkup(html)}`);
     
     } catch (err) {
       console.log('>>>>>>>> server > app.use > loadOnServer > .catch > err: ', err);
