@@ -8,11 +8,28 @@ if (process.env.NODE_ENV === 'production') {
   // dbURL = process.env.MONGOLAB_URL;
 };
 
+/*
+  req.app.use(session({
+    secret: 'keyboardcat123abz',
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        secure: false
+      },
+      name: 'id',
+      store: new MongoStore({
+        url: process.env.MONGO_URL,
+        //ttl: 14 * 24 * 60 * 60,
+        autoRemove: 'native'
+      })
+  }));
+*/
+
 require('dotenv').config();
 const MongoStore = require('connect-mongo')(session);
 
 export default function mongoStore(req, res, next) {
-  console.log('>>>>>>>>>>>>>>>>> !!!!!!!!!!! mongoStore !!!!!!!!!!!! <<<<<<<<<<<<<<<<<<<');
+  console.log('>>>>>>>>>>>>>>>>> !!!!!!!!!!! MongoStore !!!!!!!!!!!! <<<<<<<<<<<<<<<<<<<');
 
   req.app.use(session({
     secret: 'keyboardcat123abz',
@@ -23,13 +40,15 @@ export default function mongoStore(req, res, next) {
       touchAfter: 0.5 * 3600
     })
   }));
-  
+
   const mongooseOptions = {
     useMongoClient: true,
     autoReconnect: true,
     keepAlive: true,
     connectTimeoutMS: 30000
   };
+  
+  mongoose.Promise = global.Promise;
   
   mongoose.connect(process.env.MONGO_URL, mongooseOptions, err => {
     if (err) {
