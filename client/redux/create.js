@@ -20,13 +20,18 @@ function getMissingReducers(reducers, data) {
 }
 
 export default function createStore(history, client, data, persistConfig = null) {
+
+  console.log('>>>>>>>>>>>>>>>>>> create.js > createStore > client: ', client);
+
   const middleware = [createMiddleware(client), routerMiddleware(history)];
+
+  console.log('>>>>>>>>>>>>>>>>>> create.js > createStore > middleware: ', middleware);
 
   let enhancers = [applyMiddleware(...middleware)];
 
   if (__CLIENT__ && __DEVTOOLS__) {
     const { persistState } = require('redux-devtools');
-    const DevTools = require('../containers/DevTools/DevTools');
+    const DevTools = require('../containers/DevTools/DevTools').default;
     enhancers = [
       ...enhancers,
       window.devToolsExtension ? window.devToolsExtension() : DevTools.instrument(),

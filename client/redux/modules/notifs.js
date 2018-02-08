@@ -1,7 +1,9 @@
-const NOTIF_SEND = 'redux-example/notifs/NOTIF_SEND';
-const NOTIF_DISMISS = 'redux-example/notifs/NOTIF_DISMISS';
-const NOTIF_CLEAR = 'redux-example/notifs/NOTIF_CLEAR';
-const NOTIF_CLEAR_ALL = 'redux-example/notifs/NOTIF_CLEAR_ALL';
+import { NOTIF_SEND } from '../../constants/actionTypes';
+import { NOTIF_DISMISS } from '../../constants/actionTypes';
+import { NOTIF_CLEAR } from '../../constants/actionTypes';
+import { NOTIF_CLEAR_ALL } from '../../constants/actionTypes';
+
+console.log('>>>>>>>> notifs.js <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
 const initialState = {};
 

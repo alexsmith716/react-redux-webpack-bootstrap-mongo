@@ -120,13 +120,10 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-app.use('/api', mongoStore);
-app.use('/api', apiRoutes);
-
-// #########################################################################
-
-//import './db/mongo';
 /*
+import session from 'express-session';
+import mongoose from 'mongoose';
+
 const MongoStore = require('connect-mongo')(session);
 
 app.use(session({
@@ -134,7 +131,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: new MongoStore({
-    url: 'mongodb://localhost/apptest2018',
+    url: process.env.MONGO_URL,
     touchAfter: 0.5 * 3600
   })
 }));
@@ -142,6 +139,12 @@ app.use(session({
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/apptest2018');
 */
+
+
+// #########################################################################
+
+app.use('/api', mongoStore);
+app.use('/api', apiRoutes);
 
 // #########################################################################
 
@@ -164,7 +167,7 @@ app.use(async (req, res) => {
   console.log('>>>>>>>>>>>>>> server > app.use((req, res) > history: ', history);
   console.log('>>>>>>>>>>>>>> server > app.use((req, res) > store: ', store);
 
-  const hydrate = () => {
+  const hydrate = () => { 
     res.write('<!doctype html>');
     ReactDOM.renderToNodeStream(<Html assets={global.webpackIsomorphicTools.assets()} store={store} />).pipe(res);
   };

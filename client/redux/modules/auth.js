@@ -1,16 +1,18 @@
 import { SubmissionError } from 'redux-form';
 import jsCookie from 'js-cookie';
 
-const LOAD = 'redux-example/auth/LOAD';
-const LOAD_SUCCESS = 'redux-example/auth/LOAD_SUCCESS';
-const LOAD_FAIL = 'redux-example/auth/LOAD_FAIL';
-const LOGIN = 'redux-example/auth/LOGIN';
-const LOGIN_SUCCESS = 'redux-example/auth/LOGIN_SUCCESS';
-const LOGIN_FAIL = 'redux-example/auth/LOGIN_FAIL';
-const REGISTER = 'redux-example/auth/REGISTER';
-const REGISTER_SUCCESS = 'redux-example/auth/REGISTER_SUCCESS';
-const REGISTER_FAIL = 'redux-example/auth/REGISTER_FAIL';
-const LOGOUT = 'redux-example/auth/LOGOUT';
+import { LOAD } from '../../constants/actionTypes';
+import { LOAD_SUCCESS } from '../../constants/actionTypes';
+import { LOAD_FAIL } from '../../constants/actionTypes';
+import { LOGIN } from '../../constants/actionTypes';
+import { LOGIN_SUCCESS } from '../../constants/actionTypes';
+import { LOGIN_FAIL } from '../../constants/actionTypes';
+import { REGISTER } from '../../constants/actionTypes';
+import { REGISTER_SUCCESS } from '../../constants/actionTypes';
+import { REGISTER_FAIL } from '../../constants/actionTypes';
+import { LOGOUT } from '../../constants/actionTypes';
+
+console.log('>>>>>>>> auth.js <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
 const initialState = {
   loaded: false
