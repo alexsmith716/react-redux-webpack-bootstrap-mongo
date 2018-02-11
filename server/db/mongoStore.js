@@ -42,7 +42,7 @@ const cookieExpiryDate = new Date(Date.now() + 14 * 24 * 60 * 60);
 const sessionExpireDate = 6 * 60 * 60 * 1000; // 6 hours
 //const sessionExpireDate = 20 * 60 * 1000; // 20 minutes
 
-export default function tester(app) {
+export default function mongoStore(app) {
 
   app.use((req, res, next) => {
     req.app.locals.foober = 'Fooooober';
