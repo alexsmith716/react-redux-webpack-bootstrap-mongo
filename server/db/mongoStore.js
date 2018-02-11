@@ -44,16 +44,11 @@ const sessionExpireDate = 6 * 60 * 60 * 1000; // 6 hours
 
 export default function tester(app) {
 
-  console.log('>>>>>>>> !!!!!!!!!!! MongoStore !!!!!!!!!!!! <<<<<<<<<<< app: ', app);
-
-  app.locals.foober = 'Fooooober';
-
   app.use((req, res, next) => {
+    req.app.locals.foober = 'Fooooober';
     console.log('>>>>>>>>>> !!!!!!!!!!! MongoStore !!!!!!!!!!!! MiddlewareMiddleware >>>>>>');
     return next();
   });
-
-  console.log('>>>>>>>>> !!!!!!!!!!! MongoStore !!!!!!!!!!!! <<<<<<<< app.locals.foober: ', app.locals.foober);
 
   app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -67,8 +62,10 @@ export default function tester(app) {
 
   app.use((req, res, next) => {
     console.log('>>>>>> !!!!!!!!!!! MongoStore !!!!!!!!!!!! MiddlewareMiddleware > REQs >>>');
-    console.log('REQ.headers ++++: ', req.headers);
-    console.log('REQ.sessionID ++++: ', req.sessionID);
+    console.log('REQ.headers ++++++++++++: ', req.headers);
+    console.log('REQ.sessionID ++++++++++: ', req.sessionID);
+    console.log('APP.locals.foober+++++++: ', app.locals.foober);
+    console.log('REQ.APP.locals.foober+++: ', req.app.locals.foober);
     console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
     next();
   });
