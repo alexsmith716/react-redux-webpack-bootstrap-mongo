@@ -1,6 +1,8 @@
 import express from 'express';
 import helmet from 'helmet';
 import compression from 'compression';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import morgan from 'morgan';
 import path from 'path';
@@ -15,8 +17,9 @@ import dotenv from 'dotenv';
 import apiClient from './helpers/apiClient';
 import config from './config';
 import headers from './utils/headers';
-import apiRoutes from './api/apiRoutes';
 import mongoStore from './db/mongoStore';
+import apiRoutes from './api/apiRoutes';
+import delay from 'express-delay';
 
 // #########################################################################
 
@@ -59,9 +62,6 @@ process.on('unhandledRejection', (error, promise) => {
 // #########################################################################
 
 const app = new express();
-// The Express application object can be referred from the request object and the response object as req.app, and res.app, respectively
-// req.app: holds a reference to the instance of the Express application that is using the middleware
-// app variable created by calling express() is set on req && res objects
 
 // #########################################################################
 
@@ -73,21 +73,25 @@ if (process.env.NODE_ENV === 'development') {
 
 // #########################################################################
 
-app.use(morgan('dev'));
-app.use(helmet());
-app.use(cors());
-app.use(headers);
+if (process.env.NODE_ENV === 'development') {
+  //app.use(delay(200, 300));
+}
 
 // #########################################################################
 
-// app.use(bodyParser.json({ limit: '20mb' }));
-// app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
-// app.use(cookieParser());
-// app.use(compression());
+app.use(cookieParser());
+app.use(compression());
 
 app.use('/public', express.static(path.join(__dirname, '../public')));
 //app.use('/static', express.static(path.resolve(__dirname, '../dist/client')));
 app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico')),);
+
+// #########################################################################
+
+app.use(morgan('dev'));
+app.use(helmet());
+app.use(cors());
+app.use(headers);
 
 // #########################################################################
 
@@ -120,31 +124,21 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-/*
-import session from 'express-session';
-import mongoose from 'mongoose';
+app.use(bodyParser.json({ limit: '20mb' }));
+app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 
-const MongoStore = require('connect-mongo')(session);
-
-app.use(session({
-  secret: 'keyboardcat123abz',
-  resave: false,
-  saveUninitialized: false,
-  store: new MongoStore({
-    url: process.env.MONGO_URL,
-    touchAfter: 0.5 * 3600
-  })
-}));
-
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/apptest2018');
-*/
-
+app.use('/api', mongoStore(app));
+app.use('/api', apiRoutes);
 
 // #########################################################################
 
-app.use('/api', mongoStore);
-app.use('/api', apiRoutes);
+app.use((req, res, next) => {
+  console.log('>>>>>>>>>>>>> !!!!!!!!!!! SERVER !!!!!!!!!!!! <<<<<<<<< app.locals.foober: ', app.locals.foober);
+  console.log('>>>>>>>>>>>>> !!!!!!!!!!! SERVER !!!!!!!!!!!! <<<<<<<<< REQ.headers: ', req.headers);
+  console.log('>>>>>>>>>>>>> !!!!!!!!!!! SERVER !!!!!!!!!!!! <<<<<<<<< REQ.sessionID: ', req.sessionID);
+  //res.status(200).send('Respone Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+  return next();
+});
 
 // #########################################################################
 
@@ -210,7 +204,7 @@ app.use(async (req, res) => {
     res.status(200).send(`<!doctype html>${ReactDOM.renderToString(html)}`);
 
     // res.status(200).send(`<!doctype html>${renderToStaticMarkup(html)}`);
-    
+
     } catch (err) {
       console.log('>>>>>>>> server > app.use > loadOnServer > .catch > err: ', err);
       res.status(500).send('response error >>>> 500 !!!!!');
@@ -219,83 +213,28 @@ app.use(async (req, res) => {
     }
 
 });
-/*
-app.use((req, res) => {
-
-  console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
-
-  if (process.env.NODE_ENV === 'development') {
-    global.webpackIsomorphicTools.refresh();
-  }
-
-  const url = req.originalUrl || req.url;
-  const location = parseUrl(url);
-
-  const client = apiClient(req);
-  const history = createMemoryHistory({ initialEntries: [url] });
-  const store = createStore(history, client);
-
-  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > url: ', url);
-  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > location: ', location);
-  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > client: ', client);
-  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > history: ', history);
-  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > store: ', store);
-
-  // request data and store it to redux state
-
-  // 1. load data (loadOnServer)
-  loadOnServer({ store, location, routes, helpers: { client } })
-    .then(() => {
-
-      const context = {};
-
-      // 2. use `ReduxAsyncConnect` to render component tree
-      const component = (
-        <Provider store={store} key="provider">
-          <StaticRouter location={req.url} context={context}>
-            <ReduxAsyncConnect routes={routes} helpers={{ client }} />
-          </StaticRouter>
-        </Provider>
-      );
-
-      console.log('>>>>>>>> server > app.use() > loadOnServer > .then > component1: ', component);
-
-      const content = ReactDOM.renderToString(component);
-
-      console.log('>>>>>>>> server > app.use() > loadOnServer > .then > content2: ', content);
-
-      const assets = global.webpackIsomorphicTools.assets();
-
-      console.log('>>>>>>>> server > app.use() > loadOnServer > .then > assets3: ', assets);
-
-      // 3. render the Redux initial data into the server markup
-      const html = <Html assets={assets} content={content} store={store} />;
-
-      console.log('>>>>>>>> server > app.use() > loadOnServer > .then > html3: ', html);
-      
-      res.status(200).send(`<!doctype html>${ReactDOM.renderToString(html)}`);
-
-    })
-    .catch((err) => {
-      console.log('>>>>>>>> server > app.use() > loadOnServer > .catch > err: ', err);
-      res.status(500).send('response error >>>> 500 !!!!!');
-      //res.status(500);
-      //hydrate();
-    });
-
-});
-*/
 
 // #########################################################################
 // #########################################################################
 
 /*
+app.listen(config.port).on('listening', () =>
 app.listen(config.port, (error) => {
   if (error) {
     console.log('>>>>>>>> Server Error: ', error);
   } else {
     console.log(`>>>>>>>> Server is running on port ${config.port} <<<<<<<<<<<`);
   }
+});
+*/
+/*
+const server = new http.Server(app);
+server.listen(process.env.PORT, err => {
+  if (err) {
+    console.error(err);
+  }
+  console.info('----\n==> SERVER is running, talking to API server on.');
+  console.info('==> Open http:// in a browser to view the app.');
 });
 */
 
@@ -359,4 +298,4 @@ server.on('listening', () => {
 
 });
 
-export default app;
+//export default app;
