@@ -1,26 +1,25 @@
 import cookie from 'cookie';
 import config from '../config';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-// actions: (login, logout, register)
 import actions from './actions';
 import { mapUrl, parseToken } from './common/utils';
 
+// actions: (login, logout, register)
 // req.url:  /auth/load
 // splittedUrlPath:  [ 'auth', 'load' ]
 
 const apiRoutes = async (req,res) => {
+
   console.log('>>>>>>>>>>>>>>>>> !!!!!!!!!!! apiRoutes - app.use !!!!!!!!!!!! <<<<<<<<<<<<<<<<<<<');
   const splittedUrlPath = req.url.split('?')[0].split('/').slice(1);
   const { action, params } = mapUrl(actions, splittedUrlPath);
 
-  req.app.use(bodyParser.json());
-  req.app.use(cookieParser());
-
   if (action) {
     const token = cookie.parse(req.headers.cookie || '').accessToken;
+    console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > apiRoutes > async > try > req.headers?: ', req.headers);
+    console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > apiRoutes > async > try > token?: ', token);
     if (token) {
       req.session.user = parseToken(token).sub;
+      console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > apiRoutes > async > try > req.session.user: ', req.session.user);
     }
 
     try {
@@ -35,6 +34,7 @@ const apiRoutes = async (req,res) => {
       if (result instanceof Function) {
         result(res);
       } else {
+        console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > apiRoutes > async > try > res.json(result): ', result);
         res.json(result);
       }
     } catch (error) {
