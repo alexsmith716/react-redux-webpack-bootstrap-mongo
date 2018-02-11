@@ -128,6 +128,12 @@ app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 
 app.use('/api', mongoStore(app));
+
+app.use((req, res, next) => {
+  console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+  return next();
+});
+
 app.use('/api', apiRoutes);
 
 // #########################################################################
@@ -136,7 +142,7 @@ app.use((req, res, next) => {
   console.log('>>>>>>>>>>>>> !!!!!!!!!!! SERVER !!!!!!!!!!!! <<<<<<<<< app.locals.foober: ', app.locals.foober);
   console.log('>>>>>>>>>>>>> !!!!!!!!!!! SERVER !!!!!!!!!!!! <<<<<<<<< REQ.headers: ', req.headers);
   console.log('>>>>>>>>>>>>> !!!!!!!!!!! SERVER !!!!!!!!!!!! <<<<<<<<< REQ.sessionID: ', req.sessionID);
-  //res.status(200).send('Respone Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+  //res.status(200).send('Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
   return next();
 });
 
