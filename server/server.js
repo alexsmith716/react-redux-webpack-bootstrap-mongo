@@ -38,14 +38,20 @@ import Html from './helpers/Html';
 import routes from '../client/routes';
 import { parse as parseUrl } from 'url';
 
+// #########################################################################
+
+// GLOBAL constants ++++++++++++++++++++++++++++++++++++++++++++
 global.__CLIENT__ = false;
 global.__SERVER__ = true;
 global.__DISABLE_SSR__ = false;
 global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
+global.__DEVTOOLS__ = false;
+
+// #########################################################################
 
 dotenv.config();
 
-console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> SERVER >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>> SERVER 1 <<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
 // #########################################################################
 
@@ -70,6 +76,13 @@ if (process.env.NODE_ENV === 'development') {
   app.use(webpackDevMiddleware(compiler, { noInfo: false, publicPath: webpackConfig.output.publicPath }));
   app.use(webpackHotMiddleware(compiler));
 }
+
+// #########################################################################
+
+console.log('>>>>>>>>>>>>>>>>> SERVER > __CLIENT__: ', __CLIENT__);
+console.log('>>>>>>>>>>>>>>>>> SERVER > __SERVER__: ', __SERVER__);
+console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVTOOLS__: ', __DEVTOOLS__);
+console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__: ', __DEVELOPMENT__);
 
 // #########################################################################
 

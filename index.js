@@ -4,10 +4,9 @@ const projectBasePath = require('path').resolve(__dirname, './');
 
 // #########################################################################
 
-console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> index.js >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Index.js >>>>>>>>>>>>>>> process.env.NODE_ENV: ', process.env.NODE_ENV);
 
 if (process.env.NODE_ENV === 'production') {
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> index.js > production >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   global.webpackIsomorphicTools = new WebpackIsomorphicTools(
     webpackIsomorphicToolsConfig).server(projectBasePath, () => {
       require('./build/server/server.bundle');
@@ -15,7 +14,6 @@ if (process.env.NODE_ENV === 'production') {
   );
 
 } else {
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> index.js > development >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   require('babel-register')({
     plugins: [
       ['babel-plugin-css-modules-transform', {

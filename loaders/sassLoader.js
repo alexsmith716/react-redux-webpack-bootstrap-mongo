@@ -1,6 +1,6 @@
 const sass = require('node-sass');
 
-console.log('>>>>>>>> sassLoader.js <<<<<<<<<<<');
+console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> sassLoader.js <<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
 module.exports = (data, file) => {
 

@@ -7,6 +7,7 @@ import { ReduxAsyncConnect } from 'redux-connect';
 import { AppContainer as HotEnabler } from 'react-hot-loader';
 import { getStoredState } from 'redux-persist';
 import { Provider } from 'react-redux';
+
 import createStore from './redux/create';
 import apiClient from '../server/helpers/apiClient';
 import routes from './routes';
@@ -21,13 +22,24 @@ const client = apiClient();
 const dest = document.getElementById('content');
 
 (async () => {
+
+  console.log('>>>>>>>>>>>>>>>>> client index.js > __CLIENT__: ', __CLIENT__);
+  console.log('>>>>>>>>>>>>>>>>> client index.js > __SERVER__: ', __SERVER__);
+  console.log('>>>>>>>>>>>>>>>>> client index.js > __DEVTOOLS__: ', __DEVTOOLS__);
+  console.log('>>>>>>>>>>>>>>>>> client index.js > __DEVELOPMENT__: ', __DEVELOPMENT__);
+
+
   const storedData = await getStoredState(offlinePersistConfig);
   const online = await (window.__data ? true : isOnline());
+
+  console.log('>>>>>>>>>>>>>>>>> client index.js > window.__data!!!! <<<<<<<<<<: ', window.__data);
+  console.log('>>>>>>>>>>>>>>>>> client index.js > online!!!! <<<<<<<<<<: ', online);
+  
   const data = !online ? { ...storedData, ...window.__data, online } : { ...window.__data, online };
   const history = createBrowserHistory();
   const store = createStore(history, client, data, offlinePersistConfig);
 
-  console.log('>>>>>>>>>>>>>>>>>> index.js > async > createStore > store: ', store);
+  console.log('>>>>>>>>>>>>>>>>>> client index.js > async > createStore > store: ', store);
 
   const hydrate = _routes => {
     ReactDOM.hydrate(
@@ -60,6 +72,7 @@ const dest = document.getElementById('content');
   }
 
   if (__DEVTOOLS__ && !window.devToolsExtension) {
+    console.log('>>>>>>>>>>>>>>>>> client index.js > __DEVTOOLS__ && NO window.devToolsExtension <<<<<<<<<<');
     const devToolsDest = document.createElement('div');
     window.document.body.insertBefore(devToolsDest, null);
     const DevTools = require('./containers/DevTools/DevTools');

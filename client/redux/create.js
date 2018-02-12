@@ -20,28 +20,40 @@ function getMissingReducers(reducers, data) {
 }
 
 export default function createStore(history, client, data, persistConfig = null) {
-
-  console.log('>>>>>>>>>>>>>>>>>> create.js > createStore > client: ', client);
-
+  console.log('>>>>>>>>>> create > createStore >>>>>>>>>>>>>>>>>>');
   const middleware = [createMiddleware(client), routerMiddleware(history)];
 
-  console.log('>>>>>>>>>>>>>>>>>> create.js > createStore > middleware: ', middleware);
+  console.log('>>>>>>>>>> create > createStore > middleware: ', middleware);
 
   let enhancers = [applyMiddleware(...middleware)];
 
+  console.log('>>>>>>>>>> create > createStore > enhancers: ', enhancers);
+
+  //console.log('>>>>>>>>>> create > createStore > CLIENT: ', __CLIENT__);
+  //console.log('>>>>>>>>>> create > createStore > DEVTOOLS: ', __DEVTOOLS__);
+
   if (__CLIENT__ && __DEVTOOLS__) {
+    console.log('>>> create > createStore > CLIENT & DEVTOOLS <<<<<<<<<<');
+    console.log('>>> create > createStore > CLIENT & DEVTOOLS > window.devToolsExtension: ', window.devToolsExtension);
     const { persistState } = require('redux-devtools');
-    const DevTools = require('../containers/DevTools/DevTools').default;
+    const DevTools = require('../containers/DevTools/DevTools');
+    console.log('>>> create > createStore > CLIENT & DEVTOOLS > DevTools: ', DevTools);
     enhancers = [
       ...enhancers,
       window.devToolsExtension ? window.devToolsExtension() : DevTools.instrument(),
       persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
     ];
+    console.log('>>> create > createStore > CLIENT & DEVTOOLS > enhancers: ', enhancers);
   }
 
   const finalCreateStore = compose(...enhancers)(_createStore);
   const missingReducers = getMissingReducers(createReducers(), data);
   const store = finalCreateStore(combineReducers(createReducers(missingReducers)), data);
+
+  console.log('>>>>>>>>>> create > createStore > finalCreateStore: ', finalCreateStore);
+  console.log('>>>>>>>>>> create > createStore > missingReducers: ', missingReducers);
+  console.log('>>>>>>>>>> create > createStore > store: ', store);
+  console.log('>>>>>>>>>> create > createStore > persistConfig: ', persistConfig);
 
   store.asyncReducers = {};
   store.inject = inject.bind(null, store);

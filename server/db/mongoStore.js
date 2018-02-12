@@ -4,13 +4,6 @@ import mongoose from 'mongoose';
 //import cookieParser from 'cookie-parser';
 require('dotenv').config();
 
-let dbURL = process.env.MONGO_URL;
-if (process.env.NODE_ENV === 'production') {
-  // dbURL = process.env.MONGOLAB_URL;
-};
-
-let gracefulShutdown;
-
 // 31,536,000 seconds in a year
 // 60 * 60 * 1000 = 3,600,000 == 1 hour
 // 20 * 60 * 1000 = 1,200,000 == 20 min
@@ -37,6 +30,11 @@ let gracefulShutdown;
   }));
 */
 
+let gracefulShutdown;
+let dbURL = process.env.MONGO_URL;
+if (process.env.NODE_ENV === 'production') {
+  // dbURL = process.env.MONGOLAB_URL;
+};
 const MongoStore = require('connect-mongo')(session);
 const cookieExpiryDate = new Date(Date.now() + 14 * 24 * 60 * 60);
 const sessionExpireDate = 6 * 60 * 60 * 1000; // 6 hours
@@ -45,8 +43,14 @@ const sessionExpireDate = 6 * 60 * 60 * 1000; // 6 hours
 export default function mongoStore(app) {
 
   app.use((req, res, next) => {
+
+    console.log('>>>>>>>>>>>>>>>>> MongoStore > __CLIENT__: ', __CLIENT__);
+    console.log('>>>>>>>>>>>>>>>>> MongoStore > __SERVER__: ', __SERVER__);
+    console.log('>>>>>>>>>>>>>>>>> MongoStore > __DEVTOOLS__: ', __DEVTOOLS__);
+    console.log('>>>>>>>>>>>>>>>>> MongoStore > __DEVELOPMENT__: ', __DEVELOPMENT__);
+
     req.app.locals.foober = 'Fooooober';
-    console.log('>>>>>>>>>> !!!!!!!!!!! MongoStore !!!!!!!!!!!! MiddlewareMiddleware >>>>>>');
+    console.log('>>>>>>>>>>>>>>>>> MongoStore >>>>>>>>>>>>> MiddlewareMiddleware >>>>>>');
     return next();
   });
 
@@ -61,7 +65,7 @@ export default function mongoStore(app) {
   }));
 
   app.use((req, res, next) => {
-    console.log('>>>>>> !!!!!!!!!!! MongoStore !!!!!!!!!!!! MiddlewareMiddleware > REQs >>>');
+    console.log('>>>>>>>>>>>>>>>>> MongoStore >>>>>>>>>>>>> MiddlewareMiddleware > REQs >>>');
     console.log('REQ.headers ++++++++++++: ', req.headers);
     console.log('REQ.sessionID ++++++++++: ', req.sessionID);
     console.log('APP.locals.foober+++++++: ', app.locals.foober);
