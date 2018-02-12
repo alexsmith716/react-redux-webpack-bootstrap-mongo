@@ -10,11 +10,14 @@ export default function isOnline(path = '/favicon.ico') {
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status >= 200 && (xhr.status < 300 || xhr.status === 304)) {
+          console.log('>>>>>>>>>> isOnline.js > xhr.onreadystatechange >>>>>>>> xhr.status1: ', xhr.status);
           return resolve(true);
         }
+        console.log('>>>>>>>>>> isOnline.js > xhr.onreadystatechange >>>>>>>> xhr.status2: ', xhr.status);
         resolve(false);
       }
     };
+    console.log('>>>>>>>>>> isOnline.js > xhr.onreadystatechange >>>>>>>> xhr.send <<<<<<<<<');
     xhr.send(null);
   });
 }

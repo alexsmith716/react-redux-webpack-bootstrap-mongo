@@ -1,16 +1,12 @@
-
 const path = require('path');
-
 
 let cssModulesIdentName = '[name]__[local]__[hash:base64:5]';
 
 if (process.env.NODE_ENV === 'production') {
-
   cssModulesIdentName = '[hash:base64]';
-
 }
 
-console.log('>>>>>>> webpack.config.babel.js <<<<<<<<<<<<<<<<<<<<<<');
+console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> webpack.config.babel.js <<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
 // this concerns server only
 // what server-side code needs to be loaded and transformed (Babel) from es6 to es5

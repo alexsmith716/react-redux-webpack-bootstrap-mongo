@@ -6,7 +6,7 @@
   "author": "dev",
   "license": "MIT",
   "scripts": {
-    "sd": "NODE_ENV=development BABEL_DISABLE_CACHE=1 nodemon index.js --ignore client/ --ignore webpack-assets.json",
+    "sd": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon index.js --ignore client/ --ignore webpack-assets.json",
     "bd": "NODE_ENV=development webpack --config ./webpack.config.dev.js",
     "bp": "NODE_ENV=production webpack --config ./webpack.config.prod.js"
   },

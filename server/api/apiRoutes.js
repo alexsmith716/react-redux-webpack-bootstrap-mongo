@@ -9,23 +9,29 @@ import { mapUrl, parseToken } from './common/utils';
 
 const apiRoutes = async (req,res) => {
 
-  console.log('>>>>>>>>>>>>>>>>> !!!!!!!!!!! apiRoutes - app.use !!!!!!!!!!!! <<<<<<<<<<<<<<<<<<<');
+  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > __CLIENT__: ', __CLIENT__);
+  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > __SERVER__: ', __SERVER__);
+  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > __DEVTOOLS__: ', __DEVTOOLS__);
+  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > __DEVELOPMENT__: ', __DEVELOPMENT__);
+
   const splittedUrlPath = req.url.split('?')[0].split('/').slice(1);
   const { action, params } = mapUrl(actions, splittedUrlPath);
 
   if (action) {
     const token = cookie.parse(req.headers.cookie || '').accessToken;
-    console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > apiRoutes > async > try > req.headers?: ', req.headers);
-    console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > apiRoutes > async > try > token?: ', token);
+    console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > YES action: ', action);
+    console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > action > req.headers: ', req.headers);
+
     if (token) {
+      console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > token: ', token);
       req.session.user = parseToken(token).sub;
-      console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > apiRoutes > async > try > req.session.user: ', req.session.user);
+      console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > token > req.session.user: ', req.session.user);
     }
 
     try {
       const result = await action(req, params);
 
-      console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > apiRoutes > async > try > result: ', result);
+      console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > try > result: ', result);
 
       if (result.isAnonymous) {
         return res.end();
@@ -34,7 +40,7 @@ const apiRoutes = async (req,res) => {
       if (result instanceof Function) {
         result(res);
       } else {
-        console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > apiRoutes > async > try > res.json(result): ', result);
+        console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > try > res.json(result): ', result);
         res.json(result);
       }
     } catch (error) {
@@ -42,10 +48,11 @@ const apiRoutes = async (req,res) => {
         return res.redirect(error.redirect);
       }
 
-      console.log('>>>>>>>>>>>>>>>>>>>>> apiRoutes > catch > error:', error);
+      console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > catch > error:', error);
       res.status(error.status || 500).json(error);
     }
   } else {
+    console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > NO action: ', action);
     res.status(404).end('NOT FOUND');
   }
 };

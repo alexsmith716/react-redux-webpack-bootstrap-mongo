@@ -12,6 +12,8 @@ export default function apiClient(req) {
     baseURL: 'http://localhost:3000'
   });
 
+  const foo = __SERVER__ ? `http://${config.apiHost}:${config.apiPort}` : '/api';
+  console.log('>>>>>>>>>>>>>>>>>> ApiClient.js > apiClient > axios.create > baseURL: ', foo);
   console.log('>>>>>>>>>>>>>>>>>> ApiClient.js > apiClient > axios.create > instance: ', instance);
 
   let token;

@@ -71,7 +71,14 @@ const Html = props => {
         {/* (>>>>>>> APP CONTENT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         <div id="content" dangerouslySetInnerHTML={{ __html: content }} />
 
-        {/* (>>>>>>> APP CONTENT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
+        {store && (
+          <script
+            dangerouslySetInnerHTML={{ __html: `window.__data=${serialize(store.getState())};` }}
+            charSet="UTF-8"
+          />
+        )}
+
+        {/* (>>>>>>> APP <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         {assets.javascript && <script src={assets.javascript.main} charSet="UTF-8" />}
 
         {/* (will be present only in development mode) */}

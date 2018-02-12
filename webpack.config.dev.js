@@ -1,4 +1,3 @@
-
 const webpack = require('webpack');
 const path = require('path');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
@@ -9,7 +8,8 @@ require('dotenv').config();
 const host = process.env.HOST;
 const port = process.env.PORT;
 
-console.log('>>>>> webpack.config.dev.js > process.env.NODE_ENV <<<<<: ', process.env.NODE_ENV);
+console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> webpack.config.dev.js <<<<<<<<<<<<<<<<<<<<<<<<<<<');
+
 // 'webpack-hot-middleware/client?path=http://' + host + ':' + port + '/__webpack_hmr',
 // 'webpack-hot-middleware/client?reload=true',
 
@@ -151,17 +151,17 @@ module.exports = {
         test: require.resolve('jquery'),
         use: [{
           loader: 'expose-loader',
-          options: 'jQuery'
+          options: 'jQuery',
         },{
           loader: 'expose-loader',
-          options: '$'
+          options: '$',
         }]
       },
       {
         test: require.resolve('tether'),
         use: [{
           loader: 'expose-loader',
-          options: 'Tether'
+          options: 'Tether',
         }]
       },
     ]
@@ -176,6 +176,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.IgnorePlugin(/\/iconv-loader$/),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.IgnorePlugin(/webpack-stats\.json$/),
 
     new webpack.NamedModulesPlugin(),
 
@@ -185,6 +186,7 @@ module.exports = {
       filename: '[name].[hash].js',
     }),
 
+    // DefinePlugin: GLOBAL constants created at COMPILE TIME ++++++++++++++++
     new webpack.DefinePlugin({
       'process.env': {
         CLIENT: JSON.stringify(true),
@@ -193,7 +195,7 @@ module.exports = {
       __CLIENT__: true,
       __SERVER__: false,
       __DEVELOPMENT__: true,
-      __DEVTOOLS__: true
+      __DEVTOOLS__: true,
     }),
 
     new WebpackIsomorphicToolsPlugin(webpackIsomorphicToolsConfig).development(),
