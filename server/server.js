@@ -19,6 +19,7 @@ import config from './config';
 import headers from './utils/headers';
 import mongoStore from './db/mongoStore';
 import apiRoutes from './api/apiRoutes';
+import apiRoutes2 from './api/apiRoutes2';
 import delay from 'express-delay';
 
 // #########################################################################
@@ -92,12 +93,15 @@ if (process.env.NODE_ENV === 'development') {
 
 // #########################################################################
 
-app.use(cookieParser());
 app.use(compression());
 
 app.use('/public', express.static(path.join(__dirname, '../public')));
 //app.use('/static', express.static(path.resolve(__dirname, '../dist/client')));
 app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico')),);
+
+app.use(cookieParser());
+app.use(bodyParser.json({ limit: '20mb' }));
+app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 
 // #########################################################################
 
@@ -124,7 +128,9 @@ app.use((req, res, next) => {
   console.log('REQ.method +++++: ', req.method);
   console.log('REQ.url ++++++++: ', req.url);
   console.log('REQ.originalUrl ++++++++: ', req.originalUrl);
-  console.log('REQ.headers ++++: ', req.headers);
+  console.log('REQ.baseUrl ++++++++: ', req.baseUrl);
+  console.log('REQ.originalUrl ++++++++: ', req.originalUrl);
+  console.log('REQ.path ++++: ', req.path);
   if(req.user) {
     console.log('REQ.user +++++: ', req.user);
     console.log('REQ.user._id +: ', req.user._id);
@@ -137,17 +143,15 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-app.use(bodyParser.json({ limit: '20mb' }));
-app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
-
+app.use('/api', apiRoutes2);
+/*
 app.use('/api', mongoStore(app));
-
 app.use((req, res, next) => {
   console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
   return next();
 });
-
 app.use('/api', apiRoutes);
+*/
 
 // #########################################################################
 

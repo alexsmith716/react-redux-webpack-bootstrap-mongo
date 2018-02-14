@@ -1,7 +1,5 @@
 import session from 'express-session';
 import mongoose from 'mongoose';
-//import bodyParser from 'body-parser';
-//import cookieParser from 'cookie-parser';
 require('dotenv').config();
 
 // 31,536,000 seconds in a year
@@ -48,6 +46,11 @@ export default function mongoStore(app) {
     console.log('>>>>>>>>>>>>>>>>> MongoStore > __SERVER__: ', __SERVER__);
     console.log('>>>>>>>>>>>>>>>>> MongoStore > __DEVTOOLS__: ', __DEVTOOLS__);
     console.log('>>>>>>>>>>>>>>>>> MongoStore > __DEVELOPMENT__: ', __DEVELOPMENT__);
+
+    console.log('>>>>>>>>>>>>>>>>> MongoStore > REQ.ip +++++: ', req.ip);
+    console.log('>>>>>>>>>>>>>>>>> MongoStore > REQ.method +++++: ', req.method);
+    console.log('>>>>>>>>>>>>>>>>> MongoStore > REQ.url ++++++++: ', req.url);
+    console.log('>>>>>>>>>>>>>>>>> MongoStore > REQ.headers ++++: ', req.headers);
 
     req.app.locals.foober = 'Fooooober';
     console.log('>>>>>>>>>>>>>>>>> MongoStore >>>>>>>>>>>>> MiddlewareMiddleware >>>>>>');
@@ -132,9 +135,6 @@ export default function mongoStore(app) {
       process.exit(0);
     })
   });
-
-  //app.use(bodyParser.json());
-  //app.use(cookieParser());
 
   return (req, res, next) => {
     return next();

@@ -19,6 +19,7 @@ function getMissingReducers(reducers, data) {
   );
 }
 
+// DevTools: https://github.com/gaearon/redux-devtools/blob/master/docs/Walkthrough.md
 export default function createStore(history, client, data, persistConfig = null) {
   console.log('>>>>>>>>>> create > createStore >>>>>>>>>>>>>>>>>>');
   const middleware = [createMiddleware(client), routerMiddleware(history)];
@@ -29,12 +30,14 @@ export default function createStore(history, client, data, persistConfig = null)
 
   console.log('>>>>>>>>>> create > createStore > enhancers: ', enhancers);
 
-  //console.log('>>>>>>>>>> create > createStore > CLIENT: ', __CLIENT__);
-  //console.log('>>>>>>>>>> create > createStore > DEVTOOLS: ', __DEVTOOLS__);
+  console.log('>>>>>>>>>> create > createStore > CLIENT: ', __CLIENT__);
+  console.log('>>>>>>>>>> create > createStore > DEVTOOLS: ', __DEVTOOLS__);
+  console.log('>>>>>>>>>> create > createStore > DEVELOPMENT: ', __DEVELOPMENT__);
 
   if (__CLIENT__ && __DEVTOOLS__) {
     console.log('>>> create > createStore > CLIENT & DEVTOOLS <<<<<<<<<<');
     console.log('>>> create > createStore > CLIENT & DEVTOOLS > window.devToolsExtension: ', window.devToolsExtension);
+    // window.devToolsExtension == undefined
     const { persistState } = require('redux-devtools');
     const DevTools = require('../containers/DevTools/DevTools');
     console.log('>>> create > createStore > CLIENT & DEVTOOLS > DevTools: ', DevTools);

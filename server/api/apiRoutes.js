@@ -14,6 +14,11 @@ const apiRoutes = async (req,res) => {
   console.log('>>>>>>>>>>>>>>>>> ApiRoutes > __DEVTOOLS__: ', __DEVTOOLS__);
   console.log('>>>>>>>>>>>>>>>>> ApiRoutes > __DEVELOPMENT__: ', __DEVELOPMENT__);
 
+  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > REQ.ip +++++: ', req.ip);
+  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > REQ.method +++++: ', req.method);
+  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > REQ.url ++++++++: ', req.url);
+  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > REQ.headers ++++: ', req.headers);
+
   const splittedUrlPath = req.url.split('?')[0].split('/').slice(1);
   const { action, params } = mapUrl(actions, splittedUrlPath);
 
