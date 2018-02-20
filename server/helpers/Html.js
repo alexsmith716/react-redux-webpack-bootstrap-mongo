@@ -14,6 +14,11 @@ import Helmet from 'react-helmet';
 
  * const helmet = Helmet.rewind();
  *  const attrs = helmet.htmlAttributes.toComponent();
+
+  {assets.javascript && <script src={assets.javascript.app} charSet="UTF-8" />}
+  {assets.styles && Object.keys(assets.styles).length === 0 ? (
+    <script dangerouslySetInnerHTML={{ __html: 'document.getElementById("content").style.display="block";' }} />
+  ) : null}
  */
 
 const Html = props => {
@@ -46,29 +51,10 @@ const Html = props => {
         {/* (>>>>>>> SCRIPT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         {head.script.toComponent()}
 
-        {/* (>>>>>>> STYLES (production via webpack extract text plugin)) */}
-        {assets.styles &&
-          Object.keys(assets.styles).map(style => (
-            <link
-              href={assets.styles[style]}
-              key={style}
-              media="screen, projection"
-              rel="stylesheet"
-              type="text/css"
-              charSet="UTF-8"
-            />
-          ))}
-
-        {/* (will be present only in development mode) */}
-        {assets.styles && Object.keys(assets.styles).length === 0 ? (
-          <style dangerouslySetInnerHTML={{ __html: '#content{display:none}' }} />
-        ) : null}
-
       </head>
 
       <body>
 
-        {/* (>>>>>>> APP CONTENT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
         <div id="content" dangerouslySetInnerHTML={{ __html: content }} />
 
         {store && (
@@ -78,18 +64,14 @@ const Html = props => {
           />
         )}
 
-        {/* (>>>>>>> APP <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
-        {assets.javascript && <script src={assets.javascript.main} charSet="UTF-8" />}
-
-        {/* (will be present only in development mode) */}
         {assets.styles && Object.keys(assets.styles).length === 0 ? (
           <script dangerouslySetInnerHTML={{ __html: 'document.getElementById("content").style.display="block";' }} />
         ) : null}
-        
+
         {Object.keys(assets.javascript)
           .filter(key => key.includes('app') || key.includes('vendor'))
           .reverse()
-          .map(key => <script key={key} src={assets.javascript[key]} />)}
+          .map(key => <script key={key} src={assets.javascript[key]} charSet="UTF-8" />)}
 
       </body>
     </html>

@@ -18,10 +18,11 @@ import style from './style.css';
   {
     promise: async ({ store: { dispatch, getState } }) => {
       if (!isAuthLoaded(getState())) {
-        console.log('>>>>>>>>>>>>>>>>>> app.js > asyncConnect >  loadAuth > __SERVER__: ', __SERVER__);
+        console.log('>>>>>>>>>>>>>>>>>> APP.js > asyncConnect >  loadAuth <<<<<<<<<<<<<<<<<');
         await dispatch(loadAuth());
       }
       if (!isInfoLoaded(getState())) {
+        console.log('>>>>>>>>>>>>>>>>>> APP.js > asyncConnect >  loadInfo <<<<<<<<<<<<<<<<<');
         await dispatch(loadInfo());
       }
     }
@@ -73,6 +74,7 @@ export default class App extends Component {
 
   render() {
     const { user, notifs, route } = this.props;
+    console.log('>>>>>>>>>>>>>>>>>> APP.js > render() <<<<<<<<<<<<<<<<<');
 
     return (
       <div>

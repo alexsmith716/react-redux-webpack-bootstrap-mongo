@@ -2,7 +2,9 @@ import express from 'express';
 import helmet from 'helmet';
 import compression from 'compression';
 import bodyParser from 'body-parser';
+// Parse Cookie header and populate req.cookies with an object keyed by the cookie names
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
 import cors from 'cors';
 import morgan from 'morgan';
 import path from 'path';
@@ -15,12 +17,13 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import dotenv from 'dotenv';
 import apiClient from './helpers/apiClient';
-import config from './config';
+import serverConfig from './config';
 import headers from './utils/headers';
-import mongoStore from './db/mongoStore';
-import apiRoutes from './api/apiRoutes';
-import apiRoutes2 from './api/apiRoutes2';
 import delay from 'express-delay';
+import mongooseConnect from './mongo/mongooseConnect';
+//import apiRoutes22 from './api/apiRoutes22copy';
+import apiRouter from './api/apiRouter';
+const MongoStore = require('connect-mongo')(session);
 
 // #########################################################################
 
@@ -41,6 +44,12 @@ import { parse as parseUrl } from 'url';
 
 // #########################################################################
 
+import testingNodeLoadProcess3 from './testingNodeLoad/testingNodeLoadProcess3';
+import testingNodeLoadProcess4 from './testingNodeLoad/testingNodeLoadProcess4';
+import testingNodeLoadProcess2 from './testingNodeLoad/testingNodeLoadProcess2';
+
+// #########################################################################
+
 // GLOBAL constants ++++++++++++++++++++++++++++++++++++++++++++
 global.__CLIENT__ = false;
 global.__SERVER__ = true;
@@ -51,8 +60,6 @@ global.__DEVTOOLS__ = false;
 // #########################################################################
 
 dotenv.config();
-
-console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>> SERVER 1 <<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 
 // #########################################################################
 
@@ -93,26 +100,26 @@ if (process.env.NODE_ENV === 'development') {
 
 // #########################################################################
 
-app.use(compression());
+app.use(helmet());
 
+app.use(compression());
 app.use('/public', express.static(path.join(__dirname, '../public')));
 //app.use('/static', express.static(path.resolve(__dirname, '../dist/client')));
 app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico')),);
 
-app.use(cookieParser());
+app.use(morgan('dev'));
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
+app.use(cookieParser());
 
-// #########################################################################
-
-app.use(morgan('dev'));
-app.use(helmet());
 app.use(cors());
-app.use(headers);
+//app.use(headers);
 
 // #########################################################################
 
 app.get('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '../public/static/manifest/manifest.json')));
+
+// #########################################################################
 
 // production +++++++++++++++++++++++++++++++
 //app.use('/dist/service-worker.js', (req, res, next) => {
@@ -122,53 +129,32 @@ app.get('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '../pu
 
 // #########################################################################
 
+testingNodeLoadProcess2('FOOOOOOOBER');
+import './testingNodeLoad/testingNodeLoadProcess1';
+app.use(testingNodeLoadProcess3);
+app.use('/api', testingNodeLoadProcess4(app));
+
+// #########################################################################
+
 app.use((req, res, next) => {
-  console.log('>>>>>>>>>>>>>>>>>>>>>> GOING THROUGH APP NOW >>>>>>>>>>>>>>>>>>');
-  console.log('REQ.ip +++++: ', req.ip);
+  console.log('>>>>>>>>>>> GOING THROUGH APP NOW 11aaaa <<<<<<<<<<<<<');
+  console.log('REQ.ip +++++++++: ', req.ip);
   console.log('REQ.method +++++: ', req.method);
   console.log('REQ.url ++++++++: ', req.url);
-  console.log('REQ.originalUrl ++++++++: ', req.originalUrl);
-  console.log('REQ.baseUrl ++++++++: ', req.baseUrl);
-  console.log('REQ.originalUrl ++++++++: ', req.originalUrl);
-  console.log('REQ.path ++++: ', req.path);
-  if(req.user) {
-    console.log('REQ.user +++++: ', req.user);
-    console.log('REQ.user._id +: ', req.user._id);
-  } else {
-    console.log('REQ.user +++++: NO USER');
-  };
-  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+  console.log('REQ.headers ++++: ', req.headers);
+  console.log('REQ.session ++++: ', req.session);
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   return next();
 });
 
-// #########################################################################
-
-app.use('/api', apiRoutes2);
-/*
-app.use('/api', mongoStore(app));
-app.use((req, res, next) => {
-  console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-  return next();
-});
-app.use('/api', apiRoutes);
-*/
-
-// #########################################################################
-
-app.use((req, res, next) => {
-  console.log('>>>>>>>>>>>>> !!!!!!!!!!! SERVER !!!!!!!!!!!! <<<<<<<<< app.locals.foober: ', app.locals.foober);
-  console.log('>>>>>>>>>>>>> !!!!!!!!!!! SERVER !!!!!!!!!!!! <<<<<<<<< REQ.headers: ', req.headers);
-  console.log('>>>>>>>>>>>>> !!!!!!!!!!! SERVER !!!!!!!!!!!! <<<<<<<<< REQ.sessionID: ', req.sessionID);
-  //res.status(200).send('Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
-  return next();
-});
-
-// #########################################################################
+//app.use((req, res) => {
+  //res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+//});
 
 app.use(async (req, res) => {
-  console.log('>>>>>>>> server > app.use((req,res) <<<<<<<<<<<<<');
+  console.log('>>>>>>>>>>>>>>>>>>>> SERVER > app.use((req,res) <<<<<<<<<<<<<<<<<<<<<<');
 
-  if (process.env.NODE_ENV === 'development') {
+  if (__DEVELOPMENT__) {
     global.webpackIsomorphicTools.refresh();
   }
 
@@ -177,12 +163,6 @@ app.use(async (req, res) => {
   const client = apiClient(req);
   const history = createMemoryHistory({ initialEntries: [url] });
   const store = createStore(history, client);
-
-  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > url: ', url);
-  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > location: ', location);
-  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > client: ', client);
-  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > history: ', history);
-  console.log('>>>>>>>>>>>>>> server > app.use((req, res) > store: ', store);
 
   const hydrate = () => { 
     res.write('<!doctype html>');
@@ -194,14 +174,11 @@ app.use(async (req, res) => {
   }
 
   try {
-    console.log('>>>>>>>>>>>>>> server > app.use async (req, res) > try <<<<<<<<<<<<<<<<<<<');
 
-    // 1. load data (loadOnServer)
     await loadOnServer({store, location, routes, helpers: { client }});
 
     const context = {};
 
-    // 2. use `ReduxAsyncConnect` to render component tree
     const component = (
       <Provider store={store} key="provider">
         <StaticRouter location={url} context={context}>
@@ -210,29 +187,21 @@ app.use(async (req, res) => {
       </Provider>
     );
 
-    console.log('>>>>>>>>>>>>>> server > app.use async (req, res) > try > component: ', component);
-
     const content = ReactDOM.renderToString(component);
 
     if (context.url) {
       return res.redirect(302, context.url);
     }
 
-    // 3. render the Redux initial data into the server markup
     const html = <Html assets={global.webpackIsomorphicTools.assets()} content={content} store={store} />;
 
-    console.log('>>>>>>>>>>>>>> server > app.use async (req, res) > try > html: ', html);
-
+    console.log('>>>>>>>>>>>>>> SERVER > app.use async (req, res) > try > html: ');
 
     res.status(200).send(`<!doctype html>${ReactDOM.renderToString(html)}`);
 
-    // res.status(200).send(`<!doctype html>${renderToStaticMarkup(html)}`);
-
     } catch (err) {
-      console.log('>>>>>>>> server > app.use > loadOnServer > .catch > err: ', err);
+      console.log('>>>>>>>> SERVER > app.use > loadOnServer > .catch > err: ', err);
       res.status(500).send('response error >>>> 500 !!!!!');
-      //res.status(500);
-      //hydrate();
     }
 
 });
@@ -240,16 +209,14 @@ app.use(async (req, res) => {
 // #########################################################################
 // #########################################################################
 
-/*
-app.listen(config.port).on('listening', () =>
-app.listen(config.port, (error) => {
+app.listen(serverConfig.port, (error) => {
   if (error) {
     console.log('>>>>>>>> Server Error: ', error);
   } else {
-    console.log(`>>>>>>>> Server is running on port ${config.port} <<<<<<<<<<<`);
+    console.log(`>>>>>>>> Server is running on port ${serverConfig.port} <<<<<<<<<<<`);
   }
 });
-*/
+
 /*
 const server = new http.Server(app);
 server.listen(process.env.PORT, err => {
@@ -260,7 +227,7 @@ server.listen(process.env.PORT, err => {
   console.info('==> Open http:// in a browser to view the app.');
 });
 */
-
+/*
 const normalizePort = (val)  => {
 
   var port = parseInt(val, 10);
@@ -278,12 +245,12 @@ const normalizePort = (val)  => {
   return false;
 };
 
-const port = normalizePort(process.env.PORT || config.port);
+const port = normalizePort(process.env.PORT || serverConfig.port);
 app.set('port', port);
 
 // http.createServer([requestListener]): Returns a new instance of http.Server
 // const server = https.createServer(options, app).listen(app.get('port'), '', () => {
-const server = http.createServer(app).listen( app.get('port'), config.host, () => {
+const server = http.createServer(app).listen( app.get('port'), serverConfig.host, () => {
   console.log('>>>>>> Express server Connected: ', server.address());
 });
 
@@ -320,5 +287,4 @@ server.on('listening', () => {
   console.log('>>>>>> Express server Listening on: ', bind);
 
 });
-
-//export default app;
+*/

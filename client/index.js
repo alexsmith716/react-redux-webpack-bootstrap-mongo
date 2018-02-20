@@ -28,7 +28,6 @@ const dest = document.getElementById('content');
   console.log('>>>>>>>>>>>>>>>>> client index.js > __DEVTOOLS__: ', __DEVTOOLS__);
   console.log('>>>>>>>>>>>>>>>>> client index.js > __DEVELOPMENT__: ', __DEVELOPMENT__);
 
-
   const storedData = await getStoredState(offlinePersistConfig);
   const online = await (window.__data ? true : isOnline());
 
