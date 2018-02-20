@@ -129,10 +129,10 @@ app.get('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '../pu
 
 // #########################################################################
 
-testingNodeLoadProcess2('FOOOOOOOBER');
-import './testingNodeLoad/testingNodeLoadProcess1';
-app.use(testingNodeLoadProcess3);
-app.use('/api', testingNodeLoadProcess4(app));
+//testingNodeLoadProcess2('FOOOOOOOBER');
+//import './testingNodeLoad/testingNodeLoadProcess1';
+//app.use(testingNodeLoadProcess3);
+//app.use('/api', testingNodeLoadProcess4(app));
 
 // #########################################################################
 
@@ -186,6 +186,15 @@ app.use((req, res, next) => {
   console.log('>>>>>>>>>>> GOING THROUGH APP NOW 33aaaa <<<<<<<<<<<<<');
   return next();
 });
+
+app.use(/\/api/, apiRouter);
+
+app.use((req, res, next) => {
+  console.log('>>>>>>>>>>> GOING THROUGH APP NOW 44aaaa <<<<<<<<<<<<<');
+  return next();
+});
+
+// #########################################################################
 
 //app.use((req, res) => {
   //res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
