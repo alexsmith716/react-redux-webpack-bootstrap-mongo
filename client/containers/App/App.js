@@ -18,11 +18,11 @@ import style from './style.css';
   {
     promise: async ({ store: { dispatch, getState } }) => {
       if (!isAuthLoaded(getState())) {
-        console.log('>>>>>>>>>>>>>>>>>> APP.js > asyncConnect >  loadAuth <<<<<<<<<<<<<<<<<');
+        console.log('>>>>>>>>>>>>>>>>>> APP.js > asyncConnect > loadAuth <<<<<<<<<<<<<<<<<');
         await dispatch(loadAuth());
       }
       if (!isInfoLoaded(getState())) {
-        console.log('>>>>>>>>>>>>>>>>>> APP.js > asyncConnect >  loadInfo <<<<<<<<<<<<<<<<<');
+        console.log('>>>>>>>>>>>>>>>>>> APP.js > asyncConnect > loadInfo <<<<<<<<<<<<<<<<<');
         await dispatch(loadInfo());
       }
     }

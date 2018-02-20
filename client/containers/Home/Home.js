@@ -11,8 +11,11 @@ import { isAuthenticated } from '../../redux/modules/auth';
 @asyncConnect([
   {
     promise: ({ store: { getState } }) => {
-      const authenticated = isAuthenticated(getState());
-      console.log('>>>>>>>>>>>>>>> Home > asyncConnect > isAuthenticated: ', authenticated);
+      if (isAuthenticated(getState())) {
+        console.log('>>>>>>>>>>>>>>> Home.JS > asyncConnect > YES isAuthenticated <<<<<<<<<<');
+      } else {
+        console.log('>>>>>>>>>>>>>>> Home.JS > asyncConnect > NO isAuthenticated <<<<<<<<<<');
+      }
     }
   }
 ])
@@ -34,10 +37,9 @@ export default class Home extends Component {
   }
 
   render() {
+    console.log('>>>>>>>>>>>>>>>>>> Home.js > render() <<<<<<<<<<<<<<<<<');
     return (
-
       this.props.user ? <LoggedInHomepage /> : <GuestHomepage />
-
     );
   }
 }

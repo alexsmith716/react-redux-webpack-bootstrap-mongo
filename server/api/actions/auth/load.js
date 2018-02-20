@@ -7,7 +7,7 @@ export default function load(req) {
 
     if (req.cookies && req.cookies.accessToken) {
 
-      console.log('>>>>>>>>>>>>>> api > actions > auth > load > YES!!!!!!!!!! > req.cookies', req.cookies);
+      console.log('>>>>>>>>>>>>>> Api > Actions > Auth > load > YES req.cookies', req.cookies);
 
       let payload = {};
       try {
@@ -43,11 +43,10 @@ export default function load(req) {
           });
         });
       } else {
-
         reject(new Error('Cookie expired!'));
       }
     } else {
-      console.log('>>>>>>>>>>>>>> api > actions > auth > load > NO!!!!!!!!!! > req.cookies', req.cookies);
+      console.log('>>>>>>>>>>>>>> Api > Actions > Auth > load > NO req.cookies', req.cookies);
       resolve({ isAnonymous: true });
     }
   });

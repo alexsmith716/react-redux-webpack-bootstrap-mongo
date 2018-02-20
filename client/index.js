@@ -23,28 +23,14 @@ const dest = document.getElementById('content');
 
 (async () => {
 
-  console.log('>>>>>>>>>>>>>>>>> client index.js > __CLIENT__: ', __CLIENT__);
-  console.log('>>>>>>>>>>>>>>>>> client index.js > __SERVER__: ', __SERVER__);
-  console.log('>>>>>>>>>>>>>>>>> client index.js > __DEVTOOLS__: ', __DEVTOOLS__);
-  console.log('>>>>>>>>>>>>>>>>> client index.js > __DEVELOPMENT__: ', __DEVELOPMENT__);
-
   const storedData = await getStoredState(offlinePersistConfig);
   const online = await (window.__data ? true : isOnline());
 
-  console.log('>>>>>>>>>>>>>>>>> client index.js > window.__data!!!! <<<<<<<<<<: ', window.__data);
-  console.log('>>>>>>>>>>>>>>>>> client index.js > online!!!! <<<<<<<<<<: ', online);
+  console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > online: ', online);
   
   const data = !online ? { ...storedData, ...window.__data, online } : { ...window.__data, online };
   const history = createBrowserHistory();
-
-  console.log('>>>>>>>>>>>>>>>>> client index.js > history!!!! <<<<<<<<<<: ', history);
-  console.log('>>>>>>>>>>>>>>>>> client index.js > client!!!! <<<<<<<<<<: ', client);
-  console.log('>>>>>>>>>>>>>>>>> client index.js > data!!!! <<<<<<<<<<: ', data);
-  console.log('>>>>>>>>>>>>>>>>> client index.js > offlinePersistConfig!!!! <<<<<<<<<<: ', offlinePersistConfig);
-
   const store = createStore(history, client, data, offlinePersistConfig);
-
-  console.log('>>>>>>>>>>>>>>>>>> client index.js > async > createStore > store: ', store);
 
   const hydrate = _routes => {
     ReactDOM.hydrate(
@@ -77,7 +63,6 @@ const dest = document.getElementById('content');
   }
 
   if (__DEVTOOLS__ && !window.devToolsExtension) {
-    console.log('>>>>>>>>>>>>>>>>> client index.js > __DEVTOOLS__ && NO window.devToolsExtension <<<<<<<<<<');
     const devToolsDest = document.createElement('div');
     window.document.body.insertBefore(devToolsDest, null);
     const DevTools = require('./containers/DevTools/DevTools');
