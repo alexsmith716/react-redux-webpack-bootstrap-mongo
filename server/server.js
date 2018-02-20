@@ -175,6 +175,18 @@ app.use(/\/api/, session({
 }));
 */
 
+app.use((req, res, next) => {
+  console.log('>>>>>>>>>>> GOING THROUGH APP NOW 22aaaa <<<<<<<<<<<<<');
+  return next();
+});
+
+app.use(/\/api/, mongooseConnect);
+
+app.use((req, res, next) => {
+  console.log('>>>>>>>>>>> GOING THROUGH APP NOW 33aaaa <<<<<<<<<<<<<');
+  return next();
+});
+
 //app.use((req, res) => {
   //res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
 //});
