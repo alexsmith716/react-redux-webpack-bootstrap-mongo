@@ -12,8 +12,6 @@ import { REGISTER_SUCCESS } from '../../constants/actionTypes';
 import { REGISTER_FAIL } from '../../constants/actionTypes';
 import { LOGOUT } from '../../constants/actionTypes';
 
-console.log('>>>>>>>> auth.js <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
-
 const initialState = {
   loaded: false
 };
@@ -108,7 +106,7 @@ export function isAuthLoaded(state) {
 }
 
 export function loadAuth() {
-  console.log('>>>>>>>>>>>>>>>>>> auth.js > loadAuth > __SERVER__: ', __SERVER__);
+  console.log('>>>>>>>>>>>>>>>>>>>>>>> auth.js > loadAuth <<<<<<<<<<<<<<<<<<<<<<<');
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
     promise: async client => {

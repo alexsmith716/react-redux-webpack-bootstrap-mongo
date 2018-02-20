@@ -7,14 +7,14 @@ import config from '../config';
 
 export default function apiClient(req) {
   // create a new instance of axios and set config defaults
-  console.log('>>>>>>>>>>>>>>>>>> ApiClient.js > apiClient > __SERVER__: ', __SERVER__);
+  console.log('>>>>>>>>>>>>>>>>>> ApiClient.js > __SERVER__: ', __SERVER__);
   const instance = axios.create({
     baseURL: 'http://localhost:3000'
   });
 
   const foo = __SERVER__ ? `http://${config.apiHost}:${config.apiPort}` : '/api';
-  console.log('>>>>>>>>>>>>>>>>>> ApiClient.js > apiClient > axios.create > baseURL: ', foo);
-  console.log('>>>>>>>>>>>>>>>>>> ApiClient.js > apiClient > axios.create > instance: ', instance);
+  console.log('>>>>>>>>>>>>>>>>>> ApiClient.js > baseURL: ', foo);
+  console.log('>>>>>>>>>>>>>>>>>> ApiClient.js > instance: ', instance);
 
   let token;
 
@@ -30,6 +30,8 @@ export default function apiClient(req) {
     conf => {
       // Do something before request is sent
       if (__SERVER__) {
+        console.log('>>>>>>>>>>>>>>>>>> ApiClient.js > req.header cookie!!: ', req.header('cookie'));
+        console.log('>>>>>>>>>>>>>>>>>> ApiClient.js > req.header authorization!!: ', req.header('authorization'));
         if (req.header('cookie')) {
           conf.headers.Cookie = req.header('cookie');
         }
