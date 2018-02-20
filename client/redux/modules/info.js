@@ -2,25 +2,29 @@ import { LOAD } from '../../constants/actionTypes';
 import { LOAD_SUCCESS } from '../../constants/actionTypes';
 import { LOAD_FAIL } from '../../constants/actionTypes';
 
+//const LOAD = 'redux-example/info/LOAD';
+//const LOAD_SUCCESS = 'redux-example/info/LOAD_SUCCESS';
+//const LOAD_FAIL = 'redux-example/info/LOAD_FAIL';
+
 const initialState = {
   loaded: false
 };
 
 export default function info(state = initialState, action = {}) {
   switch (action.type) {
-    case LOAD:
+    case [LOAD]:
       return {
         ...state,
         loading: true
       };
-    case LOAD_SUCCESS:
+    case [LOAD_SUCCESS]:
       return {
         ...state,
         loading: false,
         loaded: true,
         data: action.result
       };
-    case LOAD_FAIL:
+    case [LOAD_FAIL]:
       return {
         ...state,
         loading: false,
@@ -33,11 +37,13 @@ export default function info(state = initialState, action = {}) {
 }
 
 export function isLoaded(globalState) {
+  console.log('>>>> Info.js > (redux) isLoaded > globalState.info <<<<<<<<<<<<<', globalState.info);
+  console.log('>>>> Info.js > (redux) isLoaded > globalState.info.loaded <<<<<<', globalState.info.loaded);
   return globalState.info && globalState.info.loaded;
 }
 
 export function load() {
-  console.log('>>>>>>>>>>>>>>>>>>>>>>> info.js > load <<<<<<<<<<<<<<<<<<<<<<<');
+  console.log('>>>>>>>>>>>>>>>>>>>>>>> Info.js > (redux) load <<<<<<<<<<<<<<<<<<<<<<<');
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
     promise: client => client.get('/api/info/load')

@@ -20,10 +20,9 @@ import apiClient from './helpers/apiClient';
 import serverConfig from './config';
 import headers from './utils/headers';
 import delay from 'express-delay';
-import mongooseConnect from './mongo/mongooseConnect';
-//import apiRoutes22 from './api/apiRoutes22copy';
+//import mongooseConnect from './mongo/mongooseConnect';
 import apiRouter from './api/apiRouter';
-const MongoStore = require('connect-mongo')(session);
+import mongoose from 'mongoose';
 
 // #########################################################################
 
@@ -41,6 +40,20 @@ import createStore from '../client/redux/create';
 import Html from './helpers/Html';
 import routes from '../client/routes';
 import { parse as parseUrl } from 'url';
+
+// #########################################################################
+
+const MongoStore = require('connect-mongo')(session);
+let gracefulShutdown;
+let dbURL = serverConfig.mongoURL;
+if (process.env.NODE_ENV === 'production') {
+  // dbURL = serverConfig.mongoLabURL;
+};
+const mongooseOptions = {
+  autoReconnect: true,
+  keepAlive: true,
+  connectTimeoutMS: 30000
+};
 
 // #########################################################################
 
@@ -136,17 +149,6 @@ app.get('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '../pu
 
 // #########################################################################
 
-app.use((req, res, next) => {
-  console.log('>>>>>>>>>>> GOING THROUGH APP NOW 11aaaa <<<<<<<<<<<<<');
-  console.log('REQ.ip +++++++++: ', req.ip);
-  console.log('REQ.method +++++: ', req.method);
-  console.log('REQ.url ++++++++: ', req.url);
-  console.log('REQ.headers ++++: ', req.headers);
-  console.log('REQ.session ++++: ', req.session);
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-  return next();
-});
-
 app.use(/\/api/, session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -176,23 +178,31 @@ app.use(/\/api/, session({
 */
 
 app.use((req, res, next) => {
-  console.log('>>>>>>>>>>> GOING THROUGH APP NOW 22aaaa <<<<<<<<<<<<<');
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > 11aaaa <<<<<<<<<<<<<');
+  console.log('REQ.ip +++++++++: ', req.ip);
+  console.log('REQ.method +++++: ', req.method);
+  console.log('REQ.url ++++++++: ', req.url);
+  console.log('REQ.headers ++++: ', req.headers);
+  console.log('REQ.session ++++: ', req.session);
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   return next();
 });
 
-app.use(/\/api/, mongooseConnect);
+// #########################################################################
 
-app.use((req, res, next) => {
-  console.log('>>>>>>>>>>> GOING THROUGH APP NOW 33aaaa <<<<<<<<<<<<<');
-  return next();
+//app.use(/\/api/, mongooseConnect);
+mongoose.Promise = global.Promise;
+mongoose.connect(dbURL, mongooseOptions, err => {
+  if (err) {
+    console.error('####### > Please make sure Mongodb is installed and running!');
+  } else {
+    console.error('####### > Mongodb is installed and running!');
+  }
 });
+
+// #########################################################################
 
 app.use(/\/api/, apiRouter);
-
-app.use((req, res, next) => {
-  console.log('>>>>>>>>>>> GOING THROUGH APP NOW 44aaaa <<<<<<<<<<<<<');
-  return next();
-});
 
 // #########################################################################
 
@@ -201,17 +211,19 @@ app.use((req, res, next) => {
 //});
 
 app.use(async (req, res) => {
-  console.log('>>>>>>>>>>>>>>>>>>>> SERVER > app.use((req,res) <<<<<<<<<<<<<<<<<<<<<<');
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! <<<<<<<<<<<<<<<<<<');
 
   if (__DEVELOPMENT__) {
     global.webpackIsomorphicTools.refresh();
   }
 
   const url = req.originalUrl || req.url;
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > url: ', url);
   const location = parseUrl(url);
   const client = apiClient(req);
   const history = createMemoryHistory({ initialEntries: [url] });
   const store = createStore(history, client);
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > location: ', location);
 
   const hydrate = () => { 
     res.write('<!doctype html>');
@@ -244,7 +256,7 @@ app.use(async (req, res) => {
 
     const html = <Html assets={global.webpackIsomorphicTools.assets()} content={content} store={store} />;
 
-    console.log('>>>>>>>>>>>>>> SERVER > app.use async (req, res) > try > html: ');
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > HTML <<<<<<<<<<<<<<<<<<');
 
     res.status(200).send(`<!doctype html>${ReactDOM.renderToString(html)}`);
 
@@ -258,6 +270,50 @@ app.use(async (req, res) => {
 // #########################################################################
 // #########################################################################
 
+mongoose.connection.on('connected', function() {
+  console.log('####### > MONGOOSE CONNECTED: ' + dbURL);
+});
+
+mongoose.connection.on('error', function(err) {
+  console.log('####### > Mongoose connection error: ' + err);
+});
+
+mongoose.connection.on('disconnected', function() {
+  console.log('####### > Mongoose disconnected');
+});
+
+// Handle Mongoose/Node connections
+gracefulShutdown = function(msg, callback) {
+  mongoose.connection.close(function() {
+    console.log('####### > Mongoose disconnected through: ' + msg);
+    callback();
+  })
+};
+
+// For app termination
+process.on('SIGINT', function() {
+  gracefulShutdown('app termination', function() {
+    console.log('####### > Mongoose SIGINT gracefulShutdown');
+    process.exit(0);
+  })
+});
+
+// For nodemon restarts
+process.once('SIGUSR2', function() {
+  gracefulShutdown('nodemon restart', function() {
+    console.log('####### > Mongoose SIGUSR2 gracefulShutdown');
+    process.kill(process.pid, 'SIGUSR2');
+  })
+});
+
+// For Heroku app termination
+process.on('SIGTERM', function() {
+  gracefulShutdown('Heroku app termination', function() {
+    console.log('####### > Mongoose SIGTERM gracefulShutdown');
+    process.exit(0);
+  })
+});
+
 app.listen(serverConfig.port, (error) => {
   if (error) {
     console.log('>>>>>>>> Server Error: ', error);
@@ -265,6 +321,8 @@ app.listen(serverConfig.port, (error) => {
     console.log(`>>>>>>>> Server is running on port ${serverConfig.port} <<<<<<<<<<<`);
   }
 });
+
+// #########################################################################
 
 /*
 const server = new http.Server(app);

@@ -1,7 +1,7 @@
 
 export default function clientMiddleware(client) {
 
-  console.log('>>>>>>>>>>>>>>>>>> clientMiddleware.js > client: ', client);
+  console.log('>>>>>>>>>>>>>>>>>>>>> ClientMiddleware.js > client <<<<<<<');
 
   return ({ dispatch, getState }) => next => action => {
 
@@ -12,11 +12,11 @@ export default function clientMiddleware(client) {
     const { promise, types, ...rest } = action;
 
     if (!promise) {
-      console.log('>>>>>>>>>>>>>>>>>> clientMiddleware.js > return > NO promise: ', promise);
+      console.log('>>>>>>>>>>>>>>>>>>>>> ClientMiddleware.js > return > NO promise <<<<<<<');
       return next(action);
     }
 
-    console.log('>>>>>>>>>>>>>>>>>> clientMiddleware.js > return > YES promise: ', promise);
+    console.log('>>>>>>>>>>>>>>>>>>>>> ClientMiddleware.js > return > YES promise <<<<<<<');
 
     const [REQUEST, SUCCESS, FAILURE] = types;
 
@@ -24,7 +24,7 @@ export default function clientMiddleware(client) {
 
     const actionPromise = promise(client, dispatch);
 
-    console.log('>>>>>>>>>>>>>>>>>> clientMiddleware.js > return > YES promise > actionPromise: ', actionPromise);
+    console.log('>>>>>>>>>>>>>>>>>>>>> ClientMiddleware.js > return > YES promise > actionPromise <<<<<<<');
 
     actionPromise
       .then(

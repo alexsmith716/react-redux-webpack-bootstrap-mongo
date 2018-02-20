@@ -5,47 +5,45 @@ import actions from './actions';
 import { mapUrl, parseToken } from './common/utils';
 
 const apiRoutes = async (req,res) => {
-
+  console.log('>>>>>>>>>>>>>>>>>> ApiRoutes.JS <<<<<<<<<<<<<<<<<<<<<');
+  console.log('REQ.ip +++++++++: ', req.ip);
+  console.log('REQ.method +++++: ', req.method);
+  console.log('REQ.url ++++++++: ', req.url);
+  console.log('REQ.headers ++++: ', req.headers);
+  console.log('REQ.session ++++: ', req.session);
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   // Url template: /auth/login
   const splittedUrlPath = req.url.split('?')[0].split('/').slice(1);
   const { action, params } = mapUrl(actions, splittedUrlPath);
 
-  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > REQ.ip +++++: ', req.ip);
-  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > REQ.method +++++: ', req.method);
-  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > REQ.url ++++++++: ', req.url);
-  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > REQ.headers ++++: ', req.headers);
-  console.log('>>>>>>>>>>>>>>>>> ApiRoutes > req.session: ', req.session);
-
-  console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > YES action: ', action);
-
   if (action) {
     const token = cookie.parse(req.headers.cookie || '').accessToken;
-    console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > YES TOKEN: ', token);
+    console.log('>>>>>>>>>>>>>>>>>> ApiRoutes.JS > TOKEN: ', token);
     if (token) {
-      console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > YES token: ', token);
+      console.log('>>>>>>>>>>>>>>>>>> ApiRoutes.JS > YES token: ', token);
       req.session.user = parseToken(token).sub;
-      console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > YES token > req.session.user: ', req.session.user);
+      console.log('>>>>>>>>>>>>>>>>>> ApiRoutes.JS > YES token > req.session.user: ', req.session.user);
     }
 
     try {
       const result = await action(req, params);
 
-      console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > try > result 0 <<<<<<<<<<:', result);
+      console.log('>>>>>>>>>>>>>>>>>> ApiRoutes.JS > try > result 0 <<<<<<<<<<:', result);
 
       if (result.isAnonymous) {
-        console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > try > result 1 <<<<<<<<<<');
+        console.log('>>>>>>>>>>>>>>>>>> ApiRoutes.JS > try > result 1 <<<<<<<<<<');
         return res.end();
       }
 
       if (result instanceof Function) {
-        console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > try > result 2 <<<<<<<<<<');
+        console.log('>>>>>>>>>>>>>>>>>> ApiRoutes.JS > try > result 2 <<<<<<<<<<');
         result(res);
       } else {
-        console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > try > res.json(result) <<<<<<<<<<:', result);
+        console.log('>>>>>>>>>>>>>>>>>> ApiRoutes.JS > try > res.json(result) <<<<<<<<<<:', result);
         res.json(result);
       }
     } catch (error) {
-      console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > catch > error:', error);
+      console.log('>>>>>>>>>>>>>>>>>> ApiRoutes.JS > catch > error:', error);
       if (error.redirect) {
         return res.redirect(error.redirect);
       }
@@ -54,7 +52,7 @@ const apiRoutes = async (req,res) => {
       res.status(error.status || 500).json(error);
     }
   } else {
-    console.log('>>>>>>>>>>>>>>>>>>>>> ApiRoutes > NO action: ', action);
+    console.log('>>>>>>>>>>>>>>>>>> ApiRoutes.JS > NO action: ', action);
     res.status(404).end('NOT FOUND');
   }
 };
