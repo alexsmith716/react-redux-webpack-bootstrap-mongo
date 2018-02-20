@@ -44,9 +44,9 @@ import { parse as parseUrl } from 'url';
 
 // #########################################################################
 
-import testingNodeLoadProcess3 from './testingNodeLoad/testingNodeLoadProcess3';
-import testingNodeLoadProcess4 from './testingNodeLoad/testingNodeLoadProcess4';
-import testingNodeLoadProcess2 from './testingNodeLoad/testingNodeLoadProcess2';
+//import testingNodeLoadProcess3 from './testingNodeLoad/testingNodeLoadProcess3';
+//import testingNodeLoadProcess4 from './testingNodeLoad/testingNodeLoadProcess4';
+//import testingNodeLoadProcess2 from './testingNodeLoad/testingNodeLoadProcess2';
 
 // #########################################################################
 
@@ -146,6 +146,34 @@ app.use((req, res, next) => {
   console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   return next();
 });
+
+app.use(/\/api/, session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({
+    url: serverConfig.mongoURL,
+    touchAfter: 0.5 * 3600
+  })
+}));
+/*
+const sessionExpireDate = 6 * 60 * 60 * 1000; // 6 hours
+app.use(/\/api/, session({
+  store: new MongoStore({
+    url: serverConfig.mongoURL,
+    autoRemove: 'native'
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  rolling: true,
+  saveUninitialized: false,
+  cookie: {
+    secure: false,
+    httpOnly: false,
+    maxAge: sessionExpireDate
+  }
+}));
+*/
 
 //app.use((req, res) => {
   //res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
