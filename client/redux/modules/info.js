@@ -1,10 +1,10 @@
-import { LOAD } from '../../constants/actionTypes';
-import { LOAD_SUCCESS } from '../../constants/actionTypes';
-import { LOAD_FAIL } from '../../constants/actionTypes';
+//import { LOAD } from '../../constants/actionTypes';
+//import { LOAD_SUCCESS } from '../../constants/actionTypes';
+//import { LOAD_FAIL } from '../../constants/actionTypes';
 
-//const LOAD = 'redux-example/info/LOAD';
-//const LOAD_SUCCESS = 'redux-example/info/LOAD_SUCCESS';
-//const LOAD_FAIL = 'redux-example/info/LOAD_FAIL';
+const LOAD = 'redux-example/info/LOAD';
+const LOAD_SUCCESS = 'redux-example/info/LOAD_SUCCESS';
+const LOAD_FAIL = 'redux-example/info/LOAD_FAIL';
 
 const initialState = {
   loaded: false
@@ -12,19 +12,19 @@ const initialState = {
 
 export default function info(state = initialState, action = {}) {
   switch (action.type) {
-    case [LOAD]:
+    case LOAD:
       return {
         ...state,
         loading: true
       };
-    case [LOAD_SUCCESS]:
+    case LOAD_SUCCESS:
       return {
         ...state,
         loading: false,
         loaded: true,
         data: action.result
       };
-    case [LOAD_FAIL]:
+    case LOAD_FAIL:
       return {
         ...state,
         loading: false,

@@ -1,17 +1,17 @@
 import { SubmissionError } from 'redux-form';
 import jsCookie from 'js-cookie';
 
-import { LOAD } from '../../constants/actionTypes';
-import { LOAD_SUCCESS } from '../../constants/actionTypes';
-import { LOAD_FAIL } from '../../constants/actionTypes';
-import { LOGIN } from '../../constants/actionTypes';
-import { LOGIN_SUCCESS } from '../../constants/actionTypes';
-import { LOGIN_FAIL } from '../../constants/actionTypes';
-import { REGISTER } from '../../constants/actionTypes';
-import { REGISTER_SUCCESS } from '../../constants/actionTypes';
-import { REGISTER_FAIL } from '../../constants/actionTypes';
-import { LOGOUT } from '../../constants/actionTypes';
-/*
+//import { LOAD } from '../../constants/actionTypes';
+//import { LOAD_SUCCESS } from '../../constants/actionTypes';
+//import { LOAD_FAIL } from '../../constants/actionTypes';
+//import { LOGIN } from '../../constants/actionTypes';
+//import { LOGIN_SUCCESS } from '../../constants/actionTypes';
+//import { LOGIN_FAIL } from '../../constants/actionTypes';
+//import { REGISTER } from '../../constants/actionTypes';
+//import { REGISTER_SUCCESS } from '../../constants/actionTypes';
+//import { REGISTER_FAIL } from '../../constants/actionTypes';
+//import { LOGOUT } from '../../constants/actionTypes';
+
 const LOAD = 'redux-example/auth/LOAD';
 const LOAD_SUCCESS = 'redux-example/auth/LOAD_SUCCESS';
 const LOAD_FAIL = 'redux-example/auth/LOAD_FAIL';
@@ -22,7 +22,6 @@ const REGISTER = 'redux-example/auth/REGISTER';
 const REGISTER_SUCCESS = 'redux-example/auth/REGISTER_SUCCESS';
 const REGISTER_FAIL = 'redux-example/auth/REGISTER_FAIL';
 const LOGOUT = 'redux-example/auth/LOGOUT';
-*/
 
 const initialState = {
   loaded: false
@@ -30,12 +29,12 @@ const initialState = {
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case [LOAD]:
+    case LOAD:
       return {
         ...state,
         loading: true
       };
-    case [LOAD_SUCCESS]:
+    case LOAD_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -43,48 +42,48 @@ export default function reducer(state = initialState, action = {}) {
         accessToken: action.result.accessToken,
         user: action.result.user
       };
-    case [LOAD_FAIL]:
+    case LOAD_FAIL:
       return {
         ...state,
         loading: false,
         loaded: false,
         error: action.error
       };
-    case [LOGIN]:
+    case LOGIN:
       return {
         ...state,
         loggingIn: true
       };
-    case [LOGIN_SUCCESS]:
+    case LOGIN_SUCCESS:
       return {
         ...state,
         loggingIn: false,
         accessToken: action.result.accessToken,
         user: action.result.user
       };
-    case [LOGIN_FAIL]:
+    case LOGIN_FAIL:
       return {
         ...state,
         loggingIn: false,
         loginError: action.error
       };
-    case [REGISTER]:
+    case REGISTER:
       return {
         ...state,
         registeringIn: true
       };
-    case [REGISTER_SUCCESS]:
+    case REGISTER_SUCCESS:
       return {
         ...state,
         registeringIn: false
       };
-    case [REGISTER_FAIL]:
+    case REGISTER_FAIL:
       return {
         ...state,
         registeringIn: false,
         registerError: action.error
       };
-    case [LOGOUT]:
+    case LOGOUT:
       return {
         ...state,
         accessToken: null,
@@ -110,6 +109,8 @@ const catchValidation = error => {
 */
 
 export function isAuthenticated(state) {
+  console.log('>>>>>>>>>>>>>>>>>>>>>>> Auth.js > (redux) isAuthenticated > state.auth: ', state.auth);
+  console.log('>>>>>>>>>>>>>>>>>>>>>>> Auth.js > (redux) isAuthenticated > state.auth.user: ', state.auth.user);
   return state.auth && state.auth.user;
 }
 
@@ -134,7 +135,7 @@ export function register(data) {
   return {
     types: [REGISTER, REGISTER_SUCCESS, REGISTER_FAIL],
     promise: async client => {
-      const result = client.post('/auth/register', { ...data, fullName: 'AuthJSFullName' });
+      const result = client.post('/api/auth/register', { ...data, fullName: 'AuthJSFullName' });
       return result;
     }
   };
@@ -145,7 +146,7 @@ export function login(data) {
     types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
     promise: async client => {
       try {
-        const result = await client.post('/auth/login', { ...data, source: 'webapp' });
+        const result = await client.post('/api/auth/login', { ...data, source: 'webapp' });
         jsCookie.set('accessToken', result.accessToken);
         return result;
       } catch (error) {

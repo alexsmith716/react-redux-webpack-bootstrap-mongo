@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const PortfolioBox = props => {
-  const styles = require('./PortfolioBox.scss');
+  //const styles = require('./PortfolioBox.scss');
 
   const {
     link, thumbnailUrl, projectCategory, projectName

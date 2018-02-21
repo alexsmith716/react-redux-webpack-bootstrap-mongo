@@ -1,2 +1,57 @@
 
-@import "custom-app-style-01";
+// Bootstrap 4 configuration:
+// Glyphicons icon font support has been dropped
+// https://v4-alpha.getbootstrap.com/migration/
+// ----------------------------------------------------------------------
+
+$fa-font-path: "~font-awesome/fonts/";
+
+
+// Customize Bootstrap variables that get imported before the original Bootstrap variables (_variables.scss)
+@import "./pre-customizations.scss";
+
+
+// Original Bootstrap variables
+@import "~bootstrap/scss/_variables.scss";
+
+
+// Loaded after bootstrap/variables is loaded and before bootstrap is loaded
+// Modify a bootstrap variable based on the default bootstrap value (_variables.scss) in bootstrap
+@import "./customizations-bs4.scss";
+
+
+// Load Bootstrap v4
+@import "~bootstrap/scss/bootstrap.scss";
+
+
+// Load custom styles with access to all bootstrap variables
+@import "./mixins.scss";
+@import "./global.scss";
+
+
+@import "~font-awesome/scss/font-awesome.scss";
+
+
+// Bootstrap 4 configuration:
+// Glyphicons icon font support has been dropped
+// https://v4-alpha.getbootstrap.com/migration/
+// ----------------------------------------------------------------------
+// $fa-font-path: "~font-awesome/fonts/";
+// @import "./pre-customizations.scss";
+// @import "~bootstrap/scss/_variables.scss";
+// @import "./customizations-bs4.scss";
+// @import "~bootstrap/scss/bootstrap.scss";
+// @import "~font-awesome/scss/font-awesome.scss";
+
+
+// Bootstrap 3 font-awesome configuration:
+// ----------------------------------------------------------------------
+// $fa-font-path: "~font-awesome/fonts/";
+// @import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+// @import "~font-awesome/scss/font-awesome.scss";
+
+
+// Bootstrap 3 glyphicon configuration:
+// ----------------------------------------------------------------------
+// $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+// @import "~bootstrap-sass/assets/stylesheets/_bootstrap.scss";
