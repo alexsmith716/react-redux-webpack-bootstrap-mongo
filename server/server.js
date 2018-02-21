@@ -68,7 +68,7 @@ global.__CLIENT__ = false;
 global.__SERVER__ = true;
 global.__DISABLE_SSR__ = false;
 global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
-global.__DEVTOOLS__ = false;
+//global.__DEVTOOLS__ = false;
 
 // #########################################################################
 
@@ -88,7 +88,30 @@ process.on('unhandledRejection', (error, promise) => {
 
 // #########################################################################
 
+//app.use(/\/api/, mongooseConnect);
+mongoose.Promise = global.Promise;
+mongoose.connect(dbURL, mongooseOptions, err => {
+  if (err) {
+    console.error('####### > Please make sure Mongodb is installed and running!');
+  } else {
+    console.error('####### > Mongodb is installed and running!');
+  }
+});
+
 const app = new express();
+
+app.use((req, res, next) => {
+  console.log('>>>>>>>>>>>>>>>>> SERVER > __CLIENT__: ', __CLIENT__);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > __SERVER__: ', __SERVER__);
+  //console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVTOOLS__: ', __DEVTOOLS__);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__: ', __DEVELOPMENT__);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.ip +++++++++: ', req.ip);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.method +++++: ', req.method);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.url ++++++++: ', req.url);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.headers ++++: ', req.headers);
+  console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.session ++++: ', req.session);
+  return next();
+});
 
 // #########################################################################
 
@@ -100,12 +123,6 @@ if (process.env.NODE_ENV === 'development') {
 
 // #########################################################################
 
-console.log('>>>>>>>>>>>>>>>>> SERVER > __CLIENT__: ', __CLIENT__);
-console.log('>>>>>>>>>>>>>>>>> SERVER > __SERVER__: ', __SERVER__);
-console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVTOOLS__: ', __DEVTOOLS__);
-console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__: ', __DEVELOPMENT__);
-
-// #########################################################################
 
 if (process.env.NODE_ENV === 'development') {
   //app.use(delay(200, 300));
@@ -190,15 +207,7 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-//app.use(/\/api/, mongooseConnect);
-mongoose.Promise = global.Promise;
-mongoose.connect(dbURL, mongooseOptions, err => {
-  if (err) {
-    console.error('####### > Please make sure Mongodb is installed and running!');
-  } else {
-    console.error('####### > Mongodb is installed and running!');
-  }
-});
+
 
 // #########################################################################
 
@@ -206,10 +215,69 @@ app.use(/\/api/, apiRouter);
 
 // #########################################################################
 
+app.use(async (req, res) => {
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! <<<<<<<<<<<<<<<<<<');
+  if (__DEVELOPMENT__) {
+    webpackIsomorphicTools.refresh();
+  }
+
+  const url = req.originalUrl || req.url;
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > url: ', url);
+  const location = parseUrl(url);
+  const client = apiClient(req);
+  const history = createMemoryHistory({ initialEntries: [url] });
+  const store = createStore(history, client);
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > location: ', location);
+
+  const hydrate = () => {
+    res.write('<!doctype html>');
+    ReactDOM.renderToNodeStream(<Html assets={webpackIsomorphicTools.assets()} store={store} />).pipe(res);
+  };
+
+  if (__DISABLE_SSR__) {
+    return hydrate();
+  }
+
+  try {
+    await loadOnServer({
+      store, location, routes, helpers: { client }
+    });
+
+    const context = {};
+
+    const component = (
+      <Provider store={store} key="provider">
+        <StaticRouter location={url} context={context}>
+          <ReduxAsyncConnect routes={routes} helpers={{ client }} />
+        </StaticRouter>
+      </Provider>
+    );
+
+    const content = ReactDOM.renderToString(component);
+
+    if (context.url) {
+      return res.redirect(302, context.url);
+    }
+
+    const html = <Html assets={webpackIsomorphicTools.assets()} content={content} store={store} />;
+
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > HTML <<<<<<<<<<<<<<<<<<');
+
+    res.status(200).send(`<!doctype html>${ReactDOM.renderToString(html)}`);
+  } catch (error) {
+    if (error.name === 'RedirectError') {
+      return res.redirect(VError.info(error).to);
+    }
+    console.error('MOUNT ERROR:', pretty.render(error));
+    res.status(500);
+    hydrate();
+  }
+});
 //app.use((req, res) => {
   //res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
 //});
 
+/*
 app.use(async (req, res) => {
   console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! <<<<<<<<<<<<<<<<<<');
 
@@ -264,10 +332,9 @@ app.use(async (req, res) => {
       console.log('>>>>>>>> SERVER > app.use > loadOnServer > .catch > err: ', err);
       res.status(500).send('response error >>>> 500 !!!!!');
     }
-
 });
+*/
 
-// #########################################################################
 // #########################################################################
 
 mongoose.connection.on('connected', function() {
@@ -314,6 +381,8 @@ process.on('SIGTERM', function() {
   })
 });
 
+// #########################################################################
+/*
 app.listen(serverConfig.port, (error) => {
   if (error) {
     console.log('>>>>>>>> Server Error: ', error);
@@ -321,9 +390,7 @@ app.listen(serverConfig.port, (error) => {
     console.log(`>>>>>>>> Server is running on port ${serverConfig.port} <<<<<<<<<<<`);
   }
 });
-
-// #########################################################################
-
+*/
 /*
 const server = new http.Server(app);
 server.listen(process.env.PORT, err => {
@@ -334,7 +401,7 @@ server.listen(process.env.PORT, err => {
   console.info('==> Open http:// in a browser to view the app.');
 });
 */
-/*
+
 const normalizePort = (val)  => {
 
   var port = parseInt(val, 10);
@@ -386,12 +453,9 @@ server.on('error', (err) => {
 });
 
 server.on('listening', () => {
-
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   console.log('>>>>>> Express server Listening on: ', bind);
-
 });
-*/

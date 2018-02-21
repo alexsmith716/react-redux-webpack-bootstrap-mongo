@@ -19,7 +19,7 @@ module.exports = {
       'eventsource-polyfill',
       'babel-polyfill',
       'isomorphic-fetch',
-      path.join(__dirname, './client/assets/scss/global.scss'),
+      path.join(__dirname, './client/assets/scss/app.scss'),
       path.join(__dirname, './client/index.js'),
     ],
     vendor: [

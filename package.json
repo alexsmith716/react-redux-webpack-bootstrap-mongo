@@ -6,7 +6,8 @@
   "author": "dev",
   "license": "MIT",
   "scripts": {
-    "sd": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon index.js --ignore client/ --ignore webpack-assets.json"
+    "sd": "BABEL_DISABLE_CACHE=1 NODE_ENV=development nodemon index.js --ignore client/ --ignore webpack-assets.json",
+    "bd": "NODE_ENV=development webpack --config ./webpack.config.dev.js"
   },
   "dependencies": {
     "axios": "^0.17.1",
