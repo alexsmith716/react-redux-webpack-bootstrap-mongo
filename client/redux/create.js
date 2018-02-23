@@ -5,8 +5,9 @@ import createMiddleware from './middleware/clientMiddleware';
 import createReducers from './reducer';
 
 export function inject(store, name, asyncReducer) {
+  console.log('>>>>>>>>> CREATE.JS > INJECT 111111');
   if (store.asyncReducers[name]) return;
-
+  console.log('>>>>>>>>> CREATE.JS > INJECT 222222');
   store.asyncReducers[name] = asyncReducer;
   store.replaceReducer(combineReducers(createReducers(store.asyncReducers)));
 }
@@ -21,9 +22,9 @@ function getMissingReducers(reducers, data) {
 
 export default function createStore(history, client, data, persistConfig = null) {
   const middleware = [createMiddleware(client), routerMiddleware(history)];
-
+  console.log('>>>>>>>>> CREATE.JS > middleware: ', middleware);
   let enhancers = [applyMiddleware(...middleware)];
-
+  
   if (__CLIENT__ && __DEVTOOLS__) {
     console.log('>>>>>>>>> CREATE.JS > __CLIENT__ %% __DEVTOOLS__');
     const { persistState } = require('redux-devtools');
@@ -35,6 +36,9 @@ export default function createStore(history, client, data, persistConfig = null)
     ];
     console.log('>>>>>>>>> CREATE.JS > __CLIENT__ %% __DEVTOOLS__ > enhancers: ', enhancers);
   }
+
+  console.log('>>>>>>>>> CREATE.JS > enhancers: ', enhancers);
+  console.log('>>>>>>>>> CREATE.JS > persistConfig: ', persistConfig);
 
   const finalCreateStore = compose(...enhancers)(_createStore);
   const missingReducers = getMissingReducers(createReducers(), data);
