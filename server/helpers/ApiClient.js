@@ -4,8 +4,20 @@ import config from '../config';
 
 export default function apiClient(req) {
   const instance = axios.create({
-    baseURL: 'http://localhost:3000'
+    baseURL: __SERVER__ ? 'http://localhost:3000' : '/api'
   });
+
+  const cs = __SERVER__ ? '__SERVER__' : '__CLIENT__';
+  console.log('> ApiClient.JS || AXIOS > __SERVER__ || __CLIENT__: ', cs);
+
+  if (__SERVER__) {
+    console.log('> ApiClient.JS || AXIOS > __SERVER__ !!!!!!!!!!!!!!!!!!!!!!!!!!');
+    console.log('> ApiClient.JS || AXIOS > REQ.ip +++++++++: ', req.ip);
+    console.log('> ApiClient.JS || AXIOS > REQ.method +++++++++: ', req.method);
+    console.log('> ApiClient.JS || AXIOS > REQ.url +++++++++: ', req.url);
+  } else {
+    console.log('> ApiClient.JS || AXIOS > __CLIENT__ !!!!!!!!!!!!!!!!!!!!!!!!!!');
+  }
 
   const foo = __SERVER__ ? 'http://localhost:3000' : '/api';
   console.log('> ApiClient.JS || AXIOS > baseURL: ', foo);

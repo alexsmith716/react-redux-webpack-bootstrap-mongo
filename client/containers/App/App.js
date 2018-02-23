@@ -77,7 +77,7 @@ export default class App extends Component {
     console.log('>>>>>>>>>>>>>>>>>> APP.js > render() <<<<<<<<<<<<<<<<<');
 
     return (
-      <div className={styles.app}>
+      <div>
 
         <Helmet {...config.app.head} />
 
@@ -114,15 +114,11 @@ export default class App extends Component {
               <Notifs
                 className={styles.notifs}
                 namespace="global"
-                NotifComponent={props => <div bsStyle={props.kind}>{props.message}</div>}
+                NotifComponent={props => <Alert bsStyle={props.kind}>{props.message}</Alert>}
               />
             </div>
           )}
           {renderRoutes(route.routes)}
-        </div>
-
-        <div className={`${styles.footer} well text-center`}>
-          Copyright © 2018 · ThisGreatApp!
         </div>
 
       </div>

@@ -31,6 +31,7 @@ const Html = props => {
 
       <head>
         {/* (>>>>>>> META <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<) */}
+        {head.base.toComponent()}
         {head.meta.toComponent()}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="mobile-web-app-capable" content="yes" />

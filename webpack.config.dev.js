@@ -12,6 +12,7 @@ console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> webpack.config.dev.js <<<<<<<<<<<<
 
 // 'webpack-hot-middleware/client?path=http://' + host + ':' + port + '/__webpack_hmr',
 // 'webpack-hot-middleware/client?reload=true',
+// devtool: 'cheap-module-inline-source-map',
 
 module.exports = {
 
@@ -24,7 +25,7 @@ module.exports = {
       'react-hot-loader/patch',
       'babel-polyfill',
       'isomorphic-fetch',
-      path.join(__dirname, './client/assets/scss/app.scss'),
+      path.join(__dirname, './client/assets/scss/global.scss'),
       path.join(__dirname, './client/index.js'),
     ],
     vendor: [

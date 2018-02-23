@@ -7,11 +7,9 @@ const router = new Router();
 //import * as AuthController from './controllers/Auth.controller';
 
 router.use((req, res, next) => {
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>> ApiRouter.js <<<<<<<<<<<<<<<<<<<<<<<');
-  //console.log('REQ.ip +++++++++: ', req.ip);
-  //console.log('REQ.method +++++: ', req.method);
-  //console.log('REQ.url ++++++++: ', req.url);
-  //console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+  console.log('>>>>>>>>>>>>>>>>> ApiRouter.js > REQ.ip +++++++++: ', req.ip);
+  console.log('>>>>>>>>>>>>>>>>> ApiRouter.js > REQ.method +++++: ', req.method);
+  console.log('>>>>>>>>>>>>>>>>> ApiRouter.js > REQ.url ++++++++: ', req.url);
   return next();
 });
 

@@ -44,6 +44,7 @@ import { parse as parseUrl } from 'url';
 // #########################################################################
 
 const MongoStore = require('connect-mongo')(session);
+const sessionExpireDate = 6 * 60 * 60 * 1000; // 6 hours
 let gracefulShutdown;
 let dbURL = serverConfig.mongoURL;
 if (process.env.NODE_ENV === 'production') {
@@ -88,19 +89,10 @@ process.on('unhandledRejection', (error, promise) => {
 
 // #########################################################################
 
-//app.use(/\/api/, mongooseConnect);
-mongoose.Promise = global.Promise;
-mongoose.connect(dbURL, mongooseOptions, err => {
-  if (err) {
-    console.error('####### > Please make sure Mongodb is installed and running!');
-  } else {
-    console.error('####### > Mongodb is installed and running!');
-  }
-});
-
 const app = new express();
 
 app.use((req, res, next) => {
+  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
   console.log('>>>>>>>>>>>>>>>>> SERVER > __CLIENT__: ', __CLIENT__);
   console.log('>>>>>>>>>>>>>>>>> SERVER > __SERVER__: ', __SERVER__);
   //console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVTOOLS__: ', __DEVTOOLS__);
@@ -113,6 +105,9 @@ app.use((req, res, next) => {
   return next();
 });
 
+app.use(cors());
+//app.use(headers);
+
 // #########################################################################
 
 if (process.env.NODE_ENV === 'development') {
@@ -123,9 +118,8 @@ if (process.env.NODE_ENV === 'development') {
 
 // #########################################################################
 
-
 if (process.env.NODE_ENV === 'development') {
-  //app.use(delay(200, 300));
+  app.use(delay(200, 300));
 }
 
 // #########################################################################
@@ -141,9 +135,6 @@ app.use(morgan('dev'));
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(cookieParser());
-
-app.use(cors());
-//app.use(headers);
 
 // #########################################################################
 
@@ -176,7 +167,6 @@ app.use(/\/api/, session({
   })
 }));
 /*
-const sessionExpireDate = 6 * 60 * 60 * 1000; // 6 hours
 app.use(/\/api/, session({
   store: new MongoStore({
     url: serverConfig.mongoURL,
@@ -194,20 +184,30 @@ app.use(/\/api/, session({
 }));
 */
 
+// #########################################################################
+
+//app.use(/\/api/, mongooseConnect);
+mongoose.Promise = global.Promise;
+mongoose.connect(dbURL, mongooseOptions, err => {
+  if (err) {
+    console.error('####### > Please make sure Mongodb is installed and running!');
+  } else {
+    console.error('####### > Mongodb is installed and running!');
+  }
+});
+
+// #########################################################################
+
 app.use((req, res, next) => {
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > 11aaaa <<<<<<<<<<<<<');
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > 1111111 <<<<<<<<<<<<<');
   console.log('REQ.ip +++++++++: ', req.ip);
   console.log('REQ.method +++++: ', req.method);
   console.log('REQ.url ++++++++: ', req.url);
   console.log('REQ.headers ++++: ', req.headers);
   console.log('REQ.session ++++: ', req.session);
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   return next();
 });
-
-// #########################################################################
-
-
 
 // #########################################################################
 
@@ -216,22 +216,23 @@ app.use(/\/api/, apiRouter);
 // #########################################################################
 
 app.use(async (req, res) => {
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! <<<<<<<<<<<<<<<<<<');
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! <<<<<<<<<<<<<<<<<<');
   if (__DEVELOPMENT__) {
-    webpackIsomorphicTools.refresh();
+    global.webpackIsomorphicTools.refresh();
   }
 
   const url = req.originalUrl || req.url;
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > url: ', url);
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > url: ', url);
   const location = parseUrl(url);
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > location: ', location);
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > GoDo !! > apiClient(req) !!');
   const client = apiClient(req);
   const history = createMemoryHistory({ initialEntries: [url] });
   const store = createStore(history, client);
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > location: ', location);
 
   const hydrate = () => {
     res.write('<!doctype html>');
-    ReactDOM.renderToNodeStream(<Html assets={webpackIsomorphicTools.assets()} store={store} />).pipe(res);
+    ReactDOM.renderToNodeStream(<Html assets={global.webpackIsomorphicTools.assets()} store={store} />).pipe(res);
   };
 
   if (__DISABLE_SSR__) {
@@ -259,9 +260,9 @@ app.use(async (req, res) => {
       return res.redirect(302, context.url);
     }
 
-    const html = <Html assets={webpackIsomorphicTools.assets()} content={content} store={store} />;
+    const html = <Html assets={global.webpackIsomorphicTools.assets()} content={content} store={store} />;
 
-    console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > HTML <<<<<<<<<<<<<<<<<<');
+    console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > DID IT !! HTML <<<<<<<<<<<<<<<<<<');
 
     res.status(200).send(`<!doctype html>${ReactDOM.renderToString(html)}`);
   } catch (error) {
@@ -391,7 +392,7 @@ app.listen(serverConfig.port, (error) => {
   }
 });
 */
-/*
+
 const server = new http.Server(app);
 server.listen(process.env.PORT, err => {
   if (err) {
@@ -400,8 +401,8 @@ server.listen(process.env.PORT, err => {
   console.info('----\n==> SERVER is running, talking to API server on.');
   console.info('==> Open http:// in a browser to view the app.');
 });
-*/
 
+/*
 const normalizePort = (val)  => {
 
   var port = parseInt(val, 10);
@@ -459,3 +460,4 @@ server.on('listening', () => {
     : 'port ' + addr.port;
   console.log('>>>>>> Express server Listening on: ', bind);
 });
+*/
