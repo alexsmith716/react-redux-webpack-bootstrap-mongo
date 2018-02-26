@@ -2,7 +2,6 @@ import express from 'express';
 import helmet from 'helmet';
 import compression from 'compression';
 import bodyParser from 'body-parser';
-// Parse Cookie header and populate req.cookies with an object keyed by the cookie names
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import cors from 'cors';
@@ -69,7 +68,6 @@ global.__CLIENT__ = false;
 global.__SERVER__ = true;
 global.__DISABLE_SSR__ = false;
 global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
-//global.__DEVTOOLS__ = false;
 
 // #########################################################################
 

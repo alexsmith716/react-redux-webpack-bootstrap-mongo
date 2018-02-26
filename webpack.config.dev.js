@@ -16,7 +16,7 @@ console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> webpack.config.dev.js <<<<<<<<<<<<
 
 module.exports = {
 
-  devtool: 'cheap-module-inline-source-map',
+  devtool: 'inline-source-map',
 
   entry: {
     app: [
@@ -44,7 +44,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, './dist'),
     // the target directory for all output files
-    filename: '[name].[chunkhash].js',
+    filename: '[name].[hash].js',
     // the filename template for entry chunks
     chunkFilename: '[name].[chunkhash].js',
     // the filename template for additional chunks
@@ -56,7 +56,7 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.jsx*$/,
+        test: /\.jsx?$/,
         exclude: [/node_modules/,],
         loader: 'babel-loader'
       },

@@ -22,15 +22,17 @@ const client = apiClient();
 const dest = document.getElementById('content');
 
 (async () => {
-
   const storedData = await getStoredState(offlinePersistConfig);
+  console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > storedData: ', storedData);
   const online = await (window.__data ? true : isOnline());
 
   console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > online: ', online);
-  
+
   const data = !online ? { ...storedData, ...window.__data, online } : { ...window.__data, online };
   const history = createBrowserHistory();
+  console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > history: ', history);
   const store = createStore(history, client, data, offlinePersistConfig);
+  console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > store: ', store);
 
   const hydrate = _routes => {
     ReactDOM.hydrate(
@@ -54,7 +56,8 @@ const dest = document.getElementById('content');
   }
 
   if (process.env.NODE_ENV !== 'production') {
-    window.React = React; // enable debugger
+    window.React = React;
+    console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > process.env.NODE_ENV === DEV!!!');
 
     if (!dest || !dest.firstChild || !dest.firstChild.attributes || !dest.firstChild.attributes['data-reactroot']) {
       console.error('Server-side React render was discarded.' +
