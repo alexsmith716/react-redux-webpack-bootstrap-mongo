@@ -4,7 +4,7 @@ import config from '../config';
 
 export default function apiClient(req) {
   const instance = axios.create({
-    baseURL: __SERVER__ ? 'http://localhost:3000' : '/api'
+    baseURL: __SERVER__ ? 'http://localhost:3000' : 'http://localhost:3000'
   });
 
   const cs = __SERVER__ ? '__SERVER__' : '__CLIENT__';
@@ -18,9 +18,6 @@ export default function apiClient(req) {
   } else {
     console.log('> ApiClient.JS || AXIOS > __CLIENT__ !!!!!!!!!!!!!!!!!!!!!!!!!!');
   }
-
-  const foo = __SERVER__ ? 'http://localhost:3000' : '/api';
-  console.log('> ApiClient.JS || AXIOS > baseURL: ', foo);
 
   let token;
 

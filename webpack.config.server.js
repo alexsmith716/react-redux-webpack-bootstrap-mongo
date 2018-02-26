@@ -32,12 +32,12 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           plugins: [
-            ['babel-plugin-css-modules-transform', {
+            ['css-modules-transform', {
               preprocessCss: './loaders/sassLoader.js',
               generateScopedName: '[name]__[local]__[hash:base64:5]',
               extensions: ['.css', '.scss']
             }],
-            ['babel-plugin-webpack-loaders', {
+            ['webpack-loaders', {
               config: './webpack.config.babel.js',
               verbose: false
             }],

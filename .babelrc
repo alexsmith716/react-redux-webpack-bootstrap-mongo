@@ -7,15 +7,15 @@
         "node": "current"
       },
       "modules": false,
-      "debug": false,
     }],
-    "babel-preset-stage-0",
+    "stage-0",
   ],
   "plugins": [
     "react-hot-loader/babel",
-    "babel-plugin-transform-decorators-legacy",
-    "babel-plugin-transform-regenerator",
-    "babel-plugin-transform-runtime",
-    "babel-plugin-transform-es2015-modules-commonjs",
+    "transform-regenerator",
+    "transform-runtime",
+    "add-module-exports",
+    "transform-decorators-legacy",
+    "transform-es2015-modules-commonjs",
   ],
 }

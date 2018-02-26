@@ -73,14 +73,11 @@ export default class App extends Component {
   };
 
   render() {
-    const { user, notifs, route } = this.props;
+    const { notifs, route } = this.props;
     console.log('>>>>>>>>>>>>>>>>>> APP.js > render() <<<<<<<<<<<<<<<<<');
-
     return (
       <div>
-
         <Helmet {...config.app.head} />
-
         <nav className="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
           <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse">
             <span className="navbar-toggler-icon"></span>
@@ -108,17 +105,19 @@ export default class App extends Component {
           </div>
         </nav>
 
-        <div className={styles.appContent}>
+        <div>
           {notifs.global && (
-            <div className="container">
+            <div>
               <Notifs
-                className={styles.notifs}
                 namespace="global"
-                NotifComponent={props => <Alert bsStyle={props.kind}>{props.message}</Alert>}
+                NotifComponent={props => <div>{props.message}</div>}
               />
             </div>
           )}
           {renderRoutes(route.routes)}
+        </div>
+        <div>
+          Copyright © 2018 · Election App 2018!
         </div>
 
       </div>
