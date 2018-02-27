@@ -1,4 +1,4 @@
-import { User } from '../../models/User';
+import { User } from '../../models';
 import { parseToken } from '../../common/utils';
 
 export default function load(req) {
