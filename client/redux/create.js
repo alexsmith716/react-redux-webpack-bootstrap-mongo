@@ -8,7 +8,11 @@ export function inject(store, name, asyncReducer) {
   console.log('>>>>>>>>> CREATE.JS > INJECT 111111');
   if (store.asyncReducers[name]) return;
   console.log('>>>>>>>>> CREATE.JS > INJECT 222222');
+  console.log('>>>>>>>>> CREATE.JS > INJECT store: ', store);
+  console.log('>>>>>>>>> CREATE.JS > INJECT name: ', name);
+  console.log('>>>>>>>>> CREATE.JS > INJECT asyncReducer: ', asyncReducer);
   store.asyncReducers[name] = asyncReducer;
+  console.log('>>>>>>>>> CREATE.JS > INJECT store.asyncReducers: ', store.asyncReducers);
   store.replaceReducer(combineReducers(createReducers(store.asyncReducers)));
 }
 

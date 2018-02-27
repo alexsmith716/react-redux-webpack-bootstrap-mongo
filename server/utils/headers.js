@@ -7,8 +7,8 @@ export default function headers(req, res, next) {
   // Response headers ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // Specifying which web sites can participate in CORS
   res.header('Access-Control-Allow-Origin', '*');
-  //res.setHeader('Access-Control-Allow-Credentials', 'true');
-  //res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 
   // Security headers ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

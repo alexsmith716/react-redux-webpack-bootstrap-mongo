@@ -29,6 +29,9 @@ const dest = document.getElementById('content');
   console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > online: ', online);
 
   const data = !online ? { ...storedData, ...window.__data, online } : { ...window.__data, online };
+  const wd = { ...window.__data };
+  console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > ...window.__data: ', wd);
+  console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > data: ', data);
   const history = createBrowserHistory();
   console.log('>>>>>>>>>>>>>>>>>>> CLIENT.JS > history: ', history);
   const store = createStore(history, client, data, offlinePersistConfig);

@@ -57,6 +57,18 @@ const mongooseOptions = {
 
 // #########################################################################
 
+//app.use(/\/api/, mongooseConnect);
+mongoose.Promise = global.Promise;
+mongoose.connect(dbURL, mongooseOptions, err => {
+  if (err) {
+    console.error('####### > Please make sure Mongodb is installed and running!');
+  } else {
+    console.error('####### > Mongodb is installed and running!');
+  }
+});
+
+// #########################################################################
+
 //import testingNodeLoadProcess3 from './testingNodeLoad/testingNodeLoadProcess3';
 //import testingNodeLoadProcess4 from './testingNodeLoad/testingNodeLoadProcess4';
 //import testingNodeLoadProcess2 from './testingNodeLoad/testingNodeLoadProcess2';
@@ -184,18 +196,6 @@ app.use(/\/api/, session({
 
 // #########################################################################
 
-//app.use(/\/api/, mongooseConnect);
-mongoose.Promise = global.Promise;
-mongoose.connect(dbURL, mongooseOptions, err => {
-  if (err) {
-    console.error('####### > Please make sure Mongodb is installed and running!');
-  } else {
-    console.error('####### > Mongodb is installed and running!');
-  }
-});
-
-// #########################################################################
-
 app.use((req, res, next) => {
   console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > 1111111 <<<<<<<<<<<<<');
   console.log('REQ.ip +++++++++: ', req.ip);
@@ -223,7 +223,7 @@ app.use(async (req, res) => {
   console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > url: ', url);
   const location = parseUrl(url);
   console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > location: ', location);
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > GoDo !! > apiClient(req) !!');
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > Go SetUp The App !!');
   const client = apiClient(req);
   const history = createMemoryHistory({ initialEntries: [url] });
   const store = createStore(history, client);

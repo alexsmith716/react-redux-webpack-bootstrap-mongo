@@ -1,6 +1,5 @@
 import axios from 'axios';
 import config from '../config';
-// baseURL: __SERVER__ ? 'http://localhost:3000' : '/api'
 
 export default function apiClient(req) {
   const instance = axios.create({
