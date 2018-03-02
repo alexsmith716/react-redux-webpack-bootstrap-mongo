@@ -30,7 +30,6 @@ import ReactDOM from 'react-dom/server';
 import { Provider } from 'react-redux';
 import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter, matchPath } from 'react-router';
-import { renderRoutes, matchRoutes } from 'react-router-config';
 import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
 
 import createMemoryHistory from 'history/createMemoryHistory';
@@ -102,10 +101,9 @@ process.on('unhandledRejection', (error, promise) => {
 const app = new express();
 
 app.use((req, res, next) => {
-  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+  console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ IN $$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
   console.log('>>>>>>>>>>>>>>>>> SERVER > __CLIENT__: ', __CLIENT__);
   console.log('>>>>>>>>>>>>>>>>> SERVER > __SERVER__: ', __SERVER__);
-  //console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVTOOLS__: ', __DEVTOOLS__);
   console.log('>>>>>>>>>>>>>>>>> SERVER > __DEVELOPMENT__: ', __DEVELOPMENT__);
   console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.ip +++++++++: ', req.ip);
   console.log('>>>>>>>>>>>>>>>>> SERVER > REQ.method +++++: ', req.method);
@@ -115,6 +113,8 @@ app.use((req, res, next) => {
   return next();
 });
 
+app.use(morgan('dev'));
+app.use(helmet());
 app.use(cors());
 //app.use(headers);
 
@@ -134,19 +134,11 @@ if (process.env.NODE_ENV === 'development') {
 
 // #########################################################################
 
-app.use(helmet());
-
 app.use(compression());
+
 app.use('/public', express.static(path.join(__dirname, '../public')));
 //app.use('/static', express.static(path.resolve(__dirname, '../dist/client')));
-app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico')),);
-
-app.use(morgan('dev'));
-app.use(bodyParser.json({ limit: '20mb' }));
-app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
-app.use(cookieParser());
-
-// #########################################################################
+app.use(favicon(path.join(__dirname, '../public/static/favicon', 'favicon.ico')));
 
 app.get('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '../public/static/manifest/manifest.json')));
 
@@ -168,6 +160,7 @@ app.get('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '../pu
 // #########################################################################
 
 app.use(/\/api/, session({
+// app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -176,6 +169,23 @@ app.use(/\/api/, session({
     touchAfter: 0.5 * 3600
   })
 }));
+
+app.use(bodyParser.json({ limit: '20mb' }));
+app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
+
+app.use((req, res, next) => {
+  console.log('>>>>>>>>>>>> Api.JS > REQ.headers ++++  000z: ', req.headers);
+  console.log('>>>>>>>>>>>> Api.JS > REQ.session ++++  000z: ', req.session);
+  return next();
+});
+
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+  console.log('>>>>>>>>>>>> Api.JS > REQ.headers ++++  111z: ', req.headers);
+  console.log('>>>>>>>>>>>> Api.JS > REQ.session ++++  111z: ', req.session);
+  return next();
+});
 /*
 app.use(/\/api/, session({
   store: new MongoStore({
@@ -196,41 +206,47 @@ app.use(/\/api/, session({
 
 // #########################################################################
 
-app.use((req, res, next) => {
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > 1111111 <<<<<<<<<<<<<');
-  console.log('REQ.ip +++++++++: ', req.ip);
-  console.log('REQ.method +++++: ', req.method);
-  console.log('REQ.url ++++++++: ', req.url);
-  console.log('REQ.headers ++++: ', req.headers);
-  console.log('REQ.session ++++: ', req.session);
-  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-  return next();
-});
-
-// #########################################################################
-
 app.use(/\/api/, apiRouter);
 
 // #########################################################################
 
 app.use(async (req, res) => {
+
   console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! <<<<<<<<<<<<<<<<<<');
   if (__DEVELOPMENT__) {
     global.webpackIsomorphicTools.refresh();
   }
 
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > SetUpComponent !! START !! $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+
+
   const url = req.originalUrl || req.url;
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > url: ', url);
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > SetUpComponentDone !! > url: ', url);
+
+
   const location = parseUrl(url);
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > location: ', location);
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > Go SetUp The App !!');
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > SetUpComponentDone !! > location: ', location);
+
+
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > SetUpComponent !! > apiClient !!');
   const client = apiClient(req);
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > SetUpComponentDone !! > apiClient !!');
+
+
   const history = createMemoryHistory({ initialEntries: [url] });
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > SetUpComponentDone !! > createMemoryHistory !!');
+
+
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > SetUpComponent !! > createStore !!');
   const store = createStore(history, client);
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > SetUpComponentDone !! > createStore !!');
+
+
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > SetUpComponent !! END !! $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
 
   const hydrate = () => {
     res.write('<!doctype html>');
-    ReactDOM.renderToNodeStream(<Html assets={global.webpackIsomorphicTools.assets()} store={store} />).pipe(res);
+    ReactDOM.renderToNodeStream(<Html assets={webpackIsomorphicTools.assets()} store={store} />).pipe(res);
   };
 
   if (__DISABLE_SSR__) {
@@ -238,9 +254,11 @@ app.use(async (req, res) => {
   }
 
   try {
-    await loadOnServer({
-      store, location, routes, helpers: { client }
-    });
+    console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ loadOnServer START $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+
+    await loadOnServer({store, location, routes, helpers: { client }});
+
+    console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ loadOnServer END $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
 
     const context = {};
 

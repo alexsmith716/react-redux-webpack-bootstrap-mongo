@@ -1,5 +1,6 @@
 import axios from 'axios';
 import config from '../config';
+// baseURL: __SERVER__ ? 'http://localhost:3000' : 'http://localhost:3000'
 
 export default function apiClient(req) {
   const instance = axios.create({
@@ -37,6 +38,7 @@ export default function apiClient(req) {
           console.log('> ApiClient.JS || AXIOS > instance.interceptors.request.use3: ', conf.headers.authorization);
         }
       }
+      console.log('> ApiClient.JS || AXIOS > instance.interceptors.request.use1 > conf: ', conf);
       return conf;
     },
     error => {
@@ -47,7 +49,7 @@ export default function apiClient(req) {
 
   instance.interceptors.response.use(
     response => {
-      console.log('> ApiClient.JS || AXIOS > instance.interceptors.request.use5');
+      console.log('> ApiClient.JS || AXIOS > instance.interceptors.request.use5 > response.data: ', response.data);
       return response.data;
     },
     error => {
