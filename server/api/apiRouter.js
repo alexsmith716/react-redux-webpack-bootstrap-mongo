@@ -3,13 +3,11 @@ import apiRoutes from './apiRoutes';
 
 const router = new Router();
 
-//import apiRoutesTester from './apiRoutesTester';
-//import * as AuthController from './controllers/Auth.controller';
-
 router.use((req, res, next) => {
   console.log('>>>>>>>>>>>>>>>>> ApiRouter.js > REQ.ip +++++++++: ', req.ip);
   console.log('>>>>>>>>>>>>>>>>> ApiRouter.js > REQ.method +++++: ', req.method);
   console.log('>>>>>>>>>>>>>>>>> ApiRouter.js > REQ.url ++++++++: ', req.url);
+  console.log('>>>>>>>>>>>>>>>>> ApiRouter.js > REQ.headers ++++++++ 222z: ', req.headers);
   return next();
 });
 

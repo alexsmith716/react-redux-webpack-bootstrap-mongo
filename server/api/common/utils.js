@@ -52,4 +52,3 @@ export function checkNested(obj) {
   }
   return true;
 }
-
