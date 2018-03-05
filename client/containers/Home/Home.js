@@ -10,11 +10,11 @@ import { isAuthenticated } from '../../redux/modules/auth';
 
 @asyncConnect([
   {
-    promise: ({ store: { getState } }) => {
+    promise: async ({ store: { dispatch, getState } }) => {
+      console.log('>>>>>>>>>>>>> HOME.JS > asyncConnect > isAuthenticated TRUE ??? <<<<<<<<<<<<<<<<<');
       if (isAuthenticated(getState())) {
-        console.log('>>>>>>>>>>>>>>> Home.JS > asyncConnect > YES isAuthenticated <<<<<<<<<<');
-      } else {
-        console.log('>>>>>>>>>>>>>>> Home.JS > asyncConnect > NO isAuthenticated <<<<<<<<<<');
+        console.log('>>>>>>>>>>>>> HOME.JS > asyncConnect > isAuthenticated TRUE <<<<<<<<<<<<<<<<<');
+        await dispatch(loadList({ pageIndex: 0, pageSize: 5 }));
       }
     }
   }
@@ -37,7 +37,7 @@ export default class Home extends Component {
   }
 
   render() {
-    console.log('>>>>>>>>>>>>>>>>>> Home.js > render() <<<<<<<<<<<<<<<<<');
+    console.log('>>>>>>>>>>>>> HOME.JS > render() <<<<<<<<<<<<<<');
     return (
       this.props.user ? <LoggedInHomepage /> : <GuestHomepage />
     );

@@ -8,14 +8,14 @@ export default function headers(req, res, next) {
   // Specifying which web sites can participate in CORS
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Authorization, Origin, X-Requested-With, Content-Type, Accept, x-auth');
 
   // Security headers ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // prevent MIME-sniffing a response away from the declared content-type
-  //res.header('X-Content-Type-Options', 'nosniff');
+  // res.header('X-Content-Type-Options', 'nosniff');
   // Clickjacking protection
-  //res.header('X-Frame-Options', 'deny');
+  // res.header('X-Frame-Options', 'deny');
 
   return next();
 };

@@ -109,23 +109,24 @@ const catchValidation = error => {
 */
 
 export function isAuthenticated(state) {
-  console.log('>>>>>>>>>>>>>>>>>>>>>>> Auth.js > (redux) isAuthenticated > state.auth: ', state.auth);
-  console.log('>>>>>>>>>>>>>>>>>>>>>>> Auth.js > (redux) isAuthenticated > state.auth.user: ', state.auth.user);
-  return state.auth && state.auth.user;
+  const ia = state.auth && state.auth.user;
+  console.log('>>>>>>>>>>>>> Redux > Modules > AUTH.JS > isAuthenticated ???: ', ia);
+  return ia;
 }
 
 export function isAuthLoaded(state) {
-  console.log('>>>>>>>>>>>>>>>>>>>>>>> Auth.js > (redux) isAuthLoaded > state.auth: ', state.auth);
-  console.log('>>>>>>>>>>>>>>>>>>>>>>> Auth.js > (redux) isAuthLoaded > state.auth.loaded: ', state.auth.loaded);
-  return state.auth && state.auth.loaded;
+  const il = state.auth && state.auth.loaded;
+  console.log('>>>>>>>>>>>>> Redux > Modules > AUTH.JS > isAuthLoaded ???: ', il);
+  return il;
 }
 
 export function loadAuth() {
-  console.log('>>>>>>>>>>>>>>>>>>>>>>> Auth.js > (redux) loadAuth <<<<<<<<<<<<<<<<<<<<<<<');
+  console.log('>>>>>>>>>>>>> Redux > Modules > AUTH.JS > loadAuth() > client.post(/api/auth/load) 1 <<<<<<<<<<<<<<<');
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
     promise: async client => {
       const result = await client.post('/api/auth/load');
+      console.log('>>>>>>>>>>>>> Redux > Modules > AUTH.JS > loadAuth() > client.post(/api/auth/load) 2 <<<<<<<<<<<<<<<');
       return result;
     }
   };
