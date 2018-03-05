@@ -17,12 +17,14 @@ import style from './style.css';
 @asyncConnect([
   {
     promise: async ({ store: { dispatch, getState } }) => {
+      console.log('>>>>>>>>>>>>> APP.JS > asyncConnect > isAuthLoaded FALSE ??? <<<<<<<<<<<<<<<<<<<');
       if (!isAuthLoaded(getState())) {
-        console.log('>>>>>>>>>>>>>>>>>> APP.js > asyncConnect > loadAuth <<<<<<<<<<<<<<<<<');
+        console.log('>>>>>>>>>>>>> APP.JS > asyncConnect > isAuthLoaded FALSE <<<<<<<<<<<<<<<<<');
         await dispatch(loadAuth());
       }
+      console.log('>>>>>>>>>>>>> APP.JS > asyncConnect > isInfoLoaded FALSE ??? <<<<<<<<<<<<<<<<<<<');
       if (!isInfoLoaded(getState())) {
-        console.log('>>>>>>>>>>>>>>>>>> APP.js > asyncConnect > loadInfo <<<<<<<<<<<<<<<<<');
+        console.log('>>>>>>>>>>>>> APP.JS > asyncConnect > isInfoLoaded FALSE <<<<<<<<<<<<<<<<<');
         await dispatch(loadInfo());
       }
     }
@@ -74,7 +76,7 @@ export default class App extends Component {
 
   render() {
     const { notifs, route } = this.props;
-    console.log('>>>>>>>>>>>>>>>>>> APP.js > render() <<<<<<<<<<<<<<<<<');
+    console.log('>>>>>>>>>>>>> APP.JS > render() <<<<<<<<<<<<<<');
     return (
       <div>
         <Helmet {...config.app.head} />

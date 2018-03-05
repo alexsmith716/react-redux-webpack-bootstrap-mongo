@@ -129,7 +129,7 @@ if (process.env.NODE_ENV === 'development') {
 // #########################################################################
 
 if (process.env.NODE_ENV === 'development') {
-  app.use(delay(200, 300));
+  //app.use(delay(200, 300));
 }
 
 // #########################################################################
@@ -159,8 +159,15 @@ app.get('/manifest.json', (req, res) => res.sendFile(path.join(__dirname, '../pu
 
 // #########################################################################
 
-app.use(/\/api/, session({
-// app.use(session({
+// saveUninitialized: false, // don't create session until something stored
+// resave: false, // don't save session if unmodified
+
+app.use(bodyParser.json({ limit: '20mb' }));
+app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
+app.use(cookieParser());
+
+//app.use(/\/api/, session({
+app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -170,45 +177,23 @@ app.use(/\/api/, session({
   })
 }));
 
-app.use(bodyParser.json({ limit: '20mb' }));
-app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 
 app.use((req, res, next) => {
-  console.log('>>>>>>>>>>>> Api.JS > REQ.headers ++++  000z: ', req.headers);
-  console.log('>>>>>>>>>>>> Api.JS > REQ.session ++++  000z: ', req.session);
+  console.log('>>>>>>>>>>>>>>>> SERVER > REQ.headers ++++  111z: ', req.headers);
+  console.log('>>>>>>>>>>>>>>>> SERVER > REQ.session ++++  111z: ', req.session);
+  console.log('>>>>>>>>>>>>>>>> SERVER > REQ.cookies ++++  111z: ', req.cookies);
   return next();
 });
-
-app.use(cookieParser());
-
-app.use((req, res, next) => {
-  console.log('>>>>>>>>>>>> Api.JS > REQ.headers ++++  111z: ', req.headers);
-  console.log('>>>>>>>>>>>> Api.JS > REQ.session ++++  111z: ', req.session);
-  return next();
-});
-/*
-app.use(/\/api/, session({
-  store: new MongoStore({
-    url: serverConfig.mongoURL,
-    autoRemove: 'native'
-  }),
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  rolling: true,
-  saveUninitialized: false,
-  cookie: {
-    secure: false,
-    httpOnly: false,
-    maxAge: sessionExpireDate
-  }
-}));
-*/
 
 // #########################################################################
 
 app.use(/\/api/, apiRouter);
 
 // #########################################################################
+
+//app.use((req, res) => {
+  //res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+//});
 
 app.use(async (req, res) => {
 
@@ -290,67 +275,6 @@ app.use(async (req, res) => {
     hydrate();
   }
 });
-//app.use((req, res) => {
-  //res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
-//});
-
-/*
-app.use(async (req, res) => {
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! <<<<<<<<<<<<<<<<<<');
-
-  if (__DEVELOPMENT__) {
-    global.webpackIsomorphicTools.refresh();
-  }
-
-  const url = req.originalUrl || req.url;
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > url: ', url);
-  const location = parseUrl(url);
-  const client = apiClient(req);
-  const history = createMemoryHistory({ initialEntries: [url] });
-  const store = createStore(history, client);
-  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > location: ', location);
-
-  const hydrate = () => { 
-    res.write('<!doctype html>');
-    ReactDOM.renderToNodeStream(<Html assets={global.webpackIsomorphicTools.assets()} store={store} />).pipe(res);
-  };
-
-  if (__DISABLE_SSR__) {
-    return hydrate();
-  }
-
-  try {
-
-    await loadOnServer({store, location, routes, helpers: { client }});
-
-    const context = {};
-
-    const component = (
-      <Provider store={store} key="provider">
-        <StaticRouter location={url} context={context}>
-          <ReduxAsyncConnect routes={routes} helpers={{ client }} />
-        </StaticRouter>
-      </Provider>
-    );
-
-    const content = ReactDOM.renderToString(component);
-
-    if (context.url) {
-      return res.redirect(302, context.url);
-    }
-
-    const html = <Html assets={global.webpackIsomorphicTools.assets()} content={content} store={store} />;
-
-    console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !!!!! > HTML <<<<<<<<<<<<<<<<<<');
-
-    res.status(200).send(`<!doctype html>${ReactDOM.renderToString(html)}`);
-
-    } catch (err) {
-      console.log('>>>>>>>> SERVER > app.use > loadOnServer > .catch > err: ', err);
-      res.status(500).send('response error >>>> 500 !!!!!');
-    }
-});
-*/
 
 // #########################################################################
 
@@ -399,16 +323,8 @@ process.on('SIGTERM', function() {
 });
 
 // #########################################################################
-/*
-app.listen(serverConfig.port, (error) => {
-  if (error) {
-    console.log('>>>>>>>> Server Error: ', error);
-  } else {
-    console.log(`>>>>>>>> Server is running on port ${serverConfig.port} <<<<<<<<<<<`);
-  }
-});
-*/
 
+/*
 const server = new http.Server(app);
 server.listen(process.env.PORT, err => {
   if (err) {
@@ -417,8 +333,8 @@ server.listen(process.env.PORT, err => {
   console.info('----\n==> SERVER is running, talking to API server on.');
   console.info('==> Open http:// in a browser to view the app.');
 });
+*/
 
-/*
 const normalizePort = (val)  => {
 
   var port = parseInt(val, 10);
@@ -476,4 +392,10 @@ server.on('listening', () => {
     : 'port ' + addr.port;
   console.log('>>>>>> Express server Listening on: ', bind);
 });
-*/
+
+// https://nodejs.org/api/net.html#net_class_net_socket
+// https://nodejs.org/api/http.html#http_event_upgrade
+server.on('upgrade', (req, socket, head) => {
+  console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > Upgrade <<<<<<<<<<<<<<<<<<<<<<');
+  //proxy.ws(req, socket, head);
+});
