@@ -17,5 +17,8 @@
     "add-module-exports",
     "transform-decorators-legacy",
     "transform-es2015-modules-commonjs",
+    "transform-object-rest-spread",
+    "transform-class-properties",
+    "transform-promise-to-bluebird",
   ],
 }

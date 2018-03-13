@@ -4,6 +4,7 @@ import compression from 'compression';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import jwt from 'express-jwt';
 import cors from 'cors';
 import morgan from 'morgan';
 import path from 'path';
@@ -19,7 +20,7 @@ import apiClient from './helpers/apiClient';
 import serverConfig from './config';
 import headers from './utils/headers';
 import delay from 'express-delay';
-//import mongooseConnect from './mongo/mongooseConnect';
+// import mongooseConnect from './mongo/mongooseConnect';
 import apiRouter from './api/apiRouter';
 import mongoose from 'mongoose';
 
@@ -68,9 +69,9 @@ mongoose.connect(dbURL, mongooseOptions, err => {
 
 // #########################################################################
 
-//import testingNodeLoadProcess3 from './testingNodeLoad/testingNodeLoadProcess3';
-//import testingNodeLoadProcess4 from './testingNodeLoad/testingNodeLoadProcess4';
-//import testingNodeLoadProcess2 from './testingNodeLoad/testingNodeLoadProcess2';
+// import testingNodeLoadProcess3 from './testingNodeLoad/testingNodeLoadProcess3';
+// import testingNodeLoadProcess4 from './testingNodeLoad/testingNodeLoadProcess4';
+// import testingNodeLoadProcess2 from './testingNodeLoad/testingNodeLoadProcess2';
 
 // #########################################################################
 
@@ -120,11 +121,11 @@ app.use(cors());
 
 // #########################################################################
 
-if (process.env.NODE_ENV === 'development') {
-  const compiler = webpack(webpackConfig);
-  app.use(webpackDevMiddleware(compiler, { noInfo: false, publicPath: webpackConfig.output.publicPath }));
-  app.use(webpackHotMiddleware(compiler));
-}
+//if (process.env.NODE_ENV === 'development') {
+//  const compiler = webpack(webpackConfig);
+//  app.use(webpackDevMiddleware(compiler, { noInfo: false, publicPath: webpackConfig.output.publicPath }));
+//  app.use(webpackHotMiddleware(compiler));
+//}
 
 // #########################################################################
 
@@ -166,7 +167,7 @@ app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(cookieParser());
 
-//app.use(/\/api/, session({
+// app.use(/\/api/, session({
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -187,19 +188,20 @@ app.use((req, res, next) => {
 
 // #########################################################################
 
-app.use(/\/api/, apiRouter);
+// app.use(/\/api/, apiRouter);
+app.use('/api', apiRouter);
 
 // #########################################################################
 
-//app.use((req, res) => {
-  //res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
-//});
+// app.use((req, res) => {
+  // res.status(200).send('SERVER > Response Ended For Testing!!!!!!! Status 200!!!!!!!!!');
+// });
 
 app.use(async (req, res) => {
 
   console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! <<<<<<<<<<<<<<<<<<');
   if (__DEVELOPMENT__) {
-    global.webpackIsomorphicTools.refresh();
+    // ========
   }
 
   console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > SetUpComponent !! START !! $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
@@ -228,15 +230,6 @@ app.use(async (req, res) => {
 
 
   console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > ASYNC !! > SetUpComponent !! END !! $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
-
-  const hydrate = () => {
-    res.write('<!doctype html>');
-    ReactDOM.renderToNodeStream(<Html assets={webpackIsomorphicTools.assets()} store={store} />).pipe(res);
-  };
-
-  if (__DISABLE_SSR__) {
-    return hydrate();
-  }
 
   try {
     console.log('>>>>>>>>>>>>>>>>> SERVER > $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ loadOnServer START $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
@@ -397,5 +390,5 @@ server.on('listening', () => {
 // https://nodejs.org/api/http.html#http_event_upgrade
 server.on('upgrade', (req, socket, head) => {
   console.log('>>>>>>>>>>>>>>>> SERVER > APP.USE > Upgrade <<<<<<<<<<<<<<<<<<<<<<');
-  //proxy.ws(req, socket, head);
+  // proxy.ws(req, socket, head);
 });

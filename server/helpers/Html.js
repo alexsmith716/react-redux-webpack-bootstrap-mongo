@@ -35,7 +35,7 @@ const Html = props => {
         {head.script.toComponent()}
       </head>
       <body>
-        <div id="content" dangerouslySetInnerHTML={{ __html: content }} />
+        <div id="content" dangerouslySetInnerHTML={{ __html: content }} ></div>
         {store && (
           <script
             dangerouslySetInnerHTML={{ __html: `window.__data=${serialize(store.getState())};` }}

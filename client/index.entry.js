@@ -1,0 +1,3 @@
+require('../bluebird');
+
+require('./index');

@@ -11,9 +11,6 @@ import { isAuthLoaded, loadAuth, logout } from '../../redux/modules/auth';
 import Notifs from '../../components/Notifs/Notifs';
 import config from '../../../server/config';
 
-import styles from './App.scss';
-import style from './style.css';
-
 @asyncConnect([
   {
     promise: async ({ store: { dispatch, getState } }) => {
@@ -84,7 +81,7 @@ export default class App extends Component {
           <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse">
             <span className="navbar-toggler-icon"></span>
           </button>
-          <a className={`navbar-brand ${style.colorGold}`} href="#">Fixed navbar</a>
+          <a className="navbar-brand" href="#">Fixed navbar</a>
           <div className="collapse navbar-collapse" id="navbarCollapse">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item active">
@@ -97,7 +94,7 @@ export default class App extends Component {
                 <a className="nav-link disabled" href="#">Disabled</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#"><span className={`fa fa-headphones ${style.colorGold}`}/>Headphones!</a>
+                <a className="nav-link" href="#"><span className="fa fa-headphones"/>Headphones!</a>
               </li>
             </ul>
             <form className="form-inline mt-2 mt-md-0">
