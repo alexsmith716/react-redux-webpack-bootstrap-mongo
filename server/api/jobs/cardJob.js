@@ -1,6 +1,6 @@
 import gcm from 'node-gcm';
 import { CronJob } from 'cron';
-import { Device } from 'models';
+import { Device } from '../models';
 
 export default new CronJob({
   cronTime: '*/30 * * * * *',

@@ -1,10 +1,5 @@
-const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
-const webpackIsomorphicToolsConfig = require('./webpack.config.isomorphic');
-const projectBasePath = require('path').resolve(__dirname, './');
 
-// #########################################################################
-
-console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Index.js >>>>>>>>>>>>>>> process.env.NODE_ENV: ', process.env.NODE_ENV);
+console.log('>>>>>>>>>>>>> Index.js >>>>>>>>> process.env.NODE_ENV: ', process.env.NODE_ENV);
 
 // "env": {"development": {"plugins": ["transform-react-jsx-source"]}}
 // Babel@6 doesn't export default module.exports
@@ -13,11 +8,8 @@ console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Index.js >>>>>>>>>>>>>>> process.e
 //     "add-module-exports",
 
 if (process.env.NODE_ENV === 'production') {
-  global.webpackIsomorphicTools = new WebpackIsomorphicTools(
-    webpackIsomorphicToolsConfig).server(projectBasePath, () => {
-      require('./build/server/server.bundle');
-    }
-  );
+
+  require('./build/server/server.bundle');
 
 } else {
   require('babel-register')({
@@ -35,14 +27,11 @@ if (process.env.NODE_ENV === 'production') {
       'transform-es2015-modules-commonjs',
     ],
   });
-  
+
   require('babel-polyfill');
   require('es6-promise').polyfill();
   //require('isomorphic-fetch');
 
-  global.webpackIsomorphicTools = new WebpackIsomorphicTools(
-    webpackIsomorphicToolsConfig).server(projectBasePath, () => {
-      require('./server/server');
-    }
-  );
+  require('./server/server');
+
 }
