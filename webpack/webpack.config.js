@@ -1,10 +1,34 @@
 var path = require('path');
 var webpack = require('webpack');
 
+var tether = require('tether');
+
 var rootPath = path.resolve(__dirname, '..');
 var assetsPath = path.resolve(rootPath, 'public', 'build', 'client');
 
+/*
+optimization: {
+  splitChunks: {
+    chunks: "all",
+    minSize: 0,
+  },
+  occurrenceOrder: true
+},
+optimization: {
+  splitChunks: {
+    cacheGroups: {
+      commons: {
+        test: /[\\/]node_modules[\\/]/,
+        name: 'vendor',
+     },
+    },
+  },
+},
+*/
+
 module.exports = {
+
+  mode: 'development',
 
   context: rootPath,
 
@@ -14,7 +38,6 @@ module.exports = {
       'webpack-hot-middleware/client?reload=true',
       'react-hot-loader/patch',
       'babel-polyfill',
-      'isomorphic-fetch',
       './client/assets/scss/global.scss',
       './client/index.entry.js',
     ],
@@ -36,6 +59,14 @@ module.exports = {
     publicPath: '/build/client/',
     filename: '[name].[hash].js',
     chunkFilename: '[name].[hash].js'
+  },
+
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      minSize: 0,
+    },
+    occurrenceOrder: true
   },
 
   module: {
@@ -140,7 +171,7 @@ module.exports = {
         }]
       },
       {
-        test: 'jquery',
+        test: '/jquery/',
         use: [{
           loader: 'expose-loader',
           options: 'jQuery',
@@ -150,7 +181,7 @@ module.exports = {
         }]
       },
       {
-        test: 'tether',
+        test: '/tether/',
         use: [{
           loader: 'expose-loader',
           options: 'Tether',
